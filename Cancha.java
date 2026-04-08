@@ -3,5 +3,5 @@ class Cancha {
     private String nombre;
     private String descripcion;
     private String direccion;
-	private double precio;
+	private double precioPorHora;
 }
