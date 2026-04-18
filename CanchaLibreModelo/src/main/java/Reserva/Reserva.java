@@ -1,3 +1,4 @@
+package Reserva;
 import java.time.LocalDateTime;
 class Reserva {
     private int idReserva;

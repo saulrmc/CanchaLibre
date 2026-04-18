@@ -1,3 +1,4 @@
+package Usuario;
 import java.util.List;
 
 public enum Rol {

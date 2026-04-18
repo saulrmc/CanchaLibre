@@ -1,3 +1,4 @@
+package Usuario;
 public enum Permiso {
     //TODO: añadir más permisos
 

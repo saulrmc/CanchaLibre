@@ -1,3 +1,5 @@
+package Cancha;
+
 public class TipoCancha{
     private int idTipoCancha;
     private String descripion;

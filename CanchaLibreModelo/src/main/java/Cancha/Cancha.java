@@ -1,5 +1,6 @@
+package Cancha;
 import java.util.List;
-import java.util.ArrayList;
+
 public class Cancha {
     private int idCancha;
     private String nombre;

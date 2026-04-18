@@ -1,3 +1,4 @@
+package Usuario;
 public abstract class Usuario {
     private int idUsuario;
     private String nombres;

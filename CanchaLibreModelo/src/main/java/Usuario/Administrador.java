@@ -1,3 +1,4 @@
+package Usuario;
 public class Administrador extends Usuario {
     //TODO: agregar más atributos al administrador (si es que los hay)
     public Administrador(int idUsuario, String nombres,

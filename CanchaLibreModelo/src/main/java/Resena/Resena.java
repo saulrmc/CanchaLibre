@@ -1,4 +1,12 @@
-public class Reseña{
+package Resena;
+public class Resena{
+	private int idUsuario;
+	private String nombres;
+	private String contrasena;
+	private String correo;
+	private String telefono;
+	private String descripcion;
+
 	public String getTelefono() {
 		return telefono;
 	}
@@ -39,9 +47,11 @@ public class Reseña{
 		this.idUsuario = idUsuario;
 	}
 
-	private int idUsuario;
-	private String nombres;
-	private String contrasena;
-	private String correo;
-	private String telefono;
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 }
