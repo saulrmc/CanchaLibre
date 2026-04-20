@@ -1,4 +1,4 @@
-package Resena;
+package pe.edu.pucp.CanchaLibre.modelo.Resena;
 public class Resena{
 	private int idUsuario;
 	private String nombres;

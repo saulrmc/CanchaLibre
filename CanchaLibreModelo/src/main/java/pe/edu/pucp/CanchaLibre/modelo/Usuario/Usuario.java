@@ -1,4 +1,4 @@
-package Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.Usuario;
 public abstract class Usuario {
     private int idUsuario;
     private String nombres;

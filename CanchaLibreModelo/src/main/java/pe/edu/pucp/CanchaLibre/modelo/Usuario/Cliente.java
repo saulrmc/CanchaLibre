@@ -1,4 +1,4 @@
-package Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.Usuario;
 public class Cliente extends Usuario {
     //TODO: agregar más atributos al cliente (si es que los hay)
     private String datosPago;

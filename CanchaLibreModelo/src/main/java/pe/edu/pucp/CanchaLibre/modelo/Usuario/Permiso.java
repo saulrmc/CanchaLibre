@@ -1,4 +1,4 @@
-package Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.Usuario;
 public enum Permiso {
     //TODO: añadir más permisos
 

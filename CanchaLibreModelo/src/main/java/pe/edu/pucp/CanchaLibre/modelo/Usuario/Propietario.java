@@ -1,4 +1,4 @@
-package Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.Usuario;
 public class Propietario  extends Usuario{
     //TODO: agregar más atributos al propietario (si es que los hay)
     public Propietario(int idUsuario, String nombres,

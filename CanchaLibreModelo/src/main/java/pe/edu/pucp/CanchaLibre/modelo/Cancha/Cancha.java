@@ -1,4 +1,4 @@
-package Cancha;
+package pe.edu.pucp.CanchaLibre.modelo.Cancha;
 import java.util.List;
 
 public class Cancha {

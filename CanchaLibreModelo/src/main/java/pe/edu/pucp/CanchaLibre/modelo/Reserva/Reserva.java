@@ -1,4 +1,4 @@
-package Reserva;
+package pe.edu.pucp.CanchaLibre.modelo.Reserva;
 import java.time.LocalDateTime;
 class Reserva {
     private int idReserva;

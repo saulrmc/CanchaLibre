@@ -1,4 +1,4 @@
-package Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.Usuario;
 import java.util.List;
 
 public enum Rol {

@@ -1,4 +1,4 @@
-package Cancha;
+package pe.edu.pucp.CanchaLibre.modelo.Cancha;
 
 public class TipoCancha{
     private int idTipoCancha;
