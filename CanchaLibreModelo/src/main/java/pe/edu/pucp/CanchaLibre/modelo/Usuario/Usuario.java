@@ -1,28 +1,17 @@
 package pe.edu.pucp.CanchaLibre.modelo.Usuario;
+
+import java.time.LocalDateTime;
+
 public abstract class Usuario {
     private int idUsuario;
     private String nombres;
     private String contrasena;
     private String correo;
     private String telefono;
-    protected Rol rol;
+    private int intentosFallidos; //bloquear inicio de sesión después de 3 intentos
+    private LocalDateTime ultimaSesion; //medir que el límite de fallos no sobrepase el minuto
 
-    Usuario(int idUsuario, String nombres, String contrasena,
-            String correo, String telefono) {
-        this.idUsuario = idUsuario;
-        this.nombres = nombres;
-        this.contrasena = contrasena;
-        this.correo = correo;
-        this.telefono = telefono;
-    }
-
-    public boolean tienePermiso(Permiso permiso) {
-        return rol.getTiposPermiso().contains(permiso);
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
+    public abstract Rol getRol();
 
     public String getTelefono() {
         return telefono;

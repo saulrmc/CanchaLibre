@@ -1,0 +1,263 @@
+@startuml
+enum pe.edu.pucp.CanchaLibre.modelo.Usuario.Rol {
++  ADMINISTRADOR
++  PROPIETARIO
++  CLIENTE
+}
+
+class pe.edu.pucp.CanchaLibre.modelo.Cancha.BloqueHorario {
+- int id
+- LocalTime horaInicio
+- LocalTime horaFin
+- boolean disponible
+~ List<Reserva> reservas
++ List<Reserva> getReservas()
++ void setReservas(List<Reserva>)
++ boolean isDisponible()
++ void setDisponible(boolean)
++ LocalTime getHoraFin()
++ void setHoraFin(LocalTime)
++ LocalTime getHoraInicio()
++ void setHoraInicio(LocalTime)
++ int getId()
++ void setId(int)
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Reserva.Notificacion {
+- Usuario destinatario
+- String descripcion
+- LocalDateTime fechaEnvio
++ LocalDateTime getFechaEnvio()
++ void setFechaEnvio(LocalDateTime)
++ String getDescripcion()
++ void setDescripcion(String)
++ Usuario getDestinatario()
++ void setDestinatario(Usuario)
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Cancha.Sede {
+- int idSede
+- String nombre
+- String direccion
+- Propietario propietario
+- List<Cancha> canchas
+}
+
+class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago {
+- int id
+- MetodoPago metodoPago
+- double monto
+- LocalDateTime fechaPago
++ LocalDateTime getFechaPago()
++ void setFechaPago(LocalDateTime)
++ double getMonto()
++ void setMonto(double)
++ MetodoPago getMetodoPago()
++ void setMetodoPago(MetodoPago)
++ int getId()
++ void setId(int)
+}
+
+
+enum pe.edu.pucp.CanchaLibre.modelo.Cancha.Deporte {
++  FUTBOL
++  BASQUET
++  VOLEY
++  TENIS
+}
+
+class pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario {
+- int calificacion
+- List<Cancha> canchas
++ int getCalificacion()
++ void setCalificacion(int)
++ List<Cancha> getCanchas()
++ void setCanchas(List<Cancha>)
++ Rol getRol()
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha {
+- int idCancha
+- String nombre
+- String descripcion
+- Sede sede
+- double precioPorHora
+- List<Deporte> deportes
+- boolean disponible
+- String imagenUrl
++ boolean isDisponible()
++ void setDisponible(boolean)
++ String getImagenUrl()
++ void setImagenUrl(String)
++ List<Deporte> getDeportes()
++ void setDeportes(List<Deporte>)
++ double getPrecioPorHora()
++ void setPrecioPorHora(double)
++ String getDescripcion()
++ void setDescripcion(String)
++ String getNombre()
++ void setNombre(String)
++ int getIdCancha()
++ void setIdCancha(int)
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Comprobante {
+- int idComprobante
+- int idReserva
+- int idUsuario
+- String nombreUsuario
+- String correoUsuario
+- double igv
+- double precioHora
+- LocalDateTime fechaEmision
+- Reserva reserva
++ Reserva getReserva()
++ void setReserva(Reserva)
++ LocalDateTime getFechaEmision()
++ void setFechaEmision(LocalDateTime)
++ double getPrecioHora()
++ void setPrecioHora(double)
++ double getIgv()
++ void setIgv(double)
++ String getCorreoUsuario()
++ void setCorreoUsuario(String)
++ String getNombreUsuario()
++ void setNombreUsuario(String)
++ int getIdUsuario()
++ void setIdUsuario(int)
++ int getIdReserva()
++ void setIdReserva(int)
++ int getIdComprobante()
++ void setIdComprobante(int)
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente {
+- int calificacion
++ int getCalificacion()
++ void setCalificacion(int)
++ Rol getRol()
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Reserva.Resena {
+- int idResena
+- int idUsuario
+- String nombres
+- String correo
+- String descripcion
+- LocalDateTime fechaPublicacion
+- Usuario destinatario
++ Usuario getDestinatario()
++ void setDestinatario(Usuario)
++ LocalDateTime getFechaPublicacion()
++ void setFechaPublicacion(LocalDateTime)
++ String getCorreo()
++ void setCorreo(String)
++ int getIdResena()
++ void setIdResena(int)
++ String getNombres()
++ void setNombres(String)
++ int getIdUsuario()
++ void setIdUsuario(int)
++ String getDescripcion()
++ void setDescripcion(String)
+}
+
+
+class pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva {
+- int idReserva
+- LocalDate fecha
+- LocalTime horaInicio
+- LocalTime horaFin
+- EstadoReserva estado
+- Cliente cliente
+- Cancha cancha
+- Pago pago
++ Pago getPago()
++ void setPago(Pago)
++ Cancha getCancha()
++ void setCancha(Cancha)
++ Cliente getCliente()
++ void setCliente(Cliente)
++ EstadoReserva getEstado()
++ void setEstado(EstadoReserva)
++ LocalTime getHoraFin()
++ void setHoraFin(LocalTime)
++ LocalTime getHoraInicio()
++ void setHoraInicio(LocalTime)
++ LocalDate getFecha()
++ void setFecha(LocalDate)
++ int getIdReserva()
++ void setIdReserva(int)
+}
+
+
+abstract class pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario {
+- int idUsuario
+- String nombres
+- String contrasena
+- String correo
+- String telefono
+- int intentosFallidos
+- LocalDateTime ultimaSesion
++ {abstract}Rol getRol()
++ String getTelefono()
++ void setTelefono(String)
++ String getCorreo()
++ void setCorreo(String)
++ String getContrasena()
++ void setContrasena(String)
++ String getNombres()
++ void setNombres(String)
++ int getIdUsuario()
++ void setIdUsuario(int)
+}
+
+
+enum pe.edu.pucp.CanchaLibre.modelo.Reserva.EstadoReserva {
++  ESPERA
++  PAGADO
++  CANCELADO
++  COMPLETADO
+}
+
+enum pe.edu.pucp.CanchaLibre.modelo.Transaccion.MetodoPago {
++  YAPE
++  PLIN
++  EFECTIVO
+}
+
+class pe.edu.pucp.CanchaLibre.modelo.Usuario.Administrador {
++ Rol getRol()
+}
+
+class pe.edu.pucp.CanchaLibre.modelo.Cancha.EsquemaPrecio {
+- int id
+- double precioHora
+- boolean conIluminacion
+- BloqueHorario bloqueHorario
+- Cancha cancha
++ Cancha getCancha()
++ void setCancha(Cancha)
++ BloqueHorario getBloqueHorario()
++ void setBloqueHorario(BloqueHorario)
++ boolean isConIlumincacion()
++ void setConIlumincacion(boolean)
++ double getPrecioHora()
++ void setPrecioHora(double)
++ int getId()
++ void setId(int)
+}
+
+
+
+
+pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario
+pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente
+pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Administrador
+@enduml

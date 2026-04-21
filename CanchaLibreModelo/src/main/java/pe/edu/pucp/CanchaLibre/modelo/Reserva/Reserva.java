@@ -1,12 +1,43 @@
 package pe.edu.pucp.CanchaLibre.modelo.Reserva;
-import java.time.LocalDateTime;
+import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago;
+import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 class Reserva {
     private int idReserva;
-    private LocalDateTime fechaHora;
-    private int duracion;
+    private LocalDate fecha;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
     private EstadoReserva estado;
+    private Cliente cliente;
+    private Cancha cancha;
+    private Pago pago;
 
-    public Reserva() {
+    public Pago getPago() {
+        return pago;
+    }
+
+    public void setPago(Pago pago) {
+        this.pago = pago;
+    }
+
+    public Cancha getCancha() {
+        return cancha;
+    }
+
+    public void setCancha(Cancha cancha) {
+        this.cancha = cancha;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public EstadoReserva getEstado() {
@@ -17,20 +48,28 @@ class Reserva {
         this.estado = estado;
     }
 
-    public int getDuracion() {
-        return duracion;
+    public LocalTime getHoraFin() {
+        return horaFin;
     }
 
-    public void setDuracion(int duracion) {
-        this.duracion = duracion;
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
     }
 
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
+    public LocalTime getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public int getIdReserva() {
