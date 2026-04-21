@@ -1,6 +1,4 @@
 package pe.edu.pucp.CanchaLibre.modelo.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,40 +6,15 @@ public class Cancha {
     private int idCancha;
     private String nombre;
     private String descripcion;
+    private List<Deporte> deportes;
     private String imagenUrl;
     private boolean disponible;
     private String direccion;
-    private List<Deporte> deportes;
-    private List<Reserva> reservas;
-    private List<EsquemaPrecio> esquemasPrecios;
-
-    public List<EsquemaPrecio> getEsquemasPrecios() {
-        return esquemasPrecios;
-    }
-
-    public void setEsquemasPrecios(List<EsquemaPrecio> esquemasPrecios) {
-        this.esquemasPrecios = esquemasPrecios;
-    }
-
-    public List<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
 
     public boolean isDisponible() {
         return disponible;
     }
+
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
@@ -68,6 +41,12 @@ public class Cancha {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getDireccion() { return direccion;
+    }
+
+    public void setDireccion(String direccion) { this.direccion = direccion;
     }
 
     public String getNombre() {
