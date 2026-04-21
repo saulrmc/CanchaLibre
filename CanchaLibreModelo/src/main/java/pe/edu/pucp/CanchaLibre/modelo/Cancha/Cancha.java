@@ -1,4 +1,6 @@
 package pe.edu.pucp.CanchaLibre.modelo.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -6,18 +8,43 @@ public class Cancha {
     private int idCancha;
     private String nombre;
     private String descripcion;
-    private double precioPorHora;
+    private String imagenUrl;
+    private boolean disponible;
+    private String direccion;
     private List<Deporte> deportes;
+    private List<Reserva> reservas;
+    private List<EsquemaPrecio> esquemasPrecios;
+
+    public List<EsquemaPrecio> getEsquemasPrecios() {
+        return esquemasPrecios;
+    }
+
+    public void setEsquemasPrecios(List<EsquemaPrecio> esquemasPrecios) {
+        this.esquemasPrecios = esquemasPrecios;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
 
     public boolean isDisponible() {
         return disponible;
     }
-
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
-
-    private boolean disponible;
 
     public String getImagenUrl() {
         return imagenUrl;
@@ -27,22 +54,12 @@ public class Cancha {
         this.imagenUrl = imagenUrl;
     }
 
-    private String imagenUrl;
-
     public List<Deporte> getDeportes() {
         return deportes;
     }
 
     public void setDeportes(List<Deporte> deportes) {
         this.deportes = deportes;
-    }
-
-    public double getPrecioPorHora() {
-        return precioPorHora;
-    }
-
-    public void setPrecioPorHora(double precioPorHora) {
-        this.precioPorHora = precioPorHora;
     }
 
     public String getDescripcion() {

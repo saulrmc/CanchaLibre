@@ -1,5 +1,21 @@
 package pe.edu.pucp.CanchaLibre.modelo.Usuario;
+
+import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
+
+import java.util.List;
+
 public class Cliente extends Usuario {
+    private List<Reserva> historialReservas; //RF09
+    private int calificacion;
+
+    public List<Reserva> getHistorialReservas() {
+        return historialReservas;
+    }
+
+    public void setHistorialReservas(List<Reserva> historialReservas) {
+        this.historialReservas = historialReservas;
+    }
+
     public int getCalificacion() {
         return calificacion;
     }
@@ -7,13 +23,6 @@ public class Cliente extends Usuario {
     public void setCalificacion(int calificacion) {
         this.calificacion = calificacion;
     }
-
-    private int calificacion;
-
-    public Cliente(int idUsuario, String nombres, String contrasena, String correo, String telefono) {
-        super(idUsuario, nombres, contrasena, correo, telefono);
-    }
-
     @Override
     public Rol getRol(){return Rol.CLIENTE;}
 

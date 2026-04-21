@@ -4,24 +4,15 @@ public class EsquemaPrecio {
     private int id;
     private double precioHora;
     private boolean conIluminacion; //(RF05) precio varía si la cancha
-    //tiene iluminación y se ha utilizado durante el horario rservado
-    private BloqueHorario bloqueHorario;
-    private Cancha cancha;
+    //tiene iluminación y se ha utilizado durante el horario reservado
+    private Temporada temporada;
 
-    public Cancha getCancha() {
-        return cancha;
+    public boolean isConIluminacion() {
+        return conIluminacion;
     }
 
-    public void setCancha(Cancha cancha) {
-        this.cancha = cancha;
-    }
-
-    public BloqueHorario getBloqueHorario() {
-        return bloqueHorario;
-    }
-
-    public void setBloqueHorario(BloqueHorario bloqueHorario) {
-        this.bloqueHorario = bloqueHorario;
+    public void setConIluminacion(boolean conIluminacion) {
+        this.conIluminacion = conIluminacion;
     }
 
     public boolean isConIlumincacion() {
