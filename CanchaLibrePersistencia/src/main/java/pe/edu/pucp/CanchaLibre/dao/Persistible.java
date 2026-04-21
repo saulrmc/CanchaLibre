@@ -1,4 +1,4 @@
-package pe.du.pucp.CanchaLibre.dao;
+package pe.edu.pucp.CanchaLibre.dao;
 import java.util.List;
 
 /**
