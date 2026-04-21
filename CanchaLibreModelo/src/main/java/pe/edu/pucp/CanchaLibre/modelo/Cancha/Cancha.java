@@ -6,7 +6,6 @@ public class Cancha {
     private int idCancha;
     private String nombre;
     private String descripcion;
-    private Sede sede;
     private double precioPorHora;
     private List<Deporte> deportes;
 
