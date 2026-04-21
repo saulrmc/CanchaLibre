@@ -6,7 +6,7 @@ import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-class Reserva {
+public class Reserva {
     private int idReserva;
     private LocalDate fecha;
     private LocalTime horaInicio;

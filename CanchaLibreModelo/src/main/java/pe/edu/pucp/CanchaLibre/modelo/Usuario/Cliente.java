@@ -9,6 +9,11 @@ public class Cliente extends Usuario {
     }
 
     private int calificacion;
+
+    public Cliente(int idUsuario, String nombres, String contrasena, String correo, String telefono) {
+        super(idUsuario, nombres, contrasena, correo, telefono);
+    }
+
     @Override
     public Rol getRol(){return Rol.CLIENTE;}
 
