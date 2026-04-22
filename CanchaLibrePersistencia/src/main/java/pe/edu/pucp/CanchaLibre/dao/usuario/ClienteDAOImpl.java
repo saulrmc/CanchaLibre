@@ -10,27 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDAO {
-    private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
-        //TODO Revision
-        int i = 1;
-        cmd.setString(i++, modelo.getNombres());
-        cmd.setString(i++, modelo.getContrasena());
-        cmd.setString(i++, modelo.getCorreo());
-        cmd.setString(i++, modelo.getTelefono());
-        cmd.setInt(i++, modelo.getIntentosFallidos());
-
-        if (modelo.getUltimaSesion() != null) {
-            cmd.setTimestamp(i++, java.sql.Timestamp.valueOf(modelo.getUltimaSesion()));
-        } else {
-            cmd.setNull(i++, java.sql.Types.TIMESTAMP);
-        }
-
-        cmd.setString(i++, modelo.getRol().name());
-        cmd.setInt(i++, modelo.getCalificacion());
-
-        return i;
-    }
-
     //on BaseDAO
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
@@ -85,7 +64,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
             SELECT *
-            FROM CLIENTE 
+            FROM CLIENTE
             WHERE idUsuario = ?
         """;
 
@@ -98,7 +77,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
         SELECT *
-        FROM CLIENTE 
+        FROM CLIENTE
         """;
 
         return conn.prepareStatement(sql);
@@ -120,7 +99,15 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
         modelo.setIdUsuario(rs.getInt("idUsuario"));
 
         mapearCamposUsuario(rs,modelo);
-        //TODO Completar listReserva + calificacion
-        return null;
+        modelo.setCalificacion(rs.getInt("calificacion"));
+        //List<Reserva> usará otro method
+        return modelo;
     }
+
+    private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
+        int idx = setCamposUsuario(cmd,1,modelo);
+        cmd.setInt(idx + 1, modelo.getCalificacion());
+        return idx + 2;
+    }
+
 }
