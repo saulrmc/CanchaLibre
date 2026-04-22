@@ -33,7 +33,7 @@ public class Program {
         Integer idComprobante = null;
 
         try {
-            // ── 1. CLIENTE ────────────────────────────────────────────────
+            // 1. CLIENTE
             Cliente cliente = new Cliente();
             cliente.setNombres("Maria Garcia");
             cliente.setCorreo("maria.garcia@test.com");
@@ -54,7 +54,7 @@ public class Program {
 
             System.out.println("Buscar por nombre: " + clienteDAO.buscarPorNombre("Maria Garcia Lopez"));
 
-            // ── 2. PAGO ───────────────────────────────────────────────────
+            // 2. PAGO
             Pago pago = new Pago();
             pago.setMetodoPago(MetodoPago.EFECTIVO);
             pago.setMonto(90.00);
@@ -68,7 +68,7 @@ public class Program {
             pagoDAO.actualizar(pago);
             System.out.println("Pago actualizado: " + pagoDAO.leer(idPago));
 
-            // ── 3. RESERVA ────────────────────────────────────────────────
+            // 3. RESERVA
             // Cancha hardcodeada con un id ya existente en la BD
             Cancha cancha = new Cancha();
             cancha.setIdCancha(1);
@@ -90,7 +90,7 @@ public class Program {
             reservaDAO.actualizar(reserva);
             System.out.println("Reserva actualizada: " + reservaDAO.leer(idReserva));
 
-            // ── 4. COMPROBANTE ────────────────────────────────────────────
+            // 4. COMPROBANTE
             Comprobante comprobante = new Comprobante();
             comprobante.setIgv(0.18);
             comprobante.setFechaEmision(LocalDateTime.now());
@@ -109,7 +109,7 @@ public class Program {
             System.out.println("\nFlujo de prueba completado exitosamente.");
 
         } finally {
-            // ── LIMPIEZA (orden inverso a la inserción) ───────────────────
+            // LIMPIEZA (orden inverso a la inserción)
             if (idComprobante != null) {
                 comprobanteDAO.eliminar(idComprobante);
                 System.out.println("Comprobante eliminado.");
