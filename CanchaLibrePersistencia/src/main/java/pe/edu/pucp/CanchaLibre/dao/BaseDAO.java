@@ -222,8 +222,8 @@ public abstract class BaseDAO<M, I> implements Persistible<M, I> {
         }
     }
 
-    protected Integer leerEnteroNullable(ResultSet rs, String columnName) throws SQLException {
-        int value = rs.getInt(columnName);
-        return rs.wasNull() ? null : value;
-    }
+//    protected Integer leerEnteroNullable(ResultSet rs, String columnName) throws SQLException {
+//        int value = rs.getInt(columnName);
+//        return rs.wasNull() ? null : value;
+//    }
 }
