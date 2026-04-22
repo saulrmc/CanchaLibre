@@ -16,7 +16,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoCrear(Connection conn, Reserva modelo) throws SQLException {
         String sql = """
-            INSERT INTO RESERVA (
+            INSERT INTO Reserva (
                 idReserva,
                 fechaHora,
                 duracion,
@@ -41,7 +41,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoActualizar(Connection conn, Reserva modelo) throws SQLException {
         String sql = """
-            UPDATE RESERVA
+            UPDATE Reserva
             SET fechaHora = ?,
                 duracion = ?,
                 estado = ?,
@@ -64,7 +64,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
         String sql = """
-                DELETE FROM RESERVA WHERE idReserva = ?
+                DELETE FROM Reserva WHERE idReserva = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -75,7 +75,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
-                SELECT * FROM RESERVA WHERE idReserva = ?
+                SELECT * FROM Reserva WHERE idReserva = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -85,7 +85,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
-                SELECT * FROM RESERVA
+                SELECT * FROM Reserva
                 """;
         return conn.prepareStatement(sql);
     }

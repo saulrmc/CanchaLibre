@@ -19,17 +19,16 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
         String sql = """
-                INSERT INTO CLIENTE(
-                    idUsuario,
+                INSERT INTO Cliente(
+                    idCliente,
                     nombres,
                     contrasena,
                     correo,
                     telefono,
                     intentosFallidos,
                     ultimaSesion,
-                    rol,
                     calificacion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?,?,?,?,?,?,?,?)
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
         setCamposCliente(cmd,modelo);
@@ -38,27 +37,27 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
 
     protected PreparedStatement comandoActualizar(Connection conn, Cliente modelo) throws SQLException {
         String sql = """
-        UPDATE Usuario SET
+        UPDATE Cliente SET
             nombres = ?,
             contrasena = ?,
             correo = ?,
             telefono = ?,
             intentosFallidos = ?,
             ultimaSesion = ?,
-            rol = ?,
             calificacion = ?
-        WHERE idUsuario = ?
+        WHERE idCliente = ?
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposCliente(cmd, modelo);
-        cmd.setInt(nextIndex, modelo.getIdUsuario());
+        int nextIndex = setCamposUsuario(cmd,1,modelo);
+        cmd.setInt(nextIndex, modelo.getCalificacion());
+        cmd.setInt(nextIndex+1, modelo.getIdUsuario());
 
         return cmd;
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM CLIENTE WHERE idUsuario = ?";
+        String sql = "DELETE FROM Cliente WHERE idCliente = ?";
 
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1, id);
@@ -69,8 +68,8 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
             SELECT *
-            FROM CLIENTE
-            WHERE idUsuario = ?
+            FROM Cliente
+            WHERE idCliente = ?
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
@@ -82,7 +81,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
         SELECT *
-        FROM CLIENTE
+        FROM Cliente
         """;
 
         return conn.prepareStatement(sql);
@@ -92,7 +91,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
                                                     String nombres) throws SQLException{
         String sql = """
-                SELECT * FROM CLIENTE WHERE nombres = ?
+                SELECT * FROM Cliente WHERE nombres = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setString(1,nombres);
@@ -101,7 +100,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
 
     protected Cliente mapearModelo(ResultSet rs) throws SQLException{
         Cliente modelo = new Cliente();
-        modelo.setIdUsuario(rs.getInt("idUsuario"));
+        modelo.setIdUsuario(rs.getInt("idCliente"));
         mapearCamposUsuario(rs,modelo);
         modelo.setCalificacion(rs.getInt("calificacion"));
 
@@ -122,9 +121,11 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     }
 
     private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
-        int idx = setCamposUsuario(cmd,1,modelo);
-        cmd.setInt(idx + 1, modelo.getCalificacion());
-        return idx + 2;
+        int startIndex=1;
+        cmd.setInt(startIndex,modelo.getIdUsuario());
+        int idx = setCamposUsuario(cmd,startIndex+1,modelo);
+        cmd.setInt(idx, modelo.getCalificacion());
+        return idx + 1;
     }
 
 }

@@ -24,7 +24,6 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
                     telefono,
                     intentosFallidos,
                     ultimaSesion,
-                    rol,
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
@@ -41,7 +40,6 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
             telefono = ?,
             intentosFallidos = ?,
             ultimaSesion = ?,
-            rol = ?,
         WHERE idAdministrador = ?
         """;
 
@@ -53,7 +51,7 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM ADMINISTRADOR WHERE idAdministrador = ?";
+        String sql = "DELETE FROM Administrador WHERE idAdministrador = ?";
 
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1, id);
@@ -64,7 +62,7 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
             SELECT *
-            FROM ADMINISTRADOR
+            FROM Administrador
             WHERE idAdministrador = ?
         """;
 
@@ -77,7 +75,7 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
         SELECT *
-        FROM ADMINISTRADOR
+        FROM Administrador
         """;
 
         return conn.prepareStatement(sql);
@@ -87,7 +85,7 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
                                                     String nombres) throws SQLException{
         String sql = """
-                SELECT * FROM ADMINISTRADOR WHERE nombres = ?
+                SELECT * FROM Administrador WHERE nombres = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setString(1,nombres);
@@ -103,9 +101,11 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
     }
 
     private int setCamposAdministrador(PreparedStatement cmd, Administrador modelo) throws SQLException {
-        int idx = setCamposUsuario(cmd,1,modelo);
+        int startIndex=1;
+        cmd.setInt(startIndex,modelo.getIdUsuario());
+        int idx = setCamposUsuario(cmd,startIndex+1,modelo);
         //admin sin calificacion
-        return idx + 1;
+        return idx;
     }
 
 }

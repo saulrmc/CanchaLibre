@@ -19,6 +19,7 @@ public abstract class UsuarioBaseDAO<M extends Usuario> extends DefaultBaseDAO<M
 
     protected int setCamposUsuario(PreparedStatement cmd, int startIndex,
                                    M modelo) throws SQLException{
+        //cmd.setInt(startIndex,modelo.getIdUsuario());
         cmd.setString(startIndex,modelo.getNombres());
         cmd.setString(startIndex+1,modelo.getContrasena());
         cmd.setString(startIndex+2,modelo.getCorreo());
@@ -31,13 +32,13 @@ public abstract class UsuarioBaseDAO<M extends Usuario> extends DefaultBaseDAO<M
             cmd.setNull(startIndex+5, Types.TIMESTAMP);
         }
 
-        cmd.setString(startIndex+6,modelo.getRol().name());
+        //cmd.setString(startIndex+7,modelo.getRol().name());
 
-        return startIndex + 7;
+        return startIndex+6;
     }
 
     protected void mapearCamposUsuario(ResultSet rs, M modelo) throws SQLException{
-        modelo.setIdUsuario(rs.getInt("idUsuario"));
+        //modelo.setIdUsuario(rs.getInt("idUsuario"));
         modelo.setNombres(rs.getString("nombres"));
         modelo.setContrasena(rs.getString("contrasena"));
         modelo.setCorreo(rs.getString("correo"));

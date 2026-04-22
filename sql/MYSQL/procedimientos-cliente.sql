@@ -5,21 +5,21 @@ DROP PROCEDURE IF EXISTS modificarCliente;
 DROP PROCEDURE IF EXISTS insertarPropietario;
 
 
--- RF01: Registro de Cliente 
+-- RF01: Registro de Cliente
 CREATE PROCEDURE insertarCliente(
-    IN p_nombres VARCHAR(150), 
-    IN p_correo VARCHAR(100), 
-    IN p_telefono VARCHAR(20), 
+    IN p_nombres VARCHAR(150),
+    IN p_correo VARCHAR(100),
+    IN p_telefono VARCHAR(20),
     IN p_contrasena VARCHAR(255),
     IN p_calificacion INT,
     OUT p_id INT)
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Cliente WHERE correo = p_correo) THEN
-        INSERT INTO Cliente (nombres, correo, telefono, contrasena, calificacion, intentosFallidos) 
-        VALUES (p_nombres, p_correo, p_telefono, p_contrasena, p_calificacion, 0);
+        INSERT INTO Cliente (nombres, correo, telefono, contrasena, calificacion, intentosFallidos)
+        VALUES (p_nombres, p_correo, p_telefono, p_contrasena, p_calificacion, 0, NULL,1,'CLIENTE');
         SET p_id = LAST_INSERT_ID();
     ELSE
-        SET p_id = 0; 
+        SET p_id = 0;
     END IF;
 END //
 
@@ -27,16 +27,22 @@ END //
 CREATE PROCEDURE modificarCliente(
     IN p_id INT,
     IN p_nombres VARCHAR(150),
+    IN p_contrasena VARCHAR(255),
     IN p_correo VARCHAR(100),
     IN p_telefono VARCHAR(20),
-    IN p_contrasena VARCHAR(255))
+    IN p_intentos INT,
+    IN p_ultimaSesion DATETIME,
+    IN p_calificacion INT)
 BEGIN
-    UPDATE Cliente 
-    SET nombres = p_nombres, 
-        correo = p_correo, 
-        telefono = p_telefono, 
-        contrasena = p_contrasena
-    WHERE idCliente = p_id;
+UPDATE Cliente
+SET nombres = p_nombres,
+    contrasena = p_contrasena,
+    correo = p_correo,
+    telefono = p_telefono,
+    intentosFallidos = p_intentos,
+    ultimaSesion = p_ultimaSesion,
+    calificacion = p_calificacion
+WHERE idUsuario = p_id;
 END //
 
 -- RF04: Registro de Propietario
@@ -47,7 +53,7 @@ CREATE PROCEDURE insertarPropietario(
     OUT p_id INT)
 BEGIN
     INSERT INTO Propietario (nombres, correo, ruc)
-    VALUES (p_nombres, p_correo, p_ruc);
+    VALUES (p_nombres, p_correo, p_ruc,1,'PROPIETARIO');
     SET p_id = LAST_INSERT_ID();
 END //
 

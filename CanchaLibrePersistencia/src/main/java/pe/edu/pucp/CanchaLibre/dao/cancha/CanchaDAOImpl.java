@@ -32,7 +32,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString(4,modelo.getImagenUrl());
         cmd.setBoolean(5,modelo.isDisponible());
         cmd.setString(6,modelo.getDireccion());
-        cmd.setInt(6, modelo.getPropietario().getIdUsuario());
+        cmd.setInt(7, modelo.getPropietario().getIdUsuario());
 
         return cmd;
     }

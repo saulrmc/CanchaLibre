@@ -28,8 +28,8 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
                     telefono,
                     intentosFallidos,
                     ultimaSesion,
-                    rol,
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    calificacion
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
         setCamposPropietario(cmd,modelo);
@@ -45,7 +45,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
             telefono = ?,
             intentosFallidos = ?,
             ultimaSesion = ?,
-            rol = ?,
+            calificacion = ?
         WHERE idPropietario = ?
         """;
 
@@ -57,7 +57,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM PROPIETARIO WHERE idPropietario = ?";
+        String sql = "DELETE FROM Propietario WHERE idPropietario = ?";
 
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1, id);
@@ -68,7 +68,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
             SELECT *
-            FROM PROPIETARIO
+            FROM Propietario
             WHERE idPropietario = ?
         """;
 
@@ -81,7 +81,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
         SELECT *
-        FROM PROPIETARIO
+        FROM Propietario
         """;
 
         return conn.prepareStatement(sql);
@@ -91,7 +91,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
                                                     String nombres) throws SQLException{
         String sql = """
-                SELECT * FROM PROPIETARIO WHERE nombres = ?
+                SELECT * FROM Propietario WHERE nombres = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setString(1,nombres);
@@ -100,7 +100,7 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
 
     protected Propietario mapearModelo(ResultSet rs) throws SQLException{
         Propietario modelo = new Propietario();
-        modelo.setIdUsuario(rs.getInt("idUsuario"));
+        modelo.setIdUsuario(rs.getInt("idPropietario"));
         mapearCamposUsuario(rs,modelo);
         modelo.setCalificacion(rs.getInt("calificacion"));
 
@@ -121,9 +121,11 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
     }
 
     private int setCamposPropietario(PreparedStatement cmd, Propietario modelo) throws SQLException {
-        int idx = setCamposUsuario(cmd,1,modelo);
-        cmd.setInt(idx + 1, modelo.getCalificacion());
-        return idx + 2;
+        int startIndex=1;
+        cmd.setInt(startIndex,modelo.getIdUsuario());
+        int idx = setCamposUsuario(cmd,startIndex+1,modelo);
+        cmd.setInt(idx, modelo.getCalificacion());
+        return idx + 1;
     }
 
 }
