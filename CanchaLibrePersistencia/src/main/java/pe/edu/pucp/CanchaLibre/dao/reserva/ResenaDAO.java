@@ -1,7 +1,7 @@
-package pe.edu.pucp.CanchaLibre.dao.Resena;
+package pe.edu.pucp.CanchaLibre.dao.reserva;
 
 import pe.edu.pucp.CanchaLibre.dao.Persistible;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Resena;;
+import pe.edu.pucp.CanchaLibre.modelo.Reserva.Resena;
 
 public interface ResenaDAO extends Persistible<Resena,Integer> {
 }

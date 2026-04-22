@@ -1,4 +1,4 @@
-package pe.edu.pucp.CanchaLibre.dao.Resena;
+package pe.edu.pucp.CanchaLibre.dao.reserva;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;

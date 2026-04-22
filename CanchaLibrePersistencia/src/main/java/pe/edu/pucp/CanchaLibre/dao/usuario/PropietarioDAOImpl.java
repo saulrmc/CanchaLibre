@@ -1,26 +1,27 @@
 package pe.edu.pucp.CanchaLibre.dao.usuario;
 
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
-import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
-import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
+import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
+import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
+import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+
+import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDAO {
+import java.util.*;
+
+public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements PropietarioDAO {
     //on BaseDAO
     protected PreparedStatement comandoCrear(Connection conn,
-                                             Cliente modelo) throws SQLException{
+                                             Propietario modelo) throws SQLException{
         String sql = """
-                INSERT INTO CLIENTE(
-                    idUsuario,
+                INSERT INTO Propietario(
+                    idPropietario,
                     nombres,
                     contrasena,
                     correo,
@@ -28,17 +29,16 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
                     intentosFallidos,
                     ultimaSesion,
                     rol,
-                    calificacion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-        setCamposCliente(cmd,modelo);
+        setCamposPropietario(cmd,modelo);
         return cmd;
     }
 
-    protected PreparedStatement comandoActualizar(Connection conn, Cliente modelo) throws SQLException {
+    protected PreparedStatement comandoActualizar(Connection conn, Propietario modelo) throws SQLException {
         String sql = """
-        UPDATE Usuario SET
+        UPDATE Propietario SET
             nombres = ?,
             contrasena = ?,
             correo = ?,
@@ -46,19 +46,18 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
             intentosFallidos = ?,
             ultimaSesion = ?,
             rol = ?,
-            calificacion = ?
-        WHERE idUsuario = ?
+        WHERE idPropietario = ?
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposCliente(cmd, modelo);
+        int nextIndex = setCamposPropietario(cmd, modelo);
         cmd.setInt(nextIndex, modelo.getIdUsuario());
 
         return cmd;
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM CLIENTE WHERE idUsuario = ?";
+        String sql = "DELETE FROM PROPIETARIO WHERE idPropietario = ?";
 
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1, id);
@@ -69,8 +68,8 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
             SELECT *
-            FROM CLIENTE
-            WHERE idUsuario = ?
+            FROM PROPIETARIO
+            WHERE idPropietario = ?
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
@@ -82,7 +81,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = """
         SELECT *
-        FROM CLIENTE
+        FROM PROPIETARIO
         """;
 
         return conn.prepareStatement(sql);
@@ -92,36 +91,36 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
                                                     String nombres) throws SQLException{
         String sql = """
-                SELECT * FROM CLIENTE WHERE nombres = ?
+                SELECT * FROM PROPIETARIO WHERE nombres = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setString(1,nombres);
         return cmd;
     }
 
-    protected Cliente mapearModelo(ResultSet rs) throws SQLException{
-        Cliente modelo = new Cliente();
+    protected Propietario mapearModelo(ResultSet rs) throws SQLException{
+        Propietario modelo = new Propietario();
         modelo.setIdUsuario(rs.getInt("idUsuario"));
         mapearCamposUsuario(rs,modelo);
         modelo.setCalificacion(rs.getInt("calificacion"));
 
-        ReservaDAO reservaDAO = new ReservaDAOImpl();
-        List<Reserva> listaReservas = reservaDAO.leerTodos();
+        CanchaDAO canchaDAO = new CanchaDAOImpl();
+        List<Cancha> listaCanchas = canchaDAO.leerTodos();
+		List<Cancha> listaCanchasPropietario=new ArrayList<>();
 
-        List<Reserva> listaReservasCliente = new ArrayList<>();
-        if(listaReservas !=null) {
-            for (Reserva r : listaReservas) {
-                if (r.getCliente()!=null &&
-                    r.getCliente().getIdUsuario() == modelo.getIdUsuario())
-                    listaReservasCliente.add(r);
+        if (listaCanchas != null) {
+            for (Cancha c : listaCanchas) {
+                if (c.getPropietario() != null &&
+                        c.getPropietario().getIdUsuario() == modelo.getIdUsuario()) {
+                    listaCanchasPropietario.add(c);
+                }
             }
         }
-        modelo.setHistorialReservas(listaReservasCliente);
-
+		modelo.setCanchas(listaCanchasPropietario);
         return modelo;
     }
 
-    private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
+    private int setCamposPropietario(PreparedStatement cmd, Propietario modelo) throws SQLException {
         int idx = setCamposUsuario(cmd,1,modelo);
         cmd.setInt(idx + 1, modelo.getCalificacion());
         return idx + 2;

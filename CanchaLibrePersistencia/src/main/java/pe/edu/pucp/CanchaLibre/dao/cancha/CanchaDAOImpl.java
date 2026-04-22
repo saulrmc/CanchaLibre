@@ -2,10 +2,14 @@ package pe.edu.pucp.CanchaLibre.dao.cancha;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.Cancha.Deporte;
+import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
+    @Override
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cancha modelo) throws SQLException{
         String sql = """
@@ -15,8 +19,9 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                 descripcion,
                 imagenUrl,
                 disponible,
-                direccion
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                direccion,
+                idPropietario
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql,
@@ -27,10 +32,12 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString(4,modelo.getImagenUrl());
         cmd.setBoolean(5,modelo.isDisponible());
         cmd.setString(6,modelo.getDireccion());
+        cmd.setInt(6, modelo.getPropietario().getIdUsuario());
 
         return cmd;
     }
 
+    @Override
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Cancha modelo) throws SQLException{
         String sql = """
@@ -39,7 +46,8 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                 descripcion = ?,
                 imagenUrl = ?,
                 disponible = ?,
-                direccion = ?
+                direccion = ?,
+                idPropietario = ?
             WHERE idCancha = ?
             """;
 
@@ -49,11 +57,13 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString(3, modelo.getImagenUrl());
         cmd.setBoolean(4, modelo.isDisponible());
         cmd.setString(5, modelo.getDireccion());
-        cmd.setInt(6, modelo.getIdCancha());
+        cmd.setInt(6, modelo.getPropietario().getIdUsuario());
+        cmd.setInt(7, modelo.getIdCancha());
 
         return cmd;
     }
 
+    @Override
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
@@ -65,6 +75,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
+    @Override
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
@@ -76,6 +87,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
+    @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
                 SELECT * FROM CANCHA
@@ -83,6 +95,31 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return conn.prepareStatement(sql);
     }
 
+    protected PreparedStatement comandoLeerDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "SELECT nombreDeporte FROM Cancha_Deporte WHERE idCancha = ?";
+        PreparedStatement cmd = conn.prepareStatement(sql);
+        cmd.setInt(1, idCancha);
+        return cmd;
+    }
+
+    private void llenarDeportes(Connection conn, Cancha cancha) {
+        try (PreparedStatement ps = comandoLeerDeportesPorCancha(conn, cancha.getIdCancha());
+             ResultSet rs = ps.executeQuery()) {
+
+            if (cancha.getDeportes() == null) {
+                cancha.setDeportes(new ArrayList<>());
+            }
+
+            while (rs.next()) {
+                String nombreEnum = rs.getString("nombreDeporte");
+                cancha.getDeportes().add(Deporte.valueOf(nombreEnum));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar deportes: " + e.getMessage());
+        }
+    }
+
+    @Override
     protected Cancha mapearModelo(ResultSet rs) throws SQLException{
         Cancha cancha = new Cancha();
         cancha.setIdCancha(rs.getInt("id"));
@@ -91,7 +128,14 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cancha.setImagenUrl(rs.getString("imagenUrl"));
         cancha.setDisponible(rs.getBoolean("disponible"));
         cancha.setDireccion(rs.getString("direccion"));
-        //List<Deporte> tiene relacion 1 a muchos
+
+        Propietario p = new Propietario();
+        p.setIdUsuario(rs.getInt("idPropietario")); // DB
+        cancha.setPropietario(p);
+
+        Connection conn = rs.getStatement().getConnection();
+        llenarDeportes(conn, cancha);
+
         return cancha;
     }
 }
