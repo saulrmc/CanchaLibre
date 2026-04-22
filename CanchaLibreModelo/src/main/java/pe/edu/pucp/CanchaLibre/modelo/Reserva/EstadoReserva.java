@@ -1,4 +1,4 @@
 package pe.edu.pucp.CanchaLibre.modelo.Reserva;
-enum EstadoReserva{
+public enum EstadoReserva{
 	ESPERA, PAGADO, CANCELADO, COMPLETADO
 }

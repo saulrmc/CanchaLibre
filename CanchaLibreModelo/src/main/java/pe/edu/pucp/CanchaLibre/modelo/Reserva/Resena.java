@@ -1,6 +1,7 @@
 package pe.edu.pucp.CanchaLibre.modelo.Reserva;
 
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario;
+import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +10,19 @@ public class Resena{
 	private String descripcion;
 	private int calificacion;
 	private LocalDateTime fechaPublicacion;
-	private Usuario destinatario; //aunque en la práctica no le podría
-	//enviar una reseña al administrador
+	private Cliente cliente;
+	private Cancha cancha;//error mío al considerar que las reseñas
+	// eran para los usuarios cuando eso era para las calificaciones.
+	// Las reseñas son exclusivas de las canchas
+
+
+	public Cancha getCancha() {
+		return cancha;
+	}
+
+	public void setCancha(Cancha cancha) {
+		this.cancha = cancha;
+	}
 
 
 	public int getCalificacion() {
@@ -21,12 +33,12 @@ public class Resena{
 		this.calificacion = calificacion;
 	}
 
-	public Usuario getDestinatario() {
-		return destinatario;
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setDestinatario(Usuario destinatario) {
-		this.destinatario = destinatario;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	public LocalDateTime getFechaPublicacion() {
