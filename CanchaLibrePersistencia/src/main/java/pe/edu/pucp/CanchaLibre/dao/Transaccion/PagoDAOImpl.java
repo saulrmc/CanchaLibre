@@ -10,7 +10,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Pago modelo) throws SQLException {
         String sql = """
-                    INSERT INTO COMPROBANTE (
+                    INSERT INTO PAGO (
                         id,
                         metodoPago,
                         monto,
@@ -30,7 +30,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Pago modelo) throws SQLException{
         String sql = """
-            UPDATE CANCHA
+            UPDATE PAGO
             SET     metodoPago = ?,
                     monto = ?,
                     fechaPago = ?
@@ -50,7 +50,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
-                DELETE FROM COMPROBANTE WHERE id = ?
+                DELETE FROM PAGO WHERE id = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -61,7 +61,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
-                SELECT * FROM CANCHA WHERE id = ?
+                SELECT * FROM PAGO WHERE id = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -71,7 +71,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
-                SELECT * FROM CANCHA
+                SELECT * FROM PAGO
                 """;
         return conn.prepareStatement(sql);
     }
