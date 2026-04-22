@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Propietario  extends Usuario{
     private List<Cancha> canchas;
+    private int calificacion;
 
     public List<Cancha> getCanchas() {
         return canchas;
@@ -13,6 +14,14 @@ public class Propietario  extends Usuario{
 
     public void setCanchas(List<Cancha> canchas) {
         this.canchas = canchas;
+    }
+
+    public int getCalificacion() {
+        return calificacion;
+    }
+
+    public void setCalificacion(int calificacion) {
+        this.calificacion = calificacion;
     }
 
     @Override

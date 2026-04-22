@@ -49,7 +49,7 @@ public abstract class UsuarioBaseDAO<M extends Usuario> extends DefaultBaseDAO<M
             modelo.setUltimaSesion(ts.toLocalDateTime());
         }
     }
-//
+
 //    protected Integer leerIdUsuario(ResultSet rs) throws SQLException{
 //        return leerEnteroNullable(rs,"idUsuario");
 //    }

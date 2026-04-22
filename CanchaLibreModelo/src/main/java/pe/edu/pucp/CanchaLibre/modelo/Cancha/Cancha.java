@@ -1,6 +1,7 @@
 package pe.edu.pucp.CanchaLibre.modelo.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
+
 import java.util.List;
-import java.util.ArrayList;
 
 public class Cancha {
     private int idCancha;
@@ -10,6 +11,10 @@ public class Cancha {
     private String imagenUrl;
     private boolean disponible;
     private String direccion;
+    private Propietario propietario;
+
+    public Propietario getPropietario() { return propietario; }
+    public void setPropietario(Propietario propietario) { this.propietario = propietario; }
 
     public boolean isDisponible() {
         return disponible;
