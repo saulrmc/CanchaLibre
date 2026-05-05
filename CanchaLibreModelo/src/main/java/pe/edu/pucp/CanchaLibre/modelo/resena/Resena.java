@@ -1,7 +1,7 @@
-package pe.edu.pucp.CanchaLibre.modelo.Reserva;
+package pe.edu.pucp.CanchaLibre.modelo.resena;
 
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 
 import java.time.LocalDateTime;
 

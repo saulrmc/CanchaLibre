@@ -1,4 +1,4 @@
-package pe.edu.pucp.CanchaLibre.modelo.Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.usuario;
 
 public enum Rol {
     ADMINISTRADOR,

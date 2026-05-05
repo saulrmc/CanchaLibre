@@ -1,4 +1,4 @@
-package pe.edu.pucp.CanchaLibre.modelo.Cancha;
+package pe.edu.pucp.CanchaLibre.modelo.cancha;
 
 public class EsquemaPrecio {
     private int id;

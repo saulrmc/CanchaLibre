@@ -1,6 +1,6 @@
-package pe.edu.pucp.CanchaLibre.modelo.Usuario;
+package pe.edu.pucp.CanchaLibre.modelo.usuario;
 
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
 
 import java.util.List;
 

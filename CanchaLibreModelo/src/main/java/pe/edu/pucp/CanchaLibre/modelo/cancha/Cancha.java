@@ -1,5 +1,5 @@
-package pe.edu.pucp.CanchaLibre.modelo.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
+package pe.edu.pucp.CanchaLibre.modelo.cancha;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.util.List;
 

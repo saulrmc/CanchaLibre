@@ -1,4 +1,4 @@
-package pe.edu.pucp.CanchaLibre.modelo.Transaccion;
+package pe.edu.pucp.CanchaLibre.modelo.transaccion;
 
 public enum MetodoPago {
     YAPE,
