@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/CanchaLibrePersistencia/src/main/java/pe/edu/pucp/CanchaLibre/dao/usuario/ClienteDAOImpl.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/MYSQL/procedimientos-cliente.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/sql/MYSQL/procedimientos-finanzas-reportes.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/sql/MYSQL/procedimientos-gestion-reserva.sql" dialect="MySQL" />
+  </component>
+</project>

@@ -1,10 +1,10 @@
-USE canchalibre;
+USE CanchaLibre;
 
 DROP PROCEDURE IF EXISTS insertarReserva;
 DROP PROCEDURE IF EXISTS cancelarReserva;
 DROP PROCEDURE IF EXISTS listarCanchasDisponibles;
 
-
+DELIMITER //
 -- RF03: Realizar reserva por parte de un Cliente
 CREATE PROCEDURE insertarReserva(
     IN p_fechaHora DATETIME,

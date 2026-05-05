@@ -1,11 +1,11 @@
 @startuml
-enum pe.edu.pucp.CanchaLibre.modelo.Usuario.Rol {
+enum pe.edu.pucp.CanchaLibre.modelo.usuario.Rol {
 +  ADMINISTRADOR
 +  PROPIETARIO
 +  CLIENTE
 }
 
-class pe.edu.pucp.CanchaLibre.modelo.Cancha.BloqueHorario {
+class pe.edu.pucp.CanchaLibre.modelo.cancha.BloqueHorario {
 - int id
 - LocalTime horaInicio
 - LocalTime horaFin
@@ -24,7 +24,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Cancha.BloqueHorario {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Reserva.Notificacion {
+class pe.edu.pucp.CanchaLibre.modelo.reserva.Notificacion {
 - Usuario destinatario
 - String descripcion
 - LocalDateTime fechaEnvio
@@ -37,7 +37,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Reserva.Notificacion {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Cancha.Sede {
+class pe.edu.pucp.CanchaLibre.modelo.cancha.Sede {
 - int idSede
 - String nombre
 - String direccion
@@ -45,7 +45,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Cancha.Sede {
 - List<Cancha> canchas
 }
 
-class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago {
+class pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago {
 - int id
 - MetodoPago metodoPago
 - double monto
@@ -61,14 +61,14 @@ class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago {
 }
 
 
-enum pe.edu.pucp.CanchaLibre.modelo.Cancha.Deporte {
+enum pe.edu.pucp.CanchaLibre.modelo.cancha.Deporte {
 +  FUTBOL
 +  BASQUET
 +  VOLEY
 +  TENIS
 }
 
-class pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario {
+class pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario {
 - int calificacion
 - List<Cancha> canchas
 + int getCalificacion()
@@ -79,7 +79,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha {
+class pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha {
 - int idCancha
 - String nombre
 - String descripcion
@@ -105,7 +105,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Comprobante {
+class pe.edu.pucp.CanchaLibre.modelo.transaccion.Comprobante {
 - int idComprobante
 - int idReserva
 - int idUsuario
@@ -136,7 +136,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Transaccion.Comprobante {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente {
+class pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente {
 - int calificacion
 + int getCalificacion()
 + void setCalificacion(int)
@@ -144,7 +144,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Reserva.Resena {
+class pe.edu.pucp.CanchaLibre.modelo.resena.Resena {
 - int idResena
 - int idUsuario
 - String nombres
@@ -169,7 +169,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Reserva.Resena {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva {
+class pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva {
 - int idReserva
 - LocalDate fecha
 - LocalTime horaInicio
@@ -197,7 +197,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva {
 }
 
 
-abstract class pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario {
+abstract class pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario {
 - int idUsuario
 - String nombres
 - String contrasena
@@ -219,24 +219,24 @@ abstract class pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario {
 }
 
 
-enum pe.edu.pucp.CanchaLibre.modelo.Reserva.EstadoReserva {
+enum pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva {
 +  ESPERA
 +  PAGADO
 +  CANCELADO
 +  COMPLETADO
 }
 
-enum pe.edu.pucp.CanchaLibre.modelo.Transaccion.MetodoPago {
+enum pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago {
 +  YAPE
 +  PLIN
 +  EFECTIVO
 }
 
-class pe.edu.pucp.CanchaLibre.modelo.Usuario.Administrador {
+class pe.edu.pucp.CanchaLibre.modelo.usuario.Administrador {
 + Rol getRol()
 }
 
-class pe.edu.pucp.CanchaLibre.modelo.Cancha.EsquemaPrecio {
+class pe.edu.pucp.CanchaLibre.modelo.cancha.EsquemaPrecio {
 - int id
 - double precioHora
 - boolean conIluminacion
@@ -257,7 +257,7 @@ class pe.edu.pucp.CanchaLibre.modelo.Cancha.EsquemaPrecio {
 
 
 
-pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario
-pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente
-pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.Usuario.Administrador
+pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario
+pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente
+pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario <|-- pe.edu.pucp.CanchaLibre.modelo.usuario.Administrador
 @enduml

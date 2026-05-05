@@ -1,10 +1,10 @@
-USE canchalibre;
+USE CanchaLibre;
 
 DROP PROCEDURE IF EXISTS insertarCliente;
 DROP PROCEDURE IF EXISTS modificarCliente;
 DROP PROCEDURE IF EXISTS insertarPropietario;
 
-
+DELIMITER //
 -- RF01: Registro de Cliente
 CREATE PROCEDURE insertarCliente(
     IN p_nombres VARCHAR(150),
@@ -42,19 +42,19 @@ SET nombres = p_nombres,
     intentosFallidos = p_intentos,
     ultimaSesion = p_ultimaSesion,
     calificacion = p_calificacion
-WHERE idUsuario = p_id;
+WHERE idCliente = p_id;
 END //
 
--- RF04: Registro de Propietario
-CREATE PROCEDURE insertarPropietario(
-    IN p_nombres VARCHAR(150),
-    IN p_correo VARCHAR(100),
-    IN p_ruc VARCHAR(20),
-    OUT p_id INT)
-BEGIN
-    INSERT INTO Propietario (nombres, correo, ruc)
-    VALUES (p_nombres, p_correo, p_ruc,1,'PROPIETARIO');
-    SET p_id = LAST_INSERT_ID();
-END //
+# -- RF04: Registro de Propietario
+# CREATE PROCEDURE insertarPropietario(
+#     IN p_nombres VARCHAR(150),
+#     IN p_correo VARCHAR(100),
+#     IN p_ruc VARCHAR(20),
+#     OUT p_id INT)
+# BEGIN
+#     INSERT INTO Propietario (nombres, correo, ruc)
+#     VALUES (p_nombres, p_correo, p_ruc,1,'PROPIETARIO');
+#     SET p_id = LAST_INSERT_ID();
+# END //
 
 DELIMITER ;

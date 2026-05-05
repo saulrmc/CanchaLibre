@@ -1,10 +1,10 @@
-USE canchalibre;
+USE CanchaLibre;
 
 DROP PROCEDURE IF EXISTS registrarPagoCliente;
 DROP PROCEDURE IF EXISTS generarComprobanteDigital;
 DROP PROCEDURE IF EXISTS reporteIngresosTotales;
 
-
+DELIMITER //
 -- RF11: Registrar pago (Yape/Plin) vinculado al Cliente
 CREATE PROCEDURE registrarPagoCliente(
     IN p_metodoPago VARCHAR(50), 
