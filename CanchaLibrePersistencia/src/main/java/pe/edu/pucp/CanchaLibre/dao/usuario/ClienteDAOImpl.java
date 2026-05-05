@@ -3,8 +3,8 @@ package pe.edu.pucp.CanchaLibre.dao.usuario;
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

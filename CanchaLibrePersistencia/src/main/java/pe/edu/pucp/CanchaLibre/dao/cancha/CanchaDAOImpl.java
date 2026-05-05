@@ -1,9 +1,9 @@
 package pe.edu.pucp.CanchaLibre.dao.cancha;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Deporte;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Deporte;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cancha modelo) throws SQLException{
         String sql = """
-            INSERT INTO CANCHA (
+            INSERT INTO Cancha (
                 idCancha,
                 nombre,
                 descripcion,
@@ -41,7 +41,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Cancha modelo) throws SQLException{
         String sql = """
-            UPDATE CANCHA
+            UPDATE Cancha
             SET nombre = ?,
                 descripcion = ?,
                 imagenUrl = ?,
@@ -67,7 +67,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
-                DELETE FROM CANCHA WHERE idCancha = ?
+                DELETE FROM Cancha WHERE idCancha = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -79,7 +79,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
-                SELECT * FROM CANCHA WHERE idCancha = ?
+                SELECT * FROM Cancha WHERE idCancha = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -90,7 +90,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
-                SELECT * FROM CANCHA
+                SELECT * FROM Cancha
                 """;
         return conn.prepareStatement(sql);
     }

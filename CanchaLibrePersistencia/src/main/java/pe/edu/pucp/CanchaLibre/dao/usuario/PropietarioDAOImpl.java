@@ -3,9 +3,9 @@ package pe.edu.pucp.CanchaLibre.dao.usuario;
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
 
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Propietario;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,8 +50,9 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposPropietario(cmd, modelo);
-        cmd.setInt(nextIndex, modelo.getIdUsuario());
+        int nextIndex = setCamposUsuario(cmd,1,modelo);
+        cmd.setInt(nextIndex, modelo.getCalificacion());
+        cmd.setInt(nextIndex+1, modelo.getIdUsuario());
 
         return cmd;
     }

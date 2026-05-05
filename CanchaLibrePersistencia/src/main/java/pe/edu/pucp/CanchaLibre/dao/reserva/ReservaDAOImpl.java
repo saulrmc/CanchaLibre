@@ -1,10 +1,10 @@
 package pe.edu.pucp.CanchaLibre.dao.reserva;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.EstadoReserva;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         cmd.setInt(1,modelo.getIdReserva());
         cmd.setObject(2,modelo.getFechaHora());
         cmd.setObject(3,modelo.getDuracion());
-        cmd.setObject(4,modelo.getEstado());
+        cmd.setObject(4,modelo.getEstado().name());
         cmd.setInt(5,modelo.getCancha().getIdCancha());
         cmd.setInt(6,modelo.getCliente().getIdUsuario());
 
@@ -53,7 +53,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setObject(1,modelo.getFechaHora());
         cmd.setObject(2,modelo.getDuracion());
-        cmd.setObject(3,modelo.getEstado());
+        cmd.setObject(3,modelo.getEstado().name());
         cmd.setInt(4,modelo.getCancha().getIdCancha());
         cmd.setInt(5,modelo.getCliente().getIdUsuario());
         cmd.setInt(6,modelo.getIdReserva());

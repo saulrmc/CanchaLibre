@@ -1,15 +1,13 @@
 package pe.edu.pucp.CanchaLibre.dao.usuario;
 
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Administrador;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Administrador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import java.util.*;
 
 public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implements AdministradorDAO {
     //on BaseDAO

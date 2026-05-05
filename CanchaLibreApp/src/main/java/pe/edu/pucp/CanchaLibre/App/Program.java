@@ -4,18 +4,22 @@ import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAO;
 import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAO;
 import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAOImpl;
+import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
+import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.Cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.EstadoReserva;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Comprobante;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.MetodoPago;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago;
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Cliente;
-import pe.edu.pucp.CanchaLibre.db.utils.TipoDB.*;
+import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAO;
+import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAOImpl;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -23,17 +27,21 @@ public class Program {
     public static void main(String[] args) {
         try {
             ClienteDAO clienteDAO = new ClienteDAOImpl();
+            PropietarioDAO propietarioDAO = new PropietarioDAOImpl();
+            CanchaDAO canchaDAO = new CanchaDAOImpl();
             PagoDAO pagoDAO = new PagoDAOImpl();
             ReservaDAO reservaDAO = new ReservaDAOImpl();
             ComprobanteDAO comprobanteDAO = new ComprobanteDAOImpl();
 
             Integer idCliente = null;
+            Integer idPropietario = null;
+            Integer idCancha = null;
             Integer idPago = null;
             Integer idReserva = null;
             Integer idComprobante = null;
 
             try {
-                // ── 1. CLIENTE ────────────────────────────────────────────────
+                // ── 1. CLIENTE ──────────────────────────────────────────────── OK
                 Cliente cliente = new Cliente();
                 cliente.setNombres("Maria Garcia");
                 cliente.setCorreo("maria.garcia@test.com");
@@ -54,7 +62,52 @@ public class Program {
 
                 System.out.println("Buscar por nombre: " + clienteDAO.buscarPorNombre("Maria Garcia Lopez"));
 
-//                // ── 2. PAGO ───────────────────────────────────────────────────
+                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
+                Propietario propietario = new Propietario();
+                propietario.setNombres("Roberto Dueño");
+                propietario.setCorreo("roberto.canchas@negocio.com");
+                propietario.setContrasena("adminPass2026");
+                propietario.setTelefono("987654321");
+                propietario.setIntentosFallidos(0);
+                propietario.setUltimaSesion(LocalDateTime.now());
+                propietario.setCalificacion(5);
+
+                idPropietario = propietarioDAO.crear(propietario);
+                propietario.setIdUsuario(idPropietario);
+                System.out.println("Propietario creado: " + propietarioDAO.leer(idPropietario));
+
+                propietario.setNombres("Roberto Carlos Dueño");
+                propietario.setCalificacion(4);
+                propietarioDAO.actualizar(propietario);
+                System.out.println("Propietario actualizado: " + propietarioDAO.leer(idPropietario));
+
+                System.out.println("Buscar por nombre: " + propietarioDAO.buscarPorNombre("Roberto Carlos Dueño"));
+
+//                // ── 3. CANCHA ────────────────────────────────────────────────
+//                Cancha cancha = new Cancha();
+//                cancha.setNombre("Estadio Central P10");
+//                cancha.setDescripcion("Cancha de césped sintético con iluminación nocturna profesional.");
+//                cancha.setDeporte("Fútbol");
+//                cancha.setImagenUrl("https://images.test.com/cancha1.jpg");
+//                cancha.setDisponible(true);
+//                cancha.setDireccion("Av. Deporte 123, Lima");
+//                cancha.setPropietario(propietario);
+//                cancha.setIdEsquemaPrecio(1);
+//
+//                idCancha = canchaDAO.crear(cancha);
+//                cancha.setIdCancha(idCancha);
+//                System.out.println("Cancha creada: " + canchaDAO.leer(idCancha));
+//
+//                cancha.setNombre("Estadio Central - Renovado");
+//                cancha.setDisponible(false); // Change status to occupied/maintenance
+//                cancha.setDescripcion("Cancha cerrada temporalmente por mantenimiento de césped.");
+//
+//                canchaDAO.actualizar(cancha);
+//                System.out.println("Cancha actualizada: " + canchaDAO.leer(idCancha));
+//                TODO: implement comandoLeerDeportesPorCancha()
+//
+//
+//                // ── 4. PAGO ─────────────────────────────────────────────────── OK
 //                Pago pago = new Pago();
 //                pago.setMetodoPago(MetodoPago.EFECTIVO);
 //                pago.setMonto(90.00);
@@ -68,15 +121,15 @@ public class Program {
 //                pagoDAO.actualizar(pago);
 //                System.out.println("Pago actualizado: " + pagoDAO.leer(idPago));
 //
-//                // ── 3. RESERVA ────────────────────────────────────────────────
+//                // ── 5. RESERVA ────────────────────────────────────────────────
 //                // Cancha hardcodeada con un id ya existente en la BD
-//                Cancha cancha = new Cancha();
-//                cancha.setIdCancha(1);
+//                //Cancha cancha = new Cancha();
+//                //cancha.setIdCancha(1);
 //
 //                Reserva reserva = new Reserva();
 //                reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
-//                reserva.setDuracion(LocalTime.of(1, 30));
-//                reserva.setEstado(EstadoReserva.ESPERA);
+//                reserva.setDuracion(LocalTime.of(1, 30)); //duracion has been modified from int to time in db
+//                reserva.setEstado(EstadoReserva.ESPERA); //varchar50
 //                reserva.setCliente(cliente);
 //                reserva.setCancha(cancha);
 //                reserva.setPago(pago);
@@ -84,13 +137,13 @@ public class Program {
 //                idReserva = reservaDAO.crear(reserva);
 //                reserva.setIdReserva(idReserva);
 //                System.out.println("Reserva creada: " + reservaDAO.leer(idReserva));
-//
+
 //                reserva.setEstado(EstadoReserva.COMPLETADO);
 //                reserva.setDuracion(LocalTime.of(2, 0));
 //                reservaDAO.actualizar(reserva);
 //                System.out.println("Reserva actualizada: " + reservaDAO.leer(idReserva));
 //
-//                // ── 4. COMPROBANTE ────────────────────────────────────────────
+//                // ── 6. COMPROBANTE ────────────────────────────────────────────
 //                Comprobante comprobante = new Comprobante();
 //                comprobante.setIgv(0.18);
 //                comprobante.setFechaEmision(LocalDateTime.now());
@@ -121,6 +174,14 @@ public class Program {
                 if (idPago != null) {
                     pagoDAO.eliminar(idPago);
                     System.out.println("Pago eliminado.");
+                }
+                if (idCancha != null) {
+                    canchaDAO.eliminar(idCancha);
+                    System.out.println("Cancha eliminada.");
+                }
+                if (idPropietario != null) {
+                    propietarioDAO.eliminar(idPropietario);
+                    System.out.println("Propietario eliminado.");
                 }
                 if (idCliente != null) {
                     clienteDAO.eliminar(idCliente);

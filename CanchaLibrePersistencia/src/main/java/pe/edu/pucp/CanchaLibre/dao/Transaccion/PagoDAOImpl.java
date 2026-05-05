@@ -1,8 +1,8 @@
 package pe.edu.pucp.CanchaLibre.dao.Transaccion;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.MetodoPago;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
 
 import java.sql.*;
 
@@ -10,7 +10,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Pago modelo) throws SQLException {
         String sql = """
-                    INSERT INTO PAGO (
+                    INSERT INTO Pago (
                         id,
                         metodoPago,
                         monto,
@@ -30,7 +30,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Pago modelo) throws SQLException{
         String sql = """
-            UPDATE PAGO
+            UPDATE Pago
             SET     metodoPago = ?,
                     monto = ?,
                     fechaPago = ?
@@ -50,7 +50,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
-                DELETE FROM PAGO WHERE id = ?
+                DELETE FROM Pago WHERE id = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -61,7 +61,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
-                SELECT * FROM PAGO WHERE id = ?
+                SELECT * FROM Pago WHERE id = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -71,7 +71,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
-                SELECT * FROM PAGO
+                SELECT * FROM Pago
                 """;
         return conn.prepareStatement(sql);
     }

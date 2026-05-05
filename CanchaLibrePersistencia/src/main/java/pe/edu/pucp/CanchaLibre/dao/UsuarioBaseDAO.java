@@ -1,6 +1,6 @@
 package pe.edu.pucp.CanchaLibre.dao;
 
-import pe.edu.pucp.CanchaLibre.modelo.Usuario.Usuario;
+import pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario;
 
 import java.sql.*;
 

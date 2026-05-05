@@ -1,9 +1,9 @@
 package pe.edu.pucp.CanchaLibre.dao.Transaccion;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Comprobante;
-import pe.edu.pucp.CanchaLibre.modelo.Reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.Transaccion.Pago;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.Comprobante;
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
 
 import java.sql.*;
 
