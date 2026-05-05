@@ -12,16 +12,10 @@ import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
-import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class Program {
     public static void main(String[] args) {
