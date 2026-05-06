@@ -7,6 +7,7 @@ import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     @Override
@@ -32,7 +33,8 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString(4,modelo.getImagenUrl());
         cmd.setBoolean(5,modelo.isDisponible());
         cmd.setString(6,modelo.getDireccion());
-        cmd.setInt(7, modelo.getPropietario().getIdUsuario());
+        int idProp = modelo.getPropietario().getIdUsuario();
+        cmd.setInt(7, idProp);
 
         return cmd;
     }
@@ -51,13 +53,16 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             WHERE idCancha = ?
             """;
 
+        //String Deportestxt = modelo.getDeportes().stream().map(Deporte::name).collect(Collectors.joining(","));
+
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setString(1, modelo.getNombre());
         cmd.setString(2, modelo.getDescripcion());
         cmd.setString(3, modelo.getImagenUrl());
         cmd.setBoolean(4, modelo.isDisponible());
         cmd.setString(5, modelo.getDireccion());
-        cmd.setInt(6, modelo.getPropietario().getIdUsuario());
+        int idProp = modelo.getPropietario().getIdUsuario();
+        cmd.setInt(6, idProp);
         cmd.setInt(7, modelo.getIdCancha());
 
         return cmd;

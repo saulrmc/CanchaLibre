@@ -12,10 +12,13 @@ import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.PropietarioDAOImpl;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Deporte;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Program {
     public static void main(String[] args) {
@@ -35,28 +38,28 @@ public class Program {
             Integer idComprobante = null;
 
             try {
-                // ── 1. CLIENTE ──────────────────────────────────────────────── OK
-                Cliente cliente = new Cliente();
-                cliente.setNombres("Maria Garcia");
-                cliente.setCorreo("maria.garcia@test.com");
-                cliente.setContrasena("clave123");
-                cliente.setTelefono("999888777");
-                cliente.setCalificacion(5);
-                cliente.setIntentosFallidos(0);
-                cliente.setUltimaSesion(LocalDateTime.now());
-
-                idCliente = clienteDAO.crear(cliente);
-                cliente.setIdUsuario(idCliente);
-                System.out.println("Cliente creado: " + clienteDAO.leer(idCliente));
-
-                cliente.setNombres("Maria Garcia Lopez");
-                cliente.setCalificacion(4);
-                clienteDAO.actualizar(cliente);
-                System.out.println("Cliente actualizado: " + clienteDAO.leer(idCliente));
-
-                System.out.println("Buscar por nombre: " + clienteDAO.buscarPorNombre("Maria Garcia Lopez"));
-
-                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
+//                // ── 1. CLIENTE ──────────────────────────────────────────────── OK
+//                Cliente cliente = new Cliente();
+//                cliente.setNombres("Maria Garcia");
+//                cliente.setCorreo("maria.garcia@test.com");
+//                cliente.setContrasena("clave123");
+//                cliente.setTelefono("999888777");
+//                cliente.setCalificacion(5);
+//                cliente.setIntentosFallidos(0);
+//                cliente.setUltimaSesion(LocalDateTime.now());
+//
+//                idCliente = clienteDAO.crear(cliente);
+//                cliente.setIdUsuario(idCliente);
+//                System.out.println("Cliente creado: " + clienteDAO.leer(idCliente));
+//
+//                cliente.setNombres("Maria Garcia Lopez");
+//                cliente.setCalificacion(4);
+//                clienteDAO.actualizar(cliente);
+//                System.out.println("Cliente actualizado: " + clienteDAO.leer(idCliente));
+//
+//                System.out.println("Buscar por nombre: " + clienteDAO.buscarPorNombre("Maria Garcia Lopez"));
+//
+//                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
                 Propietario propietario = new Propietario();
                 propietario.setNombres("Roberto Dueño");
                 propietario.setCorreo("roberto.canchas@negocio.com");
@@ -77,30 +80,29 @@ public class Program {
 
                 System.out.println("Buscar por nombre: " + propietarioDAO.buscarPorNombre("Roberto Carlos Dueño"));
 
-//                // ── 3. CANCHA ────────────────────────────────────────────────
-//                Cancha cancha = new Cancha();
-//                cancha.setNombre("Estadio Central P10");
-//                cancha.setDescripcion("Cancha de césped sintético con iluminación nocturna profesional.");
-//                cancha.setDeporte("Fútbol");
-//                cancha.setImagenUrl("https://images.test.com/cancha1.jpg");
-//                cancha.setDisponible(true);
-//                cancha.setDireccion("Av. Deporte 123, Lima");
-//                cancha.setPropietario(propietario);
-//                cancha.setIdEsquemaPrecio(1);
-//
-//                idCancha = canchaDAO.crear(cancha);
-//                cancha.setIdCancha(idCancha);
-//                System.out.println("Cancha creada: " + canchaDAO.leer(idCancha));
-//
+                // ── 3. CANCHA ────────────────────────────────────────────────
+                Cancha cancha = new Cancha();
+                cancha.setNombre("Estadio Central P10");
+                cancha.setDescripcion("Cancha de césped sintético con iluminación nocturna profesional.");
+                cancha.setDeportes(List.of(Deporte.FUTBOL));
+                cancha.setImagenUrl("https://images.test.com/cancha1.jpg"); //TODO: modified attribute name in db imageURL->imagenURL
+                cancha.setDisponible(true);
+                cancha.setDireccion("Av. Deporte 123, Lima");
+                cancha.setPropietario(propietario);
+                //TODO: EsquemaPrecio?
+
+                idCancha = canchaDAO.crear(cancha);
+                cancha.setIdCancha(idCancha);
+                System.out.println("Cancha creada: " + canchaDAO.leer(idCancha));
+
 //                cancha.setNombre("Estadio Central - Renovado");
 //                cancha.setDisponible(false); // Change status to occupied/maintenance
 //                cancha.setDescripcion("Cancha cerrada temporalmente por mantenimiento de césped.");
-//
 //                canchaDAO.actualizar(cancha);
 //                System.out.println("Cancha actualizada: " + canchaDAO.leer(idCancha));
-//                TODO: implement comandoLeerDeportesPorCancha()
-//
-//
+//              TODO: implement comandoLeerDeportesPorCancha()
+
+
 //                // ── 4. PAGO ─────────────────────────────────────────────────── OK
 //                Pago pago = new Pago();
 //                pago.setMetodoPago(MetodoPago.EFECTIVO);
@@ -122,7 +124,7 @@ public class Program {
 //
 //                Reserva reserva = new Reserva();
 //                reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
-//                reserva.setDuracion(LocalTime.of(1, 30)); //duracion has been modified from int to time in db
+//                reserva.setDuracion(LocalTime.of(1, 30)); //TODO: duracion type has been modified int->time in db
 //                reserva.setEstado(EstadoReserva.ESPERA); //varchar50
 //                reserva.setCliente(cliente);
 //                reserva.setCancha(cancha);

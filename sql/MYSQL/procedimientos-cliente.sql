@@ -45,6 +45,7 @@ SET nombres = p_nombres,
 WHERE idCliente = p_id;
 END //
 
+##TODO:Define if Propietario RUC attribute
 # -- RF04: Registro de Propietario
 # CREATE PROCEDURE insertarPropietario(
 #     IN p_nombres VARCHAR(150),

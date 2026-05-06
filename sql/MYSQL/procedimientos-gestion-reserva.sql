@@ -33,12 +33,13 @@ BEGIN
     END IF;
 END //
 
--- RF02: Visualizar disponibilidad de canchas
-CREATE PROCEDURE listarCanchasDisponibles()
-BEGIN
-    SELECT idCancha, nombre, deporte, precioPorHora, direccion 
-    FROM Cancha 
-    WHERE disponible = TRUE;
-END //
+##TODO: precioPorHora in table EsquemaPrecio
+# -- RF02: Visualizar disponibilidad de canchas
+# CREATE PROCEDURE listarCanchasDisponibles()
+# BEGIN
+#     SELECT idCancha, nombre, deporte, precioPorHora, direccion
+#     FROM Cancha
+#     WHERE disponible = TRUE;
+# END //
 
 DELIMITER ;
