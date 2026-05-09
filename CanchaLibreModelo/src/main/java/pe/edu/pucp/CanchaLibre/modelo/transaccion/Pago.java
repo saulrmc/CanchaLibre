@@ -1,5 +1,7 @@
 package pe.edu.pucp.CanchaLibre.modelo.transaccion;
 
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+
 import java.time.LocalDateTime;
 
 public class Pago {
@@ -7,6 +9,7 @@ public class Pago {
     private MetodoPago metodoPago;
     private double monto;
     private LocalDateTime fechaPago;
+    private Reserva reserva;
 
     public LocalDateTime getFechaPago() {
         return fechaPago;
@@ -38,5 +41,12 @@ public class Pago {
 
     public void setId(int id) {
         this.id = id;
+    }
+    public Reserva getReserva() {
+        return reserva;
+    }
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
     }
 }

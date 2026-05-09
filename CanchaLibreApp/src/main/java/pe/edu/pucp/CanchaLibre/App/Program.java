@@ -134,7 +134,7 @@ public class Program {
                 reserva.setEstado(EstadoReserva.ESPERA); //varchar50
                 reserva.setCliente(cliente);
                 reserva.setCancha(cancha);
-               // reserva.setPago(pago);
+                reserva.setPago(pago);
 
                 idReserva = reservaDAO.crear(reserva);
                 reserva.setIdReserva(idReserva);
@@ -159,9 +159,9 @@ public class Program {
                 comprobanteDAO.actualizar(comprobante);
                 System.out.println("Comprobante actualizado: " + comprobanteDAO.leer(idComprobante));
 
-                System.out.println("Total reservas en BD: " + reservaDAO.leerTodos().size());
-                System.out.println("Total clientes en BD: " + clienteDAO.leerTodos().size());
-                System.out.println("\nFlujo de prueba completado exitosamente.");
+//                System.out.println("Total reservas en BD: " + reservaDAO.leerTodos().size());
+//                System.out.println("Total clientes en BD: " + clienteDAO.leerTodos().size());
+//                System.out.println("\nFlujo de prueba completado exitosamente.");
 
             } finally {
                 // ── LIMPIEZA (orden inverso a la inserción) ───────────────────

@@ -11,36 +11,45 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
     protected PreparedStatement comandoCrear(Connection conn,
                                              Comprobante modelo) throws SQLException {
         String sql = """
-                    INSERT INTO COMPROBANTE (
-                        idComprobante,
-                        monto,
-                        idReserva
-                    ) VALUES (?, ?, ?)
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql,
-                Statement.RETURN_GENERATED_KEYS);
+        INSERT INTO Comprobante (
+            igv,
+            monto,
+            fechaEmision,
+            idReserva
+        ) VALUES (?, ?, ?, ?)
+    """;
+
+        PreparedStatement cmd = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
         Reserva res = modelo.getReserva();
-        cmd.setInt(1, modelo.getIdComprobante());
+
+        cmd.setDouble(1, modelo.getIgv());
         cmd.setDouble(2, res.getPago().getMonto());
-        cmd.setInt(3, res.getIdReserva());
+        cmd.setTimestamp(3, Timestamp.valueOf(modelo.getFechaEmision()));
+        cmd.setInt(4, res.getIdReserva());
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Comprobante modelo) throws SQLException{
         String sql = """
-            UPDATE COMPROBANTE
-            SET     monto = ?,
-                    idReserva = ?
-            WHERE idComprobante = ?
-            """;
+        UPDATE Comprobante
+        SET igv = ?,
+            monto = ?,
+            fechaEmision = ?,
+            idReserva = ?
+        WHERE idComprobante = ?
+    """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
 
-        Reserva res= modelo.getReserva();
-        cmd.setDouble(1, res.getPago().getMonto());
-        cmd.setInt(2, res.getIdReserva());
-        cmd.setInt(3, modelo.getIdComprobante());
+        Reserva res = modelo.getReserva();
+
+        cmd.setDouble(1, modelo.getIgv());
+        cmd.setDouble(2, res.getPago().getMonto());
+        cmd.setTimestamp(3, Timestamp.valueOf(modelo.getFechaEmision()));
+        cmd.setInt(4, res.getIdReserva());
+        cmd.setInt(5, modelo.getIdComprobante());
 
         return cmd;
     }
@@ -48,7 +57,7 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
-                DELETE FROM COMPROBANTE WHERE idComprobante = ?
+                DELETE FROM Comprobante WHERE idComprobante = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -59,7 +68,7 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
-                SELECT * FROM COMPROBANTE WHERE idComprobante = ?
+                SELECT * FROM Comprobante WHERE idComprobante = ?
                 """;
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1,id);
@@ -69,19 +78,30 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
-                SELECT * FROM COMPROBANTE
+                SELECT * FROM Comprobante
                 """;
         return conn.prepareStatement(sql);
     }
 
     protected Comprobante mapearModelo(ResultSet rs) throws SQLException{
         Comprobante comprobante = new Comprobante();
+
         Reserva reserva = new Reserva();
-        Pago pago = new Pago();
-        
-        comprobante.setIdComprobante(rs.getInt("idComprobante"));
         reserva.setIdReserva(rs.getInt("idReserva"));
+
+        Pago pago = new Pago();
         pago.setMonto(rs.getDouble("monto"));
+
+        reserva.setPago(pago);
+        comprobante.setReserva(reserva);
+
+        comprobante.setIdComprobante(rs.getInt("idComprobante"));
+        comprobante.setIgv(rs.getDouble("igv"));
+        comprobante.setFechaEmision(
+                rs.getTimestamp("fechaEmision") != null
+                        ? rs.getTimestamp("fechaEmision").toLocalDateTime()
+                        : null
+        );
         
         return comprobante;
     }

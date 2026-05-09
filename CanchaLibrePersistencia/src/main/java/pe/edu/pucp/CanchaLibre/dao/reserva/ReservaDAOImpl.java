@@ -4,6 +4,8 @@ import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
 import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
+import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
 
 import java.sql.*;
@@ -47,7 +49,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 estado = ?,
                 idCancha = ?,
                 idCliente = ?
-            WHERE idResena = ?
+            WHERE idReserva = ?
             """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
@@ -64,22 +66,46 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
         String sql = """
-                DELETE FROM Reserva WHERE idReserva = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
+        SELECT 
+            r.idReserva,
+            r.fechaHora,
+            r.duracion,
+            r.estado,
+            r.idCancha,
+            r.idCliente,
+            p.id AS idPago,
+            p.metodoPago,
+            p.monto,
+            p.fechaPago
+        FROM Reserva r
+        LEFT JOIN Pago p ON p.idReserva = r.idReserva
+        WHERE r.idReserva = ?
+    """;
 
+        PreparedStatement cmd = conn.prepareStatement(sql);
+        cmd.setInt(1, id);
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
         String sql = """
-                SELECT * FROM Reserva WHERE idReserva = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
-        return cmd;
+        SELECT 
+            r.idReserva,
+            r.fechaHora,
+            r.duracion,
+            r.estado,
+            r.idCancha,
+            r.idCliente,
+            p.id AS idPago,
+            p.metodoPago,
+            p.monto,
+            p.fechaPago
+        FROM Reserva r
+        LEFT JOIN Pago p ON p.idReserva = r.idReserva
+    """;
+
+        return conn.prepareStatement(sql);
     }
 
     @Override
@@ -103,6 +129,27 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
         reserva.setCliente(cliente);
         reserva.setCancha(cancha);
+        int idPago = rs.getInt("idPago");
+
+        if (!rs.wasNull()) {
+            Pago pago = new Pago();
+
+            pago.setId(idPago);
+            pago.setMonto(rs.getDouble("monto"));
+
+            String metodoPago = rs.getString("metodoPago");
+            if (metodoPago != null) {
+                pago.setMetodoPago(MetodoPago.valueOf(metodoPago));
+            }
+
+            Timestamp fechaPago = rs.getTimestamp("fechaPago");
+            if (fechaPago != null) {
+                pago.setFechaPago(fechaPago.toLocalDateTime());
+            }
+            pago.setReserva(reserva);
+            reserva.setPago(pago);
+        }
+
         return reserva;
     }
 }
