@@ -94,13 +94,13 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     protected Reserva mapearModelo(ResultSet rs) throws SQLException {
         Reserva reserva = new Reserva();
         Cliente cliente = new Cliente();
-        cliente.setIdUsuario(rs.getInt("idUsuario"));
+        cliente.setIdUsuario(rs.getInt("idCliente"));
         Cancha cancha = new Cancha();
         cancha.setIdCancha(rs.getInt("idCancha"));
-        reserva.setIdReserva(rs.getInt("idResena"));
-        reserva.setFechaHora((LocalDateTime) rs.getObject("fechaHora"));
-        reserva.setDuracion((LocalTime) rs.getObject("duracion"));
-        reserva.setEstado((EstadoReserva) rs.getObject("estado"));
+        reserva.setIdReserva(rs.getInt("idReserva"));
+        reserva.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+        reserva.setDuracion(rs.getTime("duracion").toLocalTime());
+        reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
         reserva.setCliente(cliente);
         reserva.setCancha(cancha);
         return reserva;

@@ -125,8 +125,8 @@ public class Program {
 
 //                // ── 5. RESERVA ────────────────────────────────────────────────
                 // Cancha hardcodeada con un id ya existente en la BD
-                //Cancha cancha = new Cancha();
-                //cancha.setIdCancha(1);
+//                Cancha cancha = new Cancha();
+//                cancha.setIdCancha(1);
 
                 Reserva reserva = new Reserva();
                 reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
@@ -134,7 +134,7 @@ public class Program {
                 reserva.setEstado(EstadoReserva.ESPERA); //varchar50
                 reserva.setCliente(cliente);
                 reserva.setCancha(cancha);
-                reserva.setPago(pago);
+               // reserva.setPago(pago);
 
                 idReserva = reservaDAO.crear(reserva);
                 reserva.setIdReserva(idReserva);
