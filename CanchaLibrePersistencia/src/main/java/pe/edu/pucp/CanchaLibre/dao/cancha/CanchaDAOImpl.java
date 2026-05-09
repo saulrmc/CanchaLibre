@@ -127,7 +127,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     @Override
     protected Cancha mapearModelo(ResultSet rs) throws SQLException{
         Cancha cancha = new Cancha();
-        cancha.setIdCancha(rs.getInt("id"));
+        cancha.setIdCancha(rs.getInt("idCancha"));
         cancha.setNombre(rs.getString("nombre"));
         cancha.setDescripcion(rs.getString("descripcion"));
         cancha.setImagenUrl(rs.getString("imagenUrl"));
