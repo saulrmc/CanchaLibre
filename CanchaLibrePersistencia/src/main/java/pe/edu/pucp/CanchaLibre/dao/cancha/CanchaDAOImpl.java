@@ -101,7 +101,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     }
 
     protected PreparedStatement comandoLeerDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
-        String sql = "SELECT nombreDeporte FROM Cancha_Deporte WHERE idCancha = ?";
+        String sql = "SELECT nombreDeporte FROM Cancha WHERE idCancha = ?";
         PreparedStatement cmd = conn.prepareStatement(sql);
         cmd.setInt(1, idCancha);
         return cmd;
