@@ -24,7 +24,7 @@ class pe.edu.pucp.CanchaLibre.modelo.cancha.BloqueHorario {
 }
 
 
-class pe.edu.pucp.CanchaLibre.modelo.reserva.Notificacion {
+class pe.edu.pucp.CanchaLibre.modelo.notificacion.Notificacion {
 - Usuario destinatario
 - String descripcion
 - LocalDateTime fechaEnvio

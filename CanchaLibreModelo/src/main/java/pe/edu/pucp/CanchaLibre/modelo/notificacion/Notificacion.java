@@ -1,4 +1,4 @@
-package pe.edu.pucp.CanchaLibre.modelo.reserva;
+package pe.edu.pucp.CanchaLibre.modelo.notificacion;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Usuario;
 
 import java.time.LocalDateTime;
@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 * Aunque lo normal es que las notificaciones se deriven al correo electrónico,
 * el sistema también envia notificaciones (RF07)
 * */
+
 public class Notificacion {
     private Usuario destinatario;
-    private String descripcion;
     private LocalDateTime fechaEnvio;
 
     public LocalDateTime getFechaEnvio() {
@@ -18,14 +18,6 @@ public class Notificacion {
 
     public void setFechaEnvio(LocalDateTime fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     public Usuario getDestinatario() {
