@@ -73,7 +73,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             r.estado,
             r.idCancha,
             r.idCliente,
-            p.id AS idPago,
+            p.id AS id,
             p.metodoPago,
             p.monto,
             p.fechaPago
@@ -97,7 +97,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             r.estado,
             r.idCancha,
             r.idCliente,
-            p.id AS idPago,
+            p.id AS id,
             p.metodoPago,
             p.monto,
             p.fechaPago
@@ -129,12 +129,12 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
         reserva.setCliente(cliente);
         reserva.setCancha(cancha);
-        int idPago = rs.getInt("idPago");
+        int id = rs.getInt("id");
 
         if (!rs.wasNull()) {
             Pago pago = new Pago();
 
-            pago.setId(idPago);
+            pago.setId(id);
             pago.setMonto(rs.getDouble("monto"));
 
             String metodoPago = rs.getString("metodoPago");

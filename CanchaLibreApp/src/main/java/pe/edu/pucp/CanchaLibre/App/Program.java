@@ -39,7 +39,7 @@ public class Program {
             Integer idCliente = null;
             Integer idPropietario = null;
             Integer idCancha = null;
-            Integer idPago = null;
+            Integer id = null;
             Integer idReserva = null;
             Integer idComprobante = null;
 
@@ -115,13 +115,13 @@ public class Program {
                 pago.setMonto(90.00);
                 pago.setFechaPago(LocalDateTime.now());
 
-                idPago = pagoDAO.crear(pago);
-                pago.setId(idPago);
-                System.out.println("Pago creado: " + pagoDAO.leer(idPago));
+                id = pagoDAO.crear(pago);
+                pago.setId(id);
+                System.out.println("Pago creado: " + pagoDAO.leer(id));
 
                 pago.setMonto(100.00);
                 pagoDAO.actualizar(pago);
-                System.out.println("Pago actualizado: " + pagoDAO.leer(idPago));
+                System.out.println("Pago actualizado: " + pagoDAO.leer(id));
 
 //                // ── 5. RESERVA ────────────────────────────────────────────────
                 // Cancha hardcodeada con un id ya existente en la BD
@@ -159,9 +159,9 @@ public class Program {
                 comprobanteDAO.actualizar(comprobante);
                 System.out.println("Comprobante actualizado: " + comprobanteDAO.leer(idComprobante));
 
-//                System.out.println("Total reservas en BD: " + reservaDAO.leerTodos().size());
-//                System.out.println("Total clientes en BD: " + clienteDAO.leerTodos().size());
-//                System.out.println("\nFlujo de prueba completado exitosamente.");
+                System.out.println("Total reservas en BD: " + reservaDAO.leerTodos().size());
+                System.out.println("Total clientes en BD: " + clienteDAO.leerTodos().size());
+                System.out.println("\nFlujo de prueba completado exitosamente.");
 
             } finally {
                 // ── LIMPIEZA (orden inverso a la inserción) ───────────────────
@@ -173,8 +173,8 @@ public class Program {
                     reservaDAO.eliminar(idReserva);
                     System.out.println("Reserva eliminada.");
                 }
-                if (idPago != null) {
-                    pagoDAO.eliminar(idPago);
+                if (id != null) {
+                    pagoDAO.eliminar(id);
                     System.out.println("Pago eliminado.");
                 }
                 if (idCancha != null) {
