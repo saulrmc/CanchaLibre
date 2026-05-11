@@ -38,14 +38,14 @@ CREATE TABLE Propietario (
     ultimaSesion DATETIME NULL,
     rol VARCHAR(20) DEFAULT 'PROPIETARIO',
     activo TINYINT DEFAULT 1,
-    ruc VARCHAR(20) NOT NULL
+    calificacion INT DEFAULT 0
 );
 
 CREATE TABLE Cancha (
     idCancha INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     nombre VARCHAR(150),
     descripcion TEXT,
-    imageUrl VARCHAR(255),
+    imagenUrl VARCHAR(255),
     disponible BOOLEAN,
     direccion VARCHAR(255),
     deporte VARCHAR(50), -- Aquí se usa el Enum Deporte (FUTBOL, BASQUET, etc)
@@ -55,15 +55,24 @@ CREATE TABLE Cancha (
     CONSTRAINT FK_Cancha_Precio FOREIGN KEY (idEsquemaPrecio) REFERENCES EsquemaPrecio(id)
 );
 
+CREATE TABLE Pago (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    metodoPago VARCHAR(50), -- Aquí se usa el Enum MetodoPago (YAPE, PLIN)
+    monto DECIMAL(10, 2),
+    fechaPago DATETIME
+);
+
 CREATE TABLE Reserva (
     idReserva INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     fechaHora DATETIME,
-    duracion INT,
+    duracion TIME,
     estado VARCHAR(50), -- Aquí se usa el Enum EstadoReserva
     idCancha INT,
     idCliente INT,
+    idPago INT,
     CONSTRAINT FK_Reserva_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha),
-    CONSTRAINT FK_Reserva_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente)
+    CONSTRAINT FK_Reserva_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente),
+    CONSTRAINT FK_Reserva_Pago FOREIGN KEY (idPago) REFERENCES Pago(id)
 );
 
 CREATE TABLE Notificacion (
@@ -73,19 +82,11 @@ CREATE TABLE Notificacion (
     idReceptor INT -- Se asocia al ID de quien recibe la notificación
 );
 
-CREATE TABLE Pago (
-    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    metodoPago VARCHAR(50), -- Aquí se usa el Enum MetodoPago (YAPE, PLIN)
-    monto DECIMAL(10, 2),
-    fechaPago DATETIME,
-    idReserva INT,
-    CONSTRAINT FK_Pago_Reserva FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
-);
-
 CREATE TABLE Comprobante (
     idComprobante INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    tipoReserva INT,
+    igv DECIMAL(4, 2),
     monto DECIMAL(10, 2),
+    fechaEmision DATE,
     idReserva INT UNIQUE,
     CONSTRAINT FK_Comprobante_Reserva FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
 );
@@ -99,4 +100,11 @@ CREATE TABLE Resena (
     idCliente INT,
     CONSTRAINT FK_Resena_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha),
     CONSTRAINT FK_Resena_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente)
+);
+
+CREATE TABLE cancha_deportes (
+	idCanchaDeportes INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    idCancha INT,
+    deporte ENUM('Futbol', 'Basquet', 'Voley', 'Tenis'),
+    CONSTRAINT FK_Deporte_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha)
 );

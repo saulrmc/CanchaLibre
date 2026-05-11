@@ -1,6 +1,8 @@
 package pe.edu.pucp.CanchaLibre.dao.reserva;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
+import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAO;
+import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAOImpl;
 import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
 import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
@@ -24,8 +26,9 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 duracion,
                 estado,
                 idCancha,
-                idCliente
-            ) VALUES (?, ?, ?, ?, ?, ?)
+                idCliente,
+                idPago
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql,
@@ -36,6 +39,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         cmd.setObject(4,modelo.getEstado().name());
         cmd.setInt(5,modelo.getCancha().getIdCancha());
         cmd.setInt(6,modelo.getCliente().getIdUsuario());
+        cmd.setInt(7,modelo.getPago().getId());
 
         return cmd;
     }
@@ -48,7 +52,8 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 duracion = ?,
                 estado = ?,
                 idCancha = ?,
-                idCliente = ?
+                idCliente = ?,
+                idPago = ?
             WHERE idReserva = ?
             """;
 
@@ -58,7 +63,8 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         cmd.setObject(3,modelo.getEstado().name());
         cmd.setInt(4,modelo.getCancha().getIdCancha());
         cmd.setInt(5,modelo.getCliente().getIdUsuario());
-        cmd.setInt(6,modelo.getIdReserva());
+        cmd.setInt(6,modelo.getPago().getId());
+        cmd.setInt(7,modelo.getIdReserva());
 
         return cmd;
     }
@@ -66,20 +72,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
         String sql = """
-        SELECT 
-            r.idReserva,
-            r.fechaHora,
-            r.duracion,
-            r.estado,
-            r.idCancha,
-            r.idCliente,
-            p.id AS id,
-            p.metodoPago,
-            p.monto,
-            p.fechaPago
-        FROM Reserva r
-        LEFT JOIN Pago p ON p.idReserva = r.idReserva
-        WHERE r.idReserva = ?
+        DELETE FROM Reserva WHERE idReserva = ?
     """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
@@ -88,24 +81,14 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     }
 
     @Override
-    protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
+    protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException{
         String sql = """
-        SELECT 
-            r.idReserva,
-            r.fechaHora,
-            r.duracion,
-            r.estado,
-            r.idCancha,
-            r.idCliente,
-            p.id AS id,
-            p.metodoPago,
-            p.monto,
-            p.fechaPago
-        FROM Reserva r
-        LEFT JOIN Pago p ON p.idReserva = r.idReserva
-    """;
+                SELECT * FROM Reserva WHERE idReserva = ?
+                """;
+        PreparedStatement cmd = conn.prepareStatement(sql);
+        cmd.setInt(1,id);
 
-        return conn.prepareStatement(sql);
+        return cmd;
     }
 
     @Override
@@ -129,24 +112,11 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
         reserva.setCliente(cliente);
         reserva.setCancha(cancha);
-        int id = rs.getInt("id");
+        int idPago = rs.getInt("idPago");
 
         if (!rs.wasNull()) {
-            Pago pago = new Pago();
-
-            pago.setId(id);
-            pago.setMonto(rs.getDouble("monto"));
-
-            String metodoPago = rs.getString("metodoPago");
-            if (metodoPago != null) {
-                pago.setMetodoPago(MetodoPago.valueOf(metodoPago));
-            }
-
-            Timestamp fechaPago = rs.getTimestamp("fechaPago");
-            if (fechaPago != null) {
-                pago.setFechaPago(fechaPago.toLocalDateTime());
-            }
-            pago.setReserva(reserva);
+            PagoDAO pagoDAO = new PagoDAOImpl();
+            Pago pago = pagoDAO.leer(idPago);
             reserva.setPago(pago);
         }
 

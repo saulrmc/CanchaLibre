@@ -91,7 +91,7 @@ public class Program {
                 cancha.setNombre("Estadio Central P10");
                 cancha.setDescripcion("Cancha de césped sintético con iluminación nocturna profesional.");
                 cancha.setDeportes(List.of(Deporte.FUTBOL));
-                cancha.setImagenUrl("https://images.test.com/cancha1.jpg"); //TODO: modified attribute name in db imageURL->imagenURL
+                cancha.setImagenUrl("https://images.test.com/cancha1.jpg");
                 cancha.setDisponible(true);
                 cancha.setDireccion("Av. Deporte 123, Lima");
                 cancha.setPropietario(propietario);
@@ -130,7 +130,7 @@ public class Program {
 
                 Reserva reserva = new Reserva();
                 reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
-                reserva.setDuracion(LocalTime.of(1, 30)); //TODO: duracion type has been modified int->time in db
+                reserva.setDuracion(LocalTime.of(1, 30));
                 reserva.setEstado(EstadoReserva.ESPERA); //varchar50
                 reserva.setCliente(cliente);
                 reserva.setCancha(cancha);

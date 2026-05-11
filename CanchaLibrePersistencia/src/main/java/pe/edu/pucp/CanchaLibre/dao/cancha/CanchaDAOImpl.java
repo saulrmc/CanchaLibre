@@ -116,7 +116,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
 
             while (rs.next()) {
-                String nombreEnum = rs.getString("nombreDeporte");
+                String nombreEnum = rs.getString("deporte");
                 cancha.getDeportes().add(Deporte.valueOf(nombreEnum));
             }
         } catch (SQLException e) {
