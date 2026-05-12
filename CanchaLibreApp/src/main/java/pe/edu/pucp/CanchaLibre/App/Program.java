@@ -126,7 +126,7 @@ public class Program {
 //                // ── 5. RESERVA ────────────────────────────────────────────────
                 // Cancha hardcodeada con un id ya existente en la BD
 //                Cancha cancha = new Cancha();
-//                cancha.setIdCancha(1);
+                cancha.setIdCancha(1);
 
                 Reserva reserva = new Reserva();
                 reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
@@ -155,7 +155,6 @@ public class Program {
                 comprobante.setIdComprobante(idComprobante);
                 System.out.println("Comprobante creado: " + comprobanteDAO.leer(idComprobante));
 
-                comprobante.getReserva().getPago().setMonto(118.00);
                 comprobanteDAO.actualizar(comprobante);
                 System.out.println("Comprobante actualizado: " + comprobanteDAO.leer(idComprobante));
 
