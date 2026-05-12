@@ -1,5 +1,7 @@
 package pe.edu.pucp.CanchaLibre.modelo.transaccion;
 
+import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
+
 import java.time.LocalDateTime;
 
 public class Pago {
@@ -8,20 +10,14 @@ public class Pago {
     private double monto;
     private LocalDateTime fechaPago;
 
-    public LocalDateTime getFechaPago() {
-        return fechaPago;
+    private Reserva reserva; // NUEVO
+
+    public int getId() {
+        return id;
     }
 
-    public void setFechaPago(LocalDateTime fechaPago) {
-        this.fechaPago = fechaPago;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public void setMonto(double monto) {
-        this.monto = monto;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public MetodoPago getMetodoPago() {
@@ -32,11 +28,27 @@ public class Pago {
         this.metodoPago = metodoPago;
     }
 
-    public int getId() {
-        return id;
+    public double getMonto() {
+        return monto;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    public LocalDateTime getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(LocalDateTime fechaPago) {
+        this.fechaPago = fechaPago;
+    }
+
+    public Reserva getReserva() {
+        return reserva;
+    }
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
     }
 }

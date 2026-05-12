@@ -108,54 +108,63 @@ public class Program {
                 System.out.println("Cancha actualizada: " + canchaDAO.leer(idCancha));
 //              TODO: implement comandoLeerDeportesPorCancha()
 
+//                ── 4. RESERVA ────────────────────────────────────────────────
+                Reserva reserva = new Reserva();
+                reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
+                reserva.setDuracion(LocalTime.of(1, 30));
+                reserva.setEstado(EstadoReserva.ESPERA);
+                reserva.setCliente(cliente);
+                reserva.setCancha(cancha);
 
-//                // ── 4. PAGO ─────────────────────────────────────────────────── OK
+                idReserva = reservaDAO.crear(reserva);
+                reserva.setIdReserva(idReserva);
+
+                System.out.println("Reserva creada: " + reservaDAO.leer(idReserva));
+
+
+//                ── 5. PAGO ───────────────────────────────────────────────────
                 Pago pago = new Pago();
                 pago.setMetodoPago(MetodoPago.EFECTIVO);
                 pago.setMonto(90.00);
                 pago.setFechaPago(LocalDateTime.now());
+                pago.setReserva(reserva);
 
                 id = pagoDAO.crear(pago);
                 pago.setId(id);
+
+                reserva.setPago(pago);
+
                 System.out.println("Pago creado: " + pagoDAO.leer(id));
 
                 pago.setMonto(100.00);
                 pagoDAO.actualizar(pago);
+
                 System.out.println("Pago actualizado: " + pagoDAO.leer(id));
 
-//                // ── 5. RESERVA ────────────────────────────────────────────────
-                // Cancha hardcodeada con un id ya existente en la BD
-//                Cancha cancha = new Cancha();
-                cancha.setIdCancha(1);
 
-                Reserva reserva = new Reserva();
-                reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
-                reserva.setDuracion(LocalTime.of(1, 30));
-                reserva.setEstado(EstadoReserva.ESPERA); //varchar50
-                reserva.setCliente(cliente);
-                reserva.setCancha(cancha);
-                reserva.setPago(pago);
-
-                idReserva = reservaDAO.crear(reserva);
-                reserva.setIdReserva(idReserva);
-                System.out.println("Reserva creada: " + reservaDAO.leer(idReserva));
-
+//                ── 6. ACTUALIZAR RESERVA ─────────────────────────────────────
                 reserva.setEstado(EstadoReserva.COMPLETADO);
                 reserva.setDuracion(LocalTime.of(2, 0));
+
                 reservaDAO.actualizar(reserva);
+
                 System.out.println("Reserva actualizada: " + reservaDAO.leer(idReserva));
 
-//                // ── 6. COMPROBANTE ────────────────────────────────────────────
+
+//                ── 7. COMPROBANTE ────────────────────────────────────────────
                 Comprobante comprobante = new Comprobante();
                 comprobante.setIgv(0.18);
                 comprobante.setFechaEmision(LocalDateTime.now());
-                comprobante.setReserva(reserva);   // la reserva ya tiene pago con monto
+                comprobante.setReserva(reserva);
 
                 idComprobante = comprobanteDAO.crear(comprobante);
                 comprobante.setIdComprobante(idComprobante);
+
                 System.out.println("Comprobante creado: " + comprobanteDAO.leer(idComprobante));
 
+                comprobante.getReserva().getPago().setMonto(118.00);
                 comprobanteDAO.actualizar(comprobante);
+
                 System.out.println("Comprobante actualizado: " + comprobanteDAO.leer(idComprobante));
 
                 System.out.println("Total reservas en BD: " + reservaDAO.leerTodos().size());
