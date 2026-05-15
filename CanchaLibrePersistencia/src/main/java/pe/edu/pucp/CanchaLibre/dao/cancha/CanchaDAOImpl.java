@@ -3,6 +3,7 @@ package pe.edu.pucp.CanchaLibre.dao.cancha;
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
 import pe.edu.pucp.CanchaLibre.modelo.cancha.Deporte;
+import pe.edu.pucp.CanchaLibre.modelo.cancha.Etiqueta;
 import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
 
 import java.sql.*;
@@ -107,6 +108,13 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
+    protected PreparedStatement comandoLeerEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "SELECT etiqueta FROM cancha_deportes WHERE idCancha = ?";
+        PreparedStatement cmd = conn.prepareStatement(sql);
+        cmd.setInt(1, idCancha);
+        return cmd;
+    }
+
     private void llenarDeportes(Connection conn, Cancha cancha) {
         try (PreparedStatement ps = comandoLeerDeportesPorCancha(conn, cancha.getIdCancha());
              ResultSet rs = ps.executeQuery()) {
@@ -121,6 +129,22 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
         } catch (SQLException e) {
             System.err.println("Error al cargar deportes: " + e.getMessage());
+        }
+    }
+    private void llenarEtiquetas(Connection conn, Cancha cancha) {
+        try (PreparedStatement ps = comandoLeerEtiquetasPorCancha(conn, cancha.getIdCancha());
+             ResultSet rs = ps.executeQuery()) {
+
+            if (cancha.getEtiquetas() == null) {
+                cancha.setEtiquetas(new ArrayList<>());
+            }
+
+            while (rs.next()) {
+                String nombreEnum = rs.getString("etiqueta");
+                cancha.getEtiquetas().add(Etiqueta.valueOf(nombreEnum));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar etiquetas: " + e.getMessage());
         }
     }
 
@@ -140,6 +164,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
         Connection conn = rs.getStatement().getConnection();
         llenarDeportes(conn, cancha);
+        llenarEtiquetas(conn, cancha);
 
         return cancha;
     }

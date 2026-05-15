@@ -12,6 +12,11 @@ public class Cancha {
     private boolean disponible;
     private String direccion;
     private Propietario propietario;
+    private List<Etiqueta> etiquetas;
+
+    public List<Etiqueta> getEtiquetas() {return etiquetas; }
+
+    public void setEtiquetas(List<Etiqueta> etiquetas) { this.etiquetas = etiquetas; }
 
     public Propietario getPropietario() { return propietario; }
     public void setPropietario(Propietario propietario) { this.propietario = propietario; }
