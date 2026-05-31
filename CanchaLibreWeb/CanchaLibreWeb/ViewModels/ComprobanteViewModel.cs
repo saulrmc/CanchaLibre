@@ -12,5 +12,5 @@ public class ComprobanteViewModel
 	public DateTime FechaEmision {get; set;}
 
     [Required(ErrorMessage = "Debe tener una reserva asignada")]
-	public ReservaViewModel Reserva {get; set;}
+	public ReservaViewModel? Reserva {get; set;}
 }

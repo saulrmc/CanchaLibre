@@ -11,7 +11,7 @@ public class ReservaViewModel
     public ClienteViewModel? cliente {get; set;}
 
     [Required(ErrorMessage = "Debe tener una cancha")]
-    public CanchaViewModel cancha {get; set;}
+    public CanchaViewModel? cancha {get; set;}
 
     [Required(ErrorMessage = "Debe tener un metodo de pago")]
     public PagoViewModel? pago {get; set;}

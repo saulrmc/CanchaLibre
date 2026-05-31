@@ -16,5 +16,5 @@ public class PagoViewModel
     public DateTime fechaPago {get; set;}
 
     [Required(ErrorMessage = "Debe tener una reserva asignada")]
-    public ReservaViewModel reserva {get; set;}
+    public ReservaViewModel? reserva {get; set;}
 }

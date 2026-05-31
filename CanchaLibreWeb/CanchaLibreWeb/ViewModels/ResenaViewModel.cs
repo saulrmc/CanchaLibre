@@ -12,5 +12,5 @@ public class ResenaViewModel
 
 	public DateTime fechaPublicacion { get; set; }
 	public ClienteViewModel? cliente { get; set; }
-	public CanchaViewModel cancha { get; set; }
+	public CanchaViewModel? cancha { get; set; }
 }
