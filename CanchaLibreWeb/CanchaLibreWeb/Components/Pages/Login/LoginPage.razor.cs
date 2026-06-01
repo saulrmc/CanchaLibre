@@ -54,12 +54,12 @@ public partial class LoginPage : ComponentBase {
                 break;
                 
             case "Propietario":
-                NavigationManager.NavigateTo("/"); // O su panel de canchas
+                NavigationManager.NavigateTo("/"); 
                 break;
                 
             case "Cliente":
             default:
-                NavigationManager.NavigateTo("/"); // La Home clásica para ver y reservar canchas
+                NavigationManager.NavigateTo("/"); 
                 break;
         }
         
