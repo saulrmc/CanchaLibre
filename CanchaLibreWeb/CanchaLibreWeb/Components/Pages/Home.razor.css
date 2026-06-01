@@ -1,59 +1,223 @@
-.home-hero {
-    padding: 2rem;
-    border-radius: 20px;
+.hero-cancha {
+    min-height: 310px;
+    background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.25)), url("hero-cancha.jpg") center/cover no-repeat;
+    color: white;
+    position: relative;
+    padding: 24px 70px;
 }
 
-.home-hero h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.home-hero p {
-    color: #475569;
-    max-width: 62ch;
-}
-
-.hero-actions {
-    margin-top: 1rem;
+.navbar-cancha {
     display: flex;
-    gap: 0.8rem;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.dashboard-header {
-    border-radius: 16px;
-    padding: 1.25rem;
+.logo-cancha {
+    height: 42px;
 }
 
-.dashboard-header p {
-    margin: 0;
-    color: #475569;
+.menu-cancha {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 13px;
 }
 
-.quick-actions,
-.recent-summary {
-    border-radius: 16px;
-    padding: 1.1rem;
+    .menu-cancha a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+.btn-registro {
+    background: #16a34a;
+    padding: 12px 24px;
+    border-radius: 4px;
 }
 
-.quick-actions h3,
-.recent-summary h3 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
+.hero-texto h1 {
+    margin-top: 45px;
+    font-size: 56px;
+    line-height: .9;
+    font-weight: 900;
 }
 
-.quick-actions-grid {
+.buscador-cancha {
+    position: absolute;
+    left: 50%;
+    bottom: -32px;
+    transform: translateX(-50%);
+    width: 58%;
+    background: white;
+    color: #111;
+    border-radius: 8px;
+    padding: 14px;
     display: grid;
-    gap: 0.6rem;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 10px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.12);
 }
 
-@media (max-width: 640.98px) {
-    .home-hero {
-        padding: 1.25rem;
+    .buscador-cancha label {
+        display: block;
+        color: #16a34a;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 4px;
     }
 
-    .home-hero h2 {
-        font-size: 1.5rem;
+    .buscador-cancha input,
+    .buscador-cancha select {
+        width: 100%;
+        border: none;
+        background: #e5e7eb;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 12px;
     }
+
+    .buscador-cancha button {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 0 28px;
+        border-radius: 4px;
+        font-weight: 700;
+    }
+
+.contenido-home {
+    padding: 90px 90px 70px;
 }
+
+.titulo-home {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .titulo-home h2 {
+        font-size: 36px;
+        font-weight: 900;
+        margin-bottom: 12px;
+    }
+
+    .titulo-home p {
+        color: #333;
+    }
+
+.btn-ver-todo {
+    background: white;
+    border: 1px solid #16a34a;
+    color: #16a34a;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.grid-canchas {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.card-cancha {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,.04);
+}
+
+    .card-cancha img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+.card-body-cancha {
+    padding: 16px;
+}
+
+    .card-body-cancha h3 {
+        font-size: 17px;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+.ubicacion {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.precio {
+    margin-top: 10px;
+}
+
+    .precio strong {
+        font-size: 17px;
+    }
+
+    .precio span {
+        color: #666;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+.etiquetas-card {
+    margin: 15px 0;
+    display: flex;
+    gap: 8px;
+}
+
+    .etiquetas-card span {
+        background: #e5e7eb;
+        color: #555;
+        font-size: 11px;
+        padding: 5px 12px;
+        border-radius: 20px;
+    }
+
+.btn-reservar {
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 22px;
+    font-weight: 700;
+}
+
+.publica-cancha {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    padding: 70px 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .publica-cancha h2 {
+        font-size: 54px;
+        line-height: .9;
+        font-weight: 900;
+    }
+
+    .publica-cancha p {
+        font-size: 20px;
+        font-weight: 700;
+        max-width: 520px;
+        text-align: center;
+    }
+
+    .publica-cancha button {
+        display: block;
+        margin: 20px auto 0;
+        background: white;
+        color: #16a34a;
+        border: none;
+        border-radius: 8px;
+        padding: 18px 44px;
+        font-size: 24px;
+        font-weight: 900;
+        box-shadow: 0 4px 10px rgba(0,0,0,.18);
+    }

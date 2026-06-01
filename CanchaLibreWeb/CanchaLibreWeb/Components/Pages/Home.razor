@@ -1,7 +1,179 @@
-﻿@page "/Home"
+﻿@page "/"
+@using CanchaLibreWeb.ViewModels
 
-<PageTitle>Home</PageTitle>
+<section class="hero-cancha">
+    <div class="navbar-cancha">
+        <img src="Logo.png" class="logo-cancha" />
 
-<h1>Hello, world!</h1>
+        <div class="menu-cancha">
+            <a href="/">Inicio</a>
+            <a href="/">Encuentra cancha</a>
+            <a href="#">Mis Reservas</a>
+            <a href="#">Portal Propietario</a>
+            <a href="/login">Iniciar sesión</a>
+            <a href="/registrar" class="btn-registro">Regístrate</a>
+        </div>
+    </div>
 
-Welcome to your new app.
+    <div class="hero-texto">
+        <h1>Tu cancha,<br />al toque</h1>
+    </div>
+
+    <div class="buscador-cancha">
+        <div>
+            <label>Ubicación</label>
+            <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
+        </div>
+
+        <div>
+            <label>Fecha</label>
+            <input type="date" @bind="fecha" />
+        </div>
+
+        <div>
+            <label>Hora</label>
+            <input type="time" @bind="hora" />
+        </div>
+
+        <div>
+            <label>Deporte</label>
+            <select @bind="deporteSeleccionado">
+                <option value="">Todos</option>
+                <option value="Futbol">Fútbol</option>
+                <option value="Voley">Vóley</option>
+                <option value="Basquet">Básquet</option>
+            </select>
+        </div>
+
+        <button @onclick="Buscar">Buscar</button>
+    </div>
+</section>
+
+<section class="contenido-home">
+    <div class="titulo-home">
+        <div>
+            <h2>Canchas destacadas</h2>
+            <p>Seleccione la cancha que desea reservar:</p>
+        </div>
+
+        <button class="btn-ver-todo">Ver todo</button>
+    </div>
+
+    <div class="grid-canchas">
+        @foreach (var cancha in canchasFiltradas)
+        {
+            <div class="card-cancha">
+                <img src="@cancha.imagenUrl" />
+
+                <div class="card-body-cancha">
+                    <h3>@cancha.nombre</h3>
+                    <p class="ubicacion">📍 @cancha.direccion</p>
+
+                    <p class="precio">
+                        <strong>S/80</strong>
+                        <span>por hora</span>
+                    </p>
+
+                    <div class="etiquetas-card">
+                        @if (cancha.etiquetas != null)
+                        {
+                            @foreach (var etiqueta in cancha.etiquetas.Take(2))
+                            {
+                                <span>@etiqueta</span>
+                            }
+                        }
+                    </div>
+
+                    <button class="btn-reservar">
+                        Reservar
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="publica-cancha">
+    <h2>¿Tienes una<br />cancha?</h2>
+
+    <div>
+        <p>Publica en CanchaLibre y conéctate con cientos de clientes. Maneja reservas y pagos sin esfuerzo.</p>
+        <button>Publica aquí</button>
+    </div>
+</section>
+
+@code {
+    private string filtroUbicacion = string.Empty;
+    private string deporteSeleccionado = string.Empty;
+    private DateTime fecha = DateTime.Today;
+    private TimeOnly hora = new TimeOnly(18, 0);
+
+    private List<CanchaViewModel> canchas = new();
+    private List<CanchaViewModel> canchasFiltradas = new();
+
+    protected override void OnInitialized()
+    {
+        canchas = new()
+        {
+            new CanchaViewModel
+            {
+                idCancha = 1,
+                nombre = "Cancha sintética",
+                descripcion = "Cancha sintética premium para fútbol.",
+                imagenUrl = "img/cancha1.jpg",
+                direccion = "UTP, Universidad, San Isidro",
+                disponible = true,
+                deportes = new() { DeporteEnum.FUTBOL},
+                etiquetas = new() { EtiquetaEnum.PARKING, EtiquetaEnum.WIFI }
+            },
+            new CanchaViewModel
+            {
+                idCancha = 2,
+                nombre = "Fútbol 010",
+                descripcion = "Cancha para fútbol con iluminación.",
+                imagenUrl = "img/cancha2.jpg",
+                direccion = "Municipalidad de Santiago de Surco",
+                disponible = true,
+                deportes = new() { DeporteEnum.FUTBOL },
+                etiquetas = new() { EtiquetaEnum.ILUMINACIÓN, EtiquetaEnum.PARKING }
+            },
+            new CanchaViewModel
+            {
+                idCancha = 3,
+                nombre = "Cancha Voley 012",
+                descripcion = "Cancha techada para vóley.",
+                imagenUrl = "img/cancha3.jpg",
+                direccion = "Av. Brasil 1231, Jesús María",
+                disponible = true,
+                deportes = new() { DeporteEnum.VOLEY },
+                etiquetas = new() { EtiquetaEnum.ILUMINACIÓN, EtiquetaEnum.WIFI }
+            },
+            new CanchaViewModel
+            {
+                idCancha = 4,
+                nombre = "Complejo Deportivo Ciro Alegría",
+                descripcion = "Complejo deportivo con cancha de fútbol.",
+                imagenUrl = "img/cancha4.jpg",
+                direccion = "San Juan de Lurigancho",
+                disponible = true,
+                deportes = new() { DeporteEnum.FUTBOL },
+                etiquetas = new() { EtiquetaEnum.ILUMINACIÓN, EtiquetaEnum.PARKING }
+            }
+        };
+
+        canchasFiltradas = canchas;
+    }
+
+    private void Buscar()
+    {
+        canchasFiltradas = canchas
+            .Where(c =>
+                string.IsNullOrWhiteSpace(filtroUbicacion) ||
+                c.direccion.Contains(filtroUbicacion, StringComparison.OrdinalIgnoreCase) ||
+                c.nombre.Contains(filtroUbicacion, StringComparison.OrdinalIgnoreCase))
+            .Where(c =>
+                string.IsNullOrWhiteSpace(deporteSeleccionado) ||
+                (c.deportes != null && c.deportes.Any(d => d.ToString() == deporteSeleccionado)))
+            .ToList();
+    }
+}
