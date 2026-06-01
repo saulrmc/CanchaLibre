@@ -1,0 +1,35 @@
+@page "/Registrar/Propietario/Detalles"
+@attribute [AllowAnonymous]
+@layout Layout.AuthLayout
+@using CanchaLibreWeb.ViewModels
+
+<div class="app-auth-shell">
+    <div class="brand-container">
+        <a href="index.html">
+        <img src="Logo.png" alt="Logo" class="logo">
+        </a>
+        <span class="brand-name">CanchaLibre</span>
+    </div>
+
+    <div class="app-auth-card">
+        <h1 class="app-title">Registrarse</h1>
+        <p class="app-label mb-4">Únase a la comunidad de CanchaLibre</p>
+        
+        <EditForm Model="@Modelo" OnValidSubmit="FinalizarRegistro" FormName="PropDetallesForm">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label-custom">RUC</label>
+                <InputText class="form-input-custom" @bind-Value="RucInput" placeholder="2020202020" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label-custom">Teléfono</label>
+                <InputText class="form-input-custom" @bind-Value="Modelo.Telefono" placeholder="996852763" />
+                <ValidationMessage For="@(() => Modelo.Telefono)" class="text-danger small mt-1" />
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Registrarse</button>
+        </EditForm>
+    </div>
+</div>

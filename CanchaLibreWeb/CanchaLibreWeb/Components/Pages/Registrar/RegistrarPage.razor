@@ -1,0 +1,37 @@
+@page "/Registrar"
+@attribute [AllowAnonymous]
+@layout Layout.AuthLayout
+@using CanchaLibreWeb.ViewModels
+
+<div class="app-auth-shell" data-testid="register-page">
+    
+    <div class="brand-container">
+        <a href="index.html">
+        <img src="Logo.png" alt="Logo" class="logo">
+        </a>
+        <span class="brand-name">CanchaLibre</span>
+    </div>
+
+    <div class="app-auth-card">
+        <h1 class="app-title">Registrarse</h1>
+        <p class="app-label mb-4">Elija su tipo de cuenta</p>
+        
+        <div class="role-selection-container mb-4">
+            <a href="/Registrar/Cliente" class="role-card-btn text-decoration-none">
+                <div class="role-icon">⚽</div>
+                <div class="role-title">Cliente</div>
+                <div class="role-desc">Reserva canchas</div>
+            </a>
+
+            <a href="/Registrar/Propietario" class="role-card-btn text-decoration-none">
+                <div class="role-icon">🔑</div>
+                <div class="role-title">Propietario</div>
+                <div class="role-desc">Ofrece canchas</div>
+            </a>
+        </div>
+
+        <div class="app-text mt-4">
+            ¿Ya tiene una cuenta? <a href="/Login">Inicie sesión</a>
+        </div>
+    </div>
+</div>

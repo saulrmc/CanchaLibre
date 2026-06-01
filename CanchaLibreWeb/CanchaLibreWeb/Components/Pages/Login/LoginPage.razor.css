@@ -1,0 +1,58 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #24a159; 
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Tarjeta Blanca Centrada */
+.login-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.btn-submit-custom {
+    background-color: #24a159;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-submit-custom:hover {
+    background-color: #1b7b43;
+}
+
+.signup-prompt {
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 576px) {
+    .brand-container {
+        position: static;
+        margin-bottom: 30px;
+    }
+    .login-container {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 50px;
+    }
+    .login-card {
+        padding: 30px 20px;
+    }
+}

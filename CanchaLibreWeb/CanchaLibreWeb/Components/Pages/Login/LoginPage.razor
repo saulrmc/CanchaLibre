@@ -1,0 +1,68 @@
+@page "/Login"
+@rendermode InteractiveServer
+@attribute [AllowAnonymous]
+@layout Layout.AuthLayout 
+
+<div class="app-auth-shell" data-testid="login-page">
+    
+    <div class="brand-container">
+        <a href="index.html">
+        <img src="Logo.png" alt="Logo" class="logo">
+        </a>
+        <span class="brand-name">CanchaLibre</span>
+    </div>
+
+    <div class="app-auth-card">
+        <h1 class="app-title">Iniciar sesión</h1>
+        <p class="app-label">Ingrese su cuenta de CanchaLibre</p>
+
+        <EditForm Model="@Modelo" OnValidSubmit="ProcesarLogin" FormName="LoginForm">
+            <DataAnnotationsValidator />
+            <AntiforgeryToken />
+            <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+
+            <div class="form-group mb-4">
+                <label class="form-label-custom">Correo electrónico</label>
+                @* Usamos InputText en lugar de <input> nativo *@
+                <InputText class="form-input-custom" data-testid="login-user-input"
+                           @bind-Value="Modelo.Usuario" placeholder="correo@gmail.com" />
+                <ValidationMessage For="@(() => Modelo.Usuario)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="form-group mb-2">
+                <label class="form-label-custom">Contraseña</label>
+                @* Usamos InputText con type="password" *@
+                <InputText type="password" class="form-input-custom" data-testid="login-password-input"
+                           @bind-Value="Modelo.Contrasena" placeholder="**********" />
+                <ValidationMessage For="@(() => Modelo.Contrasena)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="text-end mb-4">
+                <a href="/RecuperarContrasena" class="green-link text-decoration-none">¿Olvidó su contraseña?</a>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(MensajeInfo))
+            {
+                <div class="alert alert-info py-2 small text-center mb-3" role="alert">
+                    @MensajeInfo
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(MensajeError))
+            {
+                <div class="alert alert-danger py-2 small text-center mb-3" role="alert" data-testid="login-error">
+                    @MensajeError
+                </div>
+            }            
+
+            @* El botón dentro de un EditForm por defecto es de tipo submit *@
+            <button class="btn-primary w-100 mb-4" type="submit" data-testid="btn-primary">
+                Iniciar sesión
+            </button>
+
+            <div class="text-center signup-prompt">
+                ¿No tiene una cuenta? <a href="/Registrar" class="green-link fw-bold text-decoration-none">Regístrese</a>
+            </div>
+        </EditForm>
+    </div>
+</div>

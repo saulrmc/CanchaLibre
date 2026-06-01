@@ -1,0 +1,36 @@
+@page "/RecuperarContrasena"
+@attribute [AllowAnonymous]
+@using CanchaLibreWeb.ViewModels
+
+<div class="app-auth-shell" data-testid="recover-password-page">
+    
+    <div class="brand-container">
+        <a href="index.html">
+        <img src="Logo.png" alt="Logo" class="logo">
+        </a>
+        <span class="brand-name">CanchaLibre</span>
+    </div>
+    
+    <div class="app-auth-card">
+        <h1 class="app-title">Recuperar contraseña</h1>
+        <p class="app-label mb-4">Ingrese su correo electrónico para recuperar su contraseña</p>
+        <EditForm Model="@(Solicitud ??= new SolicitudRecuperarContrasenaViewModel())" OnValidSubmit="Enviar"
+                  FormName="RecuperarContrasenaForm">
+            <DataAnnotationsValidator />
+
+            <div class="mb-4">
+                <label class="form-label-custom">Correo electrónico</label>
+                <InputText class="form-input-custom" data-testid="recover-email-input" @bind-Value="Solicitud.Correo"
+                           placeholder="correo@gmail.com" />
+                <ValidationMessage For="@(() => Solicitud.Correo)" />
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit" data-testid="recover-submit-btn">Enviar</button>
+        </EditForm>
+
+        <div class="text-center mt-3">
+            <a href="/Login" class="green-link text-decoration-none" data-testid="recover-back-login">Volver al inicio de
+                sesion</a>
+            </div>
+        </div>
+    </div>
