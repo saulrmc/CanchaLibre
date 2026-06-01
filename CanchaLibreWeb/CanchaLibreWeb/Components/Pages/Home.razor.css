@@ -1,3 +1,12 @@
+.icono-usuario {
+    display: flex;
+    align-items: center;
+}
+
+    .icono-usuario svg {
+        fill: white;
+    }
+
 .hero-cancha {
     min-height: 310px;
     background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.25)), url("hero-cancha.jpg") center/cover no-repeat;
