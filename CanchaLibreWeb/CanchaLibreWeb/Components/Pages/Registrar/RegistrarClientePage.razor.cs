@@ -26,6 +26,7 @@ public partial class RegistrarClientePage : ComponentBase
         MensajeError = string.Empty;
         // Aquí llamas a tu HttpClient hacia Java enviando 'Modelo'
         Console.WriteLine($"Enviando cliente a Java: {Modelo.Nombres}");
+        FinalizarRegistroCliente();
         
     }
     private void FinalizarRegistroCliente()
