@@ -44,6 +44,7 @@
     font-size: 56px;
     line-height: .9;
     font-weight: 900;
+    outline: none;
 }
 
 .buscador-cancha {
@@ -301,4 +302,8 @@
     border-radius: 4px;
     padding: 10px 22px;
     font-weight: 700;
+}
+.btn-ver-todo {
+    text-decoration: none;
+    display: inline-block;
 }

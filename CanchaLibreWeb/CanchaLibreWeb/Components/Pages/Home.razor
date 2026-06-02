@@ -1,11 +1,17 @@
 ﻿@page "/"
 @using CanchaLibreWeb.ViewModels
 
-    <section class="hero-cancha">
-        <NavMenu />
+<section class="hero-cancha">
+    <NavMenu />
 
-        <div class="hero-texto">
-            <h1>Tu cancha,<br />al toque</h1>
+    <div class="hero-texto">
+        <h1>Tu cancha,<br />al toque</h1>
+    </div>
+
+    <div class="buscador-cancha">
+        <div>
+            <label>Ubicación</label>
+            <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
         </div>
 
         <div>
@@ -39,7 +45,9 @@
             <p>Seleccione la cancha que desea reservar:</p>
         </div>
 
-        <button class="btn-ver-todo">Ver todo</button>
+        <a class="btn-ver-todo" href="/Encuentra-Cancha">
+            Ver todo
+        </a>
     </div>
 
     <div class="grid-canchas">
@@ -71,35 +79,10 @@
                         Reservar
                     </a>
                 </div>
-        <div class="buscador-cancha">
-            <div>
-                <label>Ubicación</label>
-                <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
             </div>
-
-            <div>
-                <label>Fecha</label>
-                <input type="date" @bind="fecha" />
-            </div>
-
-            <div>
-                <label>Hora</label>
-                <input type="time" @bind="hora" />
-            </div>
-
-            <div>
-                <label>Deporte</label>
-                <select @bind="deporteSeleccionado">
-                    <option value="">Todos</option>
-                    <option value="Futbol">Fútbol</option>
-                    <option value="Voley">Vóley</option>
-                    <option value="Basquet">Básquet</option>
-                </select>
-            </div>
-
-            <button @onclick="Buscar">Buscar</button>
-        </div>
-    </section>
+        }
+    </div>
+</section>
 
     <section class="contenido-home">
         <div class="titulo-home">

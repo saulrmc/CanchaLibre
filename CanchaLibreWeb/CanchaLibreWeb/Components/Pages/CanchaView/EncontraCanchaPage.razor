@@ -85,13 +85,13 @@
                                 <span class="deporte-chip @ObtenerColorDeporte(d)">@d</span>
                             }
                         </div>
-                        <button class="btn-reservar"
-                                @onclick="() => IrADetalle(cancha.Id)">
+                        <a class="btn-reservar" href="/cancha/@cancha.Id">
                             Reservar
-                        </button>
+                        </a>
                     </div>
                 </div>
             }
         </div>
     </div>
 </div>
+

@@ -212,9 +212,12 @@ input[type="range"] {
 
 .btn-reservar {
     width: 100%;
+    display: block;
+    text-align: center;
     background: #22c55e;
     color: white;
-    border: none;
+    text-decoration: none; 
+
     border-radius: 6px;
     padding: 10px;
     font-weight: 700;
@@ -224,4 +227,6 @@ input[type="range"] {
 
     .btn-reservar:hover {
         background: #16a34a;
+        color: white;
+        text-decoration: none;
     }
