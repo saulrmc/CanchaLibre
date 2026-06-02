@@ -1,0 +1,98 @@
+﻿@page "/encuentra-cancha"
+@using CanchaLibreWeb.ViewModels
+
+<div class="encuentra-shell">
+
+    <div class="encuentra-header">
+        <div>
+            <h1>Encuentra cancha</h1>
+            <p>Seleccione la cancha que desea reservar:</p>
+        </div>
+        <div class="filtro-orden">
+            <label>Filtrar por:</label>
+            <select @bind="ordenSeleccionado" @bind:after="Ordenar">
+                <option value="precio_asc">Menor precio</option>
+                <option value="precio_desc">Mayor precio</option>
+                <option value="nombre">Nombre</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="encuentra-body">
+
+        <!-- SIDEBAR FILTROS -->
+        <aside class="sidebar-filtros">
+
+            <div class="filtro-grupo">
+                <h4><i class="ti ti-filter"></i> Tipo de Deporte</h4>
+                @foreach (var d in deportesDisponibles)
+                {
+                    <label class="check-label">
+                        <input type="checkbox" @onchange="e => ToggleDeporte(d, e)" />
+                        @d
+                    </label>
+                }
+            </div>
+
+            <div class="filtro-grupo">
+                <h4>Rango de Precio (por hora)</h4>
+                <input type="range" min="0" max="1400" step="10"
+                       @bind="precioMax" @bind:after="AplicarFiltros" />
+                <div class="precio-range-labels">
+                    <span>S/0</span><span>S/@precioMax</span>
+                </div>
+            </div>
+
+            <div class="filtro-grupo">
+                <h4>Características</h4>
+                @foreach (var c in caracteristicasDisponibles)
+                {
+                    <label class="check-label">
+                        <input type="checkbox" @onchange="e => ToggleCaracteristica(c, e)" />
+                        @c
+                    </label>
+                }
+            </div>
+
+            <button class="btn-limpiar" @onclick="LimpiarFiltros">Limpiar filtros</button>
+        </aside>
+
+        <!-- GRID CANCHAS -->
+        <div class="grid-canchas">
+            @foreach (var cancha in canchasFiltradas)
+            {
+                <div class="card-cancha">
+                    @if (cancha.EsOferta)
+                    {
+                        <div class="badge-oferta">-20%</div>
+                    }
+                    <img src="@cancha.ImagenUrl" alt="@cancha.Nombre" />
+                    <div class="card-body">
+                        <h3>@cancha.Nombre</h3>
+                        <p class="card-ubicacion">📍 @cancha.Distrito</p>
+                        <p class="card-precio">
+                            <strong>S/@cancha.PrecioHora</strong>
+                            <span>por hora</span>
+                        </p>
+                        <div class="card-etiquetas">
+                            @foreach (var e in cancha.Etiquetas)
+                            {
+                                <span class="etiqueta-chip">@e</span>
+                            }
+                        </div>
+                        <div class="card-deportes">
+                            @foreach (var d in cancha.Deportes)
+                            {
+                                <span class="deporte-chip @ObtenerColorDeporte(d)">@d</span>
+                            }
+                        </div>
+                        <button class="btn-reservar"
+                                @onclick="() => IrADetalle(cancha.Id)">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,227 @@
+﻿.encuentra-shell {
+    padding: 32px 40px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.encuentra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+    .encuentra-header h1 {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 4px;
+    }
+
+    .encuentra-header p {
+        color: #555;
+        font-size: 14px;
+    }
+
+.filtro-orden {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+    .filtro-orden select {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+/* BODY */
+.encuentra-body {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* SIDEBAR */
+.sidebar-filtros {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.filtro-grupo {
+    margin-bottom: 24px;
+}
+
+    .filtro-grupo h4 {
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+.check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #16a34a;
+}
+
+.precio-range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.btn-limpiar {
+    width: 100%;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+    .btn-limpiar:hover {
+        background: #f9fafb;
+    }
+
+/* GRID CANCHAS */
+.grid-canchas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card-cancha {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.badge-oferta {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.card-cancha img {
+    width: 100%;
+    height: 155px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 14px;
+}
+
+    .card-body h3 {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+.card-ubicacion {
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.card-precio {
+    margin-bottom: 8px;
+}
+
+    .card-precio strong {
+        font-size: 16px;
+    }
+
+    .card-precio span {
+        font-size: 12px;
+        color: #666;
+        margin-left: 4px;
+    }
+
+.card-etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.etiqueta-chip {
+    background: #f3f4f6;
+    color: #555;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.card-deportes {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.deporte-chip {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+}
+
+.chip-futbol {
+    background: #7c3aed;
+}
+
+.chip-voley {
+    background: #2563eb;
+}
+
+.chip-basquet {
+    background: #ea580c;
+}
+
+.chip-tenis {
+    background: #16a34a;
+}
+
+.btn-reservar {
+    width: 100%;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+    .btn-reservar:hover {
+        background: #16a34a;
+    }
