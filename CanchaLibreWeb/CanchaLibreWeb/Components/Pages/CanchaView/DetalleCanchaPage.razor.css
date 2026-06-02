@@ -1,4 +1,50 @@
-﻿.detalle-shell {
+﻿.hero-cancha {
+    min-height: 310px;
+    background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.25)), url("hero-cancha.jpg") center/cover no-repeat;
+    color: white;
+    position: relative;
+    padding: 24px 70px;
+}
+
+.navbar-cancha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-cancha {
+    height: 42px;
+}
+
+.menu-cancha {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 13px;
+}
+
+    .menu-cancha a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+.btn-registro {
+    background: #16a34a;
+    padding: 12px 24px;
+    border-radius: 4px;
+}
+
+.icono-usuario {
+    display: flex;
+    align-items: center;
+}
+
+    .icono-usuario svg {
+        fill: white;
+    }
+
+.detalle-shell {
     max-width: 1100px;
     margin: 0 auto;
     padding: 28px 24px 60px;
@@ -278,3 +324,72 @@
     .btn-reservar-main:hover {
         background: #15803d;
     }
+
+/* ── Footer ── */
+.footer-cancha {
+    background-color: #16a34a;
+    color: white;
+    padding: 50px 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.footer-descripcion {
+    font-size: 14px;
+    max-width: 320px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+}
+
+.footer-copy {
+    margin-top: 24px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}
+
+    .footer-copy a {
+        color: white;
+        text-decoration: underline;
+    }
+
+.footer-derecha h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.footer-derecha p {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: rgba(255,255,255,0.85);
+}
+
+.footer-redes {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+    .footer-redes a {
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+
+        .footer-redes a:hover {
+            background: rgba(255,255,255,0.3);
+        }

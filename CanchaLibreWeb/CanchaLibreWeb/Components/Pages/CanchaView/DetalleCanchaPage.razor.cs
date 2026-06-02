@@ -1,7 +1,7 @@
 ﻿using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
 
-namespace CanchaLibreWeb.Components.Pages.Canchas;
+namespace CanchaLibreWeb.Components.Pages.CanchaView;
 
 public partial class DetalleCanchaPage : ComponentBase
 {
@@ -21,14 +21,14 @@ public partial class DetalleCanchaPage : ComponentBase
 
     private List<ComentarioItem> comentarios = new()
     {
-        new("Juan Sanchéz",  "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Guru Mahinaar", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Property Ecosaka", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Guru Mahinaar", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Milestone Proper", "Comentario breve."),
-        new("Property Makkhan","Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Ahaly Jankia", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-        new("Property Makkhan","Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+        new("Juan Sanchéz",  "La iluminacion es buena"),
+        new("Ricardo Carrasco", "Podria mejorar con la atencion."),
+        new("Carlos Garcia", "Muy bien, son puntuales."),
+        new("Luis Rodriguez", "Tuve que esperar 10 minutos extras...."),
+        new("Rubio Huaman", "Comentario breve."),
+        new("Camila Flores","Muy buena cancha"),
+        new("Ahaly Jankia", "Muy buen servicio."),
+        new("Luciana Ruiz","Deberia haber una maquina de snacks."),
     };
 
     protected override void OnInitialized()
@@ -38,7 +38,7 @@ public partial class DetalleCanchaPage : ComponentBase
         {
             idCancha = Id,
             nombre = "Complejo Deportivo Ciro Alegría",
-            descripcion = "Premium 5-a-side and 7-a-side football turf with international standard artificial grass. Evening floodlights available.",
+            descripcion = "En la Cancha Deportivo Ciro Alegría, situada en San Juan de Lurigancho, disfrutarás de un espacio deportivo renovado y de gran tamaño, ideal para partidos de fútbol 7 en un entorno vigilado y seguro.",
             imagenUrl = "cancha4.jpeg",
             direccion = "San Juan de Lurigancho",
             disponible = true,
