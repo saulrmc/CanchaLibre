@@ -1,29 +1,8 @@
-﻿@page "/cancha/{Id:int}"
+﻿@page "/Cancha/{Id:int}"
 @using CanchaLibreWeb.ViewModels
 
-<section class="hero-cancha">
-    <div class="navbar-cancha">
-        <img src="Logo.png" class="logo-cancha" />
-        <span class="brand-name">CanchaLibre</span>
-
-        <div class="menu-cancha">
-            <a href="/">Inicio</a>
-            <a href="/Encuentra-Cancha">Encuentra cancha</a>
-            <a href="/Mis-Reservas">Mis Reservas</a>
-            <a href="/Portal-Propietario">Portal Propietario</a>
-            <a href="/login" class="icono-usuario">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                </svg>
-            </a>
-            <a href="/registrar" class="btn-registro">Regístrate</a>
-        </div>
-    </div>
-
-</section>
-
+<NavMenu />
 <div class="detalle-shell">
-
     <!-- GALERÍA -->
     <div class="galeria-layout">
         <img class="img-principal" src="@cancha.imagenUrl" alt="@cancha.nombre" />

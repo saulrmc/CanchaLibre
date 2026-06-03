@@ -8,42 +8,42 @@
         <h1>Tu cancha,<br />al toque</h1>
     </div>
 
-    <div class="buscador-cancha">
-        <div>
-            <label>Ubicación</label>
-            <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
-        </div>
+        <div class="buscador-cancha">
+            <div>
+                <label>Ubicación</label>
+                <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
+            </div>
 
-        <div>
-            <label>Fecha</label>
-            <input type="date" @bind="fecha" />
-        </div>
+            <div>
+                <label>Fecha</label>
+                <input type="date" @bind="fecha" />
+            </div>
 
-        <div>
-            <label>Hora</label>
-            <input type="time" @bind="hora" />
-        </div>
+            <div>
+                <label>Hora</label>
+                <input type="time" @bind="hora" />
+            </div>
 
-        <div>
-            <label>Deporte</label>
-            <select @bind="deporteSeleccionado">
-                <option value="">Todos</option>
-                <option value="Futbol">Fútbol</option>
-                <option value="Voley">Vóley</option>
-                <option value="Basquet">Básquet</option>
-            </select>
-        </div>
+            <div>
+                <label>Deporte</label>
+                <select @bind="deporteSeleccionado">
+                    <option value="">Todos</option>
+                    <option value="Futbol">Fútbol</option>
+                    <option value="Voley">Vóley</option>
+                    <option value="Basquet">Básquet</option>
+                </select>
+            </div>
 
-        <button @onclick="Buscar">Buscar</button>
-    </div>
-</section>
-
-<section class="contenido-home">
-    <div class="titulo-home">
-        <div>
-            <h2>Canchas destacadas</h2>
-            <p>Seleccione la cancha que desea reservar:</p>
+            <button @onclick="Buscar">Buscar</button>
         </div>
+    </section>
+
+    <section class="contenido-home">
+        <div class="titulo-home">
+            <div>
+                <h2>Canchas destacadas</h2>
+                <p>Seleccione la cancha que desea reservar:</p>
+            </div>
 
         <a class="btn-ver-todo" href="/Encuentra-Cancha">
             Ver todo
