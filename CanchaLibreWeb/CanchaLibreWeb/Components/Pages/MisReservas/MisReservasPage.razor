@@ -5,7 +5,12 @@
     <NavMenu />
 
     <div class="reservas-contenido">
-        <h1>Mis Reservas</h1>
+        <div class="reservas-header">
+            <div>
+                <h1>Mis Reservas</h1>
+                <p>Administrar mis reservas.</p>
+            </div>
+        </div>
 
         <div class="lista-reservas">
             @if (reservasUsuario == null || !reservasUsuario.Any())
