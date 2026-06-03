@@ -1,0 +1,190 @@
+﻿.confirmada-shell {
+    min-height: 100vh;
+    background: #f0fdf4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px 60px;
+}
+
+.confirmada-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+}
+
+/* ÍCONO */
+.icono-exito {
+    width: 64px;
+    height: 64px;
+    background: #f0fdf4;
+    border: 2px solid #16a34a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+    .icono-exito svg {
+        width: 30px;
+        height: 30px;
+    }
+
+.confirmada-card h1 {
+    font-size: 24px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.subtitulo {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* SECCIONES */
+.seccion-detalle {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+    .seccion-detalle h2 {
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 14px;
+        color: #111;
+    }
+
+/* FILAS DETALLE */
+.detalle-fila {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+    .detalle-fila:last-child {
+        margin-bottom: 0;
+    }
+
+.detalle-icono {
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.detalle-principal {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 2px;
+}
+
+.detalle-secundario {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* FILAS PAGO */
+.pago-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+    .pago-fila.total {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 10px;
+        margin-top: 4px;
+        font-size: 15px;
+    }
+
+.total-verde {
+    color: #16a34a;
+    font-size: 18px;
+}
+
+.metodo-pago {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 10px;
+}
+
+/* CÓDIGO */
+.codigo-reserva {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 24px;
+}
+
+.codigo-label {
+    font-size: 12px;
+    color: #16a34a;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.codigo-valor {
+    font-size: 22px;
+    font-weight: 900;
+    color: #16a34a;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.codigo-hint {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* BOTONES */
+.acciones {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-descargar {
+    flex: 1;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .btn-descargar:hover {
+        background: #15803d;
+    }
+
+.btn-inicio {
+    flex: 1;
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .btn-inicio:hover {
+        background: #f9fafb;
+    }

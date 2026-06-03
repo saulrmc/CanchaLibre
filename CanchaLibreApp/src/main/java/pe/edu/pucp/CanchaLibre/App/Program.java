@@ -67,8 +67,8 @@ public class Program {
 
 //                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
                 Propietario propietario = new Propietario();
-                propietario.setNombres("Roberto Dueño");
-                propietario.setCorreo("roberto.canchas@negocio.com");
+                propietario.setNombres("Roberto Tueño");
+                propietario.setCorreo("roberto.canchas2@negocio.com");
                 propietario.setContrasena("adminPass2026");
                 propietario.setTelefono("987654321");
                 propietario.setIntentosFallidos(0);

@@ -1,30 +1,21 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">CanchaLibreWeb</a>
+﻿<div class="navbar-cancha">
+    <div class="navbar-cancha-brand">
+        <img src="Logo.png" class="logo-cancha" alt="CanchaLibre Logo" />
+        <span class="brand-name">CanchaLibre</span>
+    </div>
+
+    <div class="menu-cancha">
+        <NavLink class="nav-link-cancha" href="/" Match="NavLinkMatch.All">Inicio</NavLink>
+        <NavLink class="nav-link-cancha" href="/Encuentra-Cancha">Encuentra cancha</NavLink>
+        <NavLink class="nav-link-cancha" href="/Mis-Reservas">Mis Reservas</NavLink>
+        <NavLink class="nav-link-cancha" href="/Portal-Propietario">Portal Propietario</NavLink>
+        
+        <NavLink class="icono-usuario" href="/Login">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+            </svg>
+        </NavLink>
+        
+        <NavLink class="btn-registro" href="/Registrar">Regístrate</NavLink>
     </div>
 </div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-

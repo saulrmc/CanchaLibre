@@ -1,0 +1,87 @@
+﻿@page "/reserva-confirmada"
+@using CanchaLibreWeb.ViewModels
+
+<div class="confirmada-shell">
+    <div class="confirmada-card">
+
+        <!-- ÍCONO ÉXITO -->
+        <div class="icono-exito">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+            </svg>
+        </div>
+
+        <h1>¡Reserva Confirmada!</h1>
+        <p class="subtitulo">Tu pago ha sido procesado exitosamente</p>
+
+        <!-- DETALLES RESERVA -->
+        <div class="seccion-detalle">
+            <h2>Detalles de la Reserva</h2>
+
+            <div class="detalle-fila">
+                <span class="detalle-icono">📍</span>
+                <div>
+                    <p class="detalle-principal">@NombreCancha</p>
+                    <p class="detalle-secundario">@UbicacionCancha</p>
+                </div>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-icono">📅</span>
+                <div>
+                    <p class="detalle-principal">@FechaFormateada</p>
+                    <p class="detalle-secundario">Turno confirmado</p>
+                </div>
+            </div>
+
+            <div class="detalle-fila">
+                <span class="detalle-icono">🕐</span>
+                <div>
+                    <p class="detalle-principal">@HoraRango hrs</p>
+                    <p class="detalle-secundario">Duración: @Duracion</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN PAGO -->
+        <div class="seccion-detalle">
+            <h2>Resumen de Pago</h2>
+
+            @foreach (var item in itemsPago)
+            {
+                <div class="pago-fila">
+                    <span>@item.Concepto</span>
+                    <span>$@item.Monto.ToString("F2")</span>
+                </div>
+            }
+
+            <div class="pago-fila total">
+                <strong>Total Pagado</strong>
+                <strong class="total-verde">$@Total.ToString("F2")</strong>
+            </div>
+
+            <div class="metodo-pago">
+                💳 Pagado con @MetodoPago
+            </div>
+        </div>
+
+        <!-- CÓDIGO RESERVA -->
+        <div class="codigo-reserva">
+            <p class="codigo-label">Código de Reserva</p>
+            <p class="codigo-valor">@CodigoReserva</p>
+            <p class="codigo-hint">Presente este código al llegar a la cancha</p>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="acciones">
+            <button class="btn-descargar" @onclick="DescargarComprobante">
+                ⬇ Descargar Comprobante
+            </button>
+            <button class="btn-inicio" @onclick="VolverInicio">
+                🏠 Volver al Inicio
+            </button>
+        </div>
+
+    </div>
+</div>

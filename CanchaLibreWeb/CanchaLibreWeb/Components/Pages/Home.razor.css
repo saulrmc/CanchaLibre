@@ -7,12 +7,6 @@
     padding: 24px 70px;
 }
 
-.navbar-cancha {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .logo-cancha {
     height: 42px;
 }
@@ -46,10 +40,11 @@
     }
 
 .hero-texto h1 {
-    margin-top: 45px;
+    margin-top: 85px;
     font-size: 56px;
     line-height: .9;
     font-weight: 900;
+    outline: none;
 }
 
 .buscador-cancha {
@@ -307,4 +302,8 @@
     border-radius: 4px;
     padding: 10px 22px;
     font-weight: 700;
+}
+.btn-ver-todo {
+    text-decoration: none;
+    display: inline-block;
 }

@@ -4,6 +4,23 @@
     flex-direction: column;
 }
 
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+}
+
+.app-main {
+    flex: 1;
+}
+
+.content {
+    width: min(100%, 1280px);
+    margin: 0 auto;
+}
+
+
 main {
     flex: 1;
 }

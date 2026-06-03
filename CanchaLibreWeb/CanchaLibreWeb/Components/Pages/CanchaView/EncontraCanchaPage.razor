@@ -1,8 +1,7 @@
-﻿@page "/encuentra-cancha"
+﻿@page "/Encuentra-Cancha"
 @using CanchaLibreWeb.ViewModels
-
 <div class="encuentra-shell">
-
+    <NavMenu />
     <div class="encuentra-header">
         <div>
             <h1>Encuentra cancha</h1>
@@ -86,13 +85,13 @@
                                 <span class="deporte-chip @ObtenerColorDeporte(d)">@d</span>
                             }
                         </div>
-                        <button class="btn-reservar"
-                                @onclick="() => IrADetalle(cancha.Id)">
+                        <a class="btn-reservar" href="/cancha/@cancha.Id">
                             Reservar
-                        </button>
+                        </a>
                     </div>
                 </div>
             }
         </div>
     </div>
 </div>
+
