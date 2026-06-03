@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-
 namespace CanchaLibreWeb.Components.Pages.Reservas;
 
 public partial class ReservaConfirmadaPage : ComponentBase
@@ -36,4 +35,5 @@ public partial class ReservaConfirmadaPage : ComponentBase
     }
 
     private void VolverInicio() => NavigationManager.NavigateTo("/");
+
 }

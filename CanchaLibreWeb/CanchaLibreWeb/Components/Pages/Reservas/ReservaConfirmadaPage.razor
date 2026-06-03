@@ -1,4 +1,6 @@
 ﻿@page "/reserva-confirmada"
+@rendermode InteractiveServer
+
 @using CanchaLibreWeb.ViewModels
 
 <div class="confirmada-shell">
@@ -52,13 +54,13 @@
             {
                 <div class="pago-fila">
                     <span>@item.Concepto</span>
-                    <span>$@item.Monto.ToString("F2")</span>
+                    <span>S/ @item.Monto.ToString("F2")</span>
                 </div>
             }
 
             <div class="pago-fila total">
                 <strong>Total Pagado</strong>
-                <strong class="total-verde">$@Total.ToString("F2")</strong>
+                <strong class="total-verde">S/ @Total.ToString("F2")</strong>
             </div>
 
             <div class="metodo-pago">

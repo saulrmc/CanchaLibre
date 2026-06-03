@@ -6,6 +6,8 @@ namespace CanchaLibreWeb.Components.Pages.CanchaView;
 public partial class DetalleCanchaPage : ComponentBase
 {
     [Parameter] public int Id { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
 
     private CanchaViewModel cancha = new();
     private DateTime fechaSeleccionada = DateTime.Today;
@@ -51,4 +53,9 @@ public partial class DetalleCanchaPage : ComponentBase
 
     public record HorarioItem(string Etiqueta, int Precio);
     public record ComentarioItem(string Nombre, string Texto);
+
+    private void IrAPAgar()
+    {
+        NavigationManager.NavigateTo("/reserva-confirmada");
+    }
 }

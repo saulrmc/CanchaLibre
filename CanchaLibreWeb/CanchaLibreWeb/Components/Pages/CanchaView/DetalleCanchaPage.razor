@@ -1,5 +1,7 @@
 ﻿@page "/Cancha/{Id:int}"
+@rendermode InteractiveServer
 @using CanchaLibreWeb.ViewModels
+@using CanchaLibreWeb.Components.Pages.CanchaView
 
 <NavMenu />
 <div class="detalle-shell">
@@ -117,7 +119,7 @@
                     </div>
                 </div>
 
-                <button class="btn-reservar-main">Reservar y Pagar</button>
+                <button class="btn-reservar-main" @onclick="IrAPAgar">Reservar y Pagar</button>
             </div>
         </div>
     </div>

@@ -6,6 +6,9 @@ namespace CanchaLibreWeb.Components.Pages.PortalPropietario;
 
 public partial class PortalPropietarioPage : ComponentBase
 {
+
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
     protected int BusquedasTotales { get; set; } = 64;
     protected double BusquedasPorcentaje { get; set; } = 18;
 

@@ -1,4 +1,6 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+
 @using CanchaLibreWeb.ViewModels
 
 <section class="hero-cancha">
@@ -45,7 +47,7 @@
                 <p>Seleccione la cancha que desea reservar:</p>
             </div>
 
-            <button class="btn-ver-todo">Ver todo</button>
+            <button class="btn-ver-todo" @onclick="VerTodo">Ver todo</button>
         </div>
 
         <div class="grid-canchas">
@@ -73,9 +75,9 @@
                             }
                         </div>
 
-                        <button class="btn-reservar">
+                    <a class="btn-reservar" href="/cancha/@cancha.idCancha">
                             Reservar
-                        </button>
+                        </a>
                     </div>
                 </div>
             }
@@ -87,7 +89,7 @@
 
         <div>
             <p>Publica en CanchaLibre y conéctate con cientos de clientes. Maneja reservas y pagos sin esfuerzo.</p>
-            <button>Publica aquí</button>
+            <button @onclick="IniciaSesion">Publica aquí</button>
         </div>
     </section>
 
@@ -137,6 +139,8 @@
     </footer>
 
 @code {
+
+    [Inject] protected NavigationManager NavigationManager { get; set; } = default!;
     private string filtroUbicacion = string.Empty;
     private string deporteSeleccionado = string.Empty;
     private DateTime fecha = DateTime.Today;
@@ -210,4 +214,8 @@
                 (c.deportes != null && c.deportes.Any(d => d.ToString() == deporteSeleccionado)))
             .ToList();
     }
+
+    protected void VerTodo() { NavigationManager.NavigateTo("/Encuentra-Cancha"); }
+    protected void IniciaSesion() { NavigationManager.NavigateTo("/Login");}
+    // protected void Reservar(int canchaId) { NavigationManager.NavigateTo("/Cancha/{Id:canchaId}");}
 }
