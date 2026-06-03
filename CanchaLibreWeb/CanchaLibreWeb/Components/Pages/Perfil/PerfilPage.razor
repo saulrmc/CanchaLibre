@@ -1,0 +1,136 @@
+@page "/Perfil"
+@rendermode InteractiveServer
+@attribute [AllowAnonymous]
+
+<div class="bg-light py-5" style="min-height: 90vh;">
+    <div class="container">
+        
+        <div class="mb-5">
+            <h1 class="fw-bold text-dark h2 mb-1">Mi Perfil</h1>
+            <p class="text-secondary mb-0">Gestiona tu información personal y seguridad de tu cuenta</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(MensajeExito))
+        {
+            <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4 fw-semibold" role="alert">
+                 @MensajeExito
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(MensajeError))
+        {
+            <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4 fw-semibold" role="alert">
+                 @MensajeError
+            </div>
+        }
+
+        <div class="row g-4">
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm p-4 text-center bg-white rounded-4 h-100">
+                    <div class="mx-auto mb-3 position-relative" style="width: 110px; height: 110px;">
+                        <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center bg-success-subtle text-success fs-1 border">
+                            <span class="fs-5"><img src="usuario.png" alt="Usuario" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 bg-success p-2 rounded-circle border border-white border-3" title="Usuario Verificado"></span>
+                    </div>
+
+                    <h4 class="fw-bold text-dark mb-1">@Modelo.Nombres</h4>
+                    <span class="badge px-3 py-2 rounded-pill bg-success-subtle text-success small mb-4 fw-bold">
+                        @TipoUsuario
+                    </span>
+
+                    <hr class="text-muted opacity-25" />
+
+                    <div class="text-start mt-3 px-2">
+                        <div class="mb-3">
+                            <small class="text-secondary d-block fw-bold mb-1">Correo Electrónico</small>
+                            <span class="text-dark fw-semibold" style="font-size: 14px;">@Modelo.Correo</span>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-secondary d-block fw-bold mb-1">Miembro desde</small>
+                            <span class="text-dark fw-semibold" style="font-size: 14px;">@FechaRegistro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 p-md-5 bg-white rounded-4">
+                    
+                    <EditForm Model="@Modelo" OnValidSubmit="GuardarCambios">
+                        <DataAnnotationsValidator />
+
+                        <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom text-success-marker">Información Personal</h5>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Nombres completos</label>
+                                <InputText class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark focus-custom" @bind-Value="Modelo.Nombres" placeholder="Juan Pérez" />
+                                <ValidationMessage For="@(() => Modelo.Nombres)" class="text-danger small mt-1" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Teléfono celular</label>
+                                <InputText class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark focus-custom" @bind-Value="Modelo.Telefono" placeholder="999999999" />
+                                <ValidationMessage For="@(() => Modelo.Telefono)" class="text-danger small mt-1" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-secondary">Correo electrónico</label>
+                                <InputText type="email" class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark focus-custom" @bind-Value="Modelo.Correo" placeholder="correo@ejemplo.com" />
+                                <ValidationMessage For="@(() => Modelo.Correo)" class="text-danger small mt-1" />
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-dark mb-4 pt-2 pb-2 border-bottom text-success-marker">Seguridad</h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Contraseña actual</label>
+                                <InputText type="password" class="form-control bg-light py-2 px-3 border-0 rounded-3 focus-custom" @bind-Value="Modelo.ContrasenaActual" placeholder="••••••••" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-secondary">Nueva contraseña</label>
+                                <InputText type="password" class="form-control bg-light py-2 px-3 border-0 rounded-3 focus-custom" @bind-Value="Modelo.NuevaContrasena" placeholder="••••••••" />
+                            </div>
+                        </div>
+
+                        <div class="text-end pt-3">
+                            <button type="submit" class="btn btn-success px-5 py-2.5 fw-bold shadow-sm" style="background-color: #10B981; border: none; border-radius: 8px;">
+                                Guardar Cambios
+                            </button>
+                        </div>
+
+                    </EditForm>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<style>
+    
+    .bg-success-subtle {
+        background-color: #E6F4EA !important;
+    }
+    .text-success-marker {
+        position: relative;
+    }
+    
+    .text-success-marker::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background-color: #10B981;
+    }
+    .focus-custom:focus {
+        background-color: #FFF !important;
+        border: 1px solid #10B981 !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.15) !important;
+    }
+</style>
