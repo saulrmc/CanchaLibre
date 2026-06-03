@@ -36,55 +36,9 @@
 
             <button @onclick="Buscar">Buscar</button>
         </div>
-    </section>
-
-    <section class="contenido-home">
-        <div class="titulo-home">
-            <div>
-                <h2>Canchas destacadas</h2>
-                <p>Seleccione la cancha que desea reservar:</p>
-            </div>
-
-        <a class="btn-ver-todo" href="/Encuentra-Cancha">
-            Ver todo
-        </a>
-    </div>
-
-    <div class="grid-canchas">
-        @foreach (var cancha in canchasFiltradas)
-        {
-            <div class="card-cancha">
-                <img src="@cancha.imagenUrl" />
-
-                <div class="card-body-cancha">
-                    <h3>@cancha.nombre</h3>
-                    <p class="ubicacion">📍 @cancha.direccion</p>
-
-                    <p class="precio">
-                        <strong>S/80</strong>
-                        <span>por hora</span>
-                    </p>
-
-                    <div class="etiquetas-card">
-                        @if (cancha.etiquetas != null)
-                        {
-                            @foreach (var etiqueta in cancha.etiquetas.Take(2))
-                            {
-                                <span>@etiqueta</span>
-                            }
-                        }
-                    </div>
-
-                    <a class="btn-reservar" href="/cancha/@cancha.idCancha">
-                        Reservar
-                    </a>
-                </div>
-            </div>
-        }
-    </div>
 </section>
 
-    <section class="contenido-home">
+<section class="contenido-home">
         <div class="titulo-home">
             <div>
                 <h2>Canchas destacadas</h2>
