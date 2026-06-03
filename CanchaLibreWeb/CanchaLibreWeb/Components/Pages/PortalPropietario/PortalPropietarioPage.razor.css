@@ -1,0 +1,273 @@
+﻿.dashboard-shell {
+    padding: 2rem 4rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb; /* Fondo gris muy claro para contrastar las tarjetas blancas */
+    padding:120px;
+}
+
+.dashboard-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 2rem;
+}
+
+/* SECCIÓN DE TARJETAS DE ESTADÍSTICAS ============================= */
+.grid-estadisticas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.card-est {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
+.card-est-icono {
+    width: 46px;
+    height: 46px;
+    padding: 10px;
+}
+
+    .card-est-icono svg {
+        width: 100% !important;
+        height: 100% !important;
+        fill: none;
+        stroke: #16a34a;
+        stroke-width: 2.5px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transform: scale(1.8);
+    }
+
+.card-est-icono-text {
+    width: 50px;
+    height: 50px;
+    fill: none;
+    stroke: #16a34a;
+    stroke-width: 2.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    text-align: center;
+}
+.number-icon {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.card-est-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.est-label {
+    font-size: 1.2rem;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.est-valor {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* BADGES ======================================================== */
+.badge-estado {
+    color: #000000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px; 
+    height: 32px; 
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.badge-cobrado {
+    background-color: #dcfce7; /* Fondo verde suave */
+    color: #15803d; /* Letras verdes */
+    border: 1px solid #bbf7d0;
+}
+
+.badge-por-cobrar {
+    background-color: #fee2e2; /* Fondo rojo suave */
+    color: #b91c1c; /* Letras rojas */
+    border: 1px solid #fecaca;
+}
+
+/* Colores específicos para los números principales */
+.valor-busquedas {
+    color: #16a34a;
+}
+
+.valor-utilidad {
+    color: #16a34a;
+}
+
+.valor-reservas {
+    color: #16a34a;
+}
+
+.valor-ingresos {
+    color: #16a34a;
+}
+
+.est-comparacion {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* Estilos para los íconos de las tarjetas */
+.card-est-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-est-icono-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #16a34a;
+    line-height: 1;
+}
+
+/* SECCIÓN INFERIOR (DOS COLUMNAS: 70% / 30%) */
+.dashboard-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.seccion-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+.col-body {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* --- COLUMNA IZQUIERDA: RESERVAS RECIENTES --- */
+.lista-reservas-recientes {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reserva-complejo{
+    font-weight: bold; 
+}
+
+.item-reserva-reciente {
+    background-color: #f4f4f4;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+} 
+
+/* ESTADO DE COBRANZAS ==================================================*/
+
+.cobranza-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+} 
+
+.cobranza-header strong {
+    color: #111827;
+    font-size: 1.1rem;
+}
+    /* Barra de progreso customizada */
+.progress-bar-container {
+    background-color: #e5e7eb;
+    border-radius: 20px;
+    height: 10px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+} 
+
+.progress-bar-fill {
+    background-color: #16a34a; /* El verde característico de CanchaLibre */
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.4s ease-in-out;
+}
+    /* Filas de cobrado / pendiente */
+.cobranza-filas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+} 
+.cobranza-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+} 
+.cobranza-label {
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+} 
+.cobranza-monto {
+    font-weight: 600;
+    color: #374151;
+}
+    /* Puntos de color antes del texto (Indicadores del gráfico) */
+.label-dot-cobrado::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #16a34a;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+} 
+.label-dot-pendiente::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #d1d5db; /* Gris para el pendiente */
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+    /* Responsive básico por si achicas la ventana del navegador */
+ @media (max-width: 1024px) {
+    .grid-estadisticas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dashboard-body {
+        grid-template-columns: 1fr;
+    }
+}

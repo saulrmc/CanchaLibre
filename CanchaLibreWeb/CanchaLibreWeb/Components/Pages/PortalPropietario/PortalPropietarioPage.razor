@@ -1,0 +1,150 @@
+﻿@page "/Portal-Propietario"
+@using CanchaLibreWeb.Components.Pages.PortalPropietario
+@using CanchaLibreWeb.ViewModels
+
+<NavMenu />
+
+<div class="dashboard-shell">
+    
+    <h1 class="dashboard-title">Estadísticas</h1>
+
+    <div class="grid-estadisticas">
+        
+        <div class="card-est">
+            <div class="card-est-info">
+                <span class="est-label">Búsquedas totales</span>
+
+                <div class="number-icon">
+                    <strong class="est-valor valor-busquedas">@BusquedasTotales</strong>
+                    <div class="card-est-icono">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                </div>
+                <span class="est-comparacion">+@BusquedasPorcentaje% Respecto al mes anterior</span>
+            </div>
+        </div>
+
+        <div class="card-est">
+            <div class="card-est-info">
+                <span class="est-label">Utilidad neta</span>
+
+                <div class="number-icon">
+                    <strong class="est-valor valor-utilidad">s/. @(UtilidadNeta / 1000) mil</strong>
+                    <div class="card-est-icono-text">$</div>
+                </div>
+                
+                <span class="est-comparacion">+@UtilidadPorcentaje% Respecto al mes anterior</span>
+
+            </div>
+        </div>
+
+        <div class="card-est">
+            <div class="card-est-info">
+                <span class="est-label">Reservas del mes</span>
+
+                <div class="number-icon">
+                    <strong class="est-valor valor-reservas">@ReservasMes</strong>
+                    <div class="card-est-icono">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <span class="est-comparacion">+@ReservasPorcentaje% Respecto al mes anterior</span>
+            </div>
+        </div>
+
+        <div class="card-est">
+            <div class="card-est-info">
+                <span class="est-label">Ingresos totales</span>
+
+                <div class="number-icon">
+                    <strong class="est-valor valor-ingresos">s/. @(IngresosTotales / 1000) mil</strong>
+                    <div class="card-est-icono">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <span class="est-comparacion">+@IngresosPorcentaje% Respecto al mes anterior</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="dashboard-body">
+        
+        <div class="col-body">
+            <h2 class="seccion-title">Reservas recientes</h2>
+            <div class="lista-reservas-recientes">
+                @foreach (var r in ReservasRecientes)
+                {
+                    <div class="item-reserva-reciente">
+                        <div>
+                            <span class="reserva-complejo">@r.ComplejoDeportivo</span>
+                            <div class="reserva-meta">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-1">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    @r.Fecha.ToString("dd/MM/yyyy")
+                                </span>
+                                <span class="ms-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-1">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    @r.HoraInicio - @r.HoraFin
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <span class="badge-estado @(r.Estado == "Cobrado" ? "badge-cobrado" : "badge-por-cobrar")">
+                            @r.Estado
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-body">
+            <h2 class="seccion-title">Estado de cobranzas</h2>
+            <div>
+                
+                <div class="cobranza-header">
+                    <span>Completado</span>
+                    <strong>@PorcentajeCompletado%</strong>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: @(PorcentajeCompletado)%"></div>
+                </div>
+
+                <div class="cobranza-filas">
+                    <div class="cobranza-fila">
+                        <span class="cobranza-label label-dot-cobrado">Cobrado</span>
+                        <span class="cobranza-monto">s/. @MontoCobrado</span>
+                    </div>
+                    <div class="cobranza-fila">
+                        <span class="cobranza-label label-dot-pendiente">Pendiente</span>
+                        <span class="cobranza-monto">s/. @MontoPendiente</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
