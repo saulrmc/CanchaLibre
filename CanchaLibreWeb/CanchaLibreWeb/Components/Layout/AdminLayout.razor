@@ -1,0 +1,48 @@
+@inherits LayoutComponentBase
+
+<div class="d-flex admin-panel-shell" style="min-height: 100vh; background-color: #F8F9FA;">
+    
+    <div class="text-white p-4 d-flex flex-column admin-sidebar" style="width: 260px; background-color: #1A202C;">
+        <div class="text-center mb-5 mt-3">
+            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 70px; height: 70px;">
+                <span class="fs-2"><img src="admin.png" alt="Admin" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+            </div>
+            <h5 class="mb-0 fw-bold">Admin</h5>
+        </div>
+
+        <div class="nav flex-column nav-pills gap-2">
+            <NavLink class="nav-link text-white opacity-75" href="/Admin/Dashboard" Match="NavLinkMatch.All">
+                <span class="me-5"></span> Dashboard
+            </NavLink>
+            <NavLink class="nav-link text-white opacity-75" href="/Admin/Usuarios">
+                <span class="me-5"></span> Usuarios
+            </NavLink>
+            <NavLink class="nav-link text-white opacity-75" href="/Admin/Reportes">
+                <span class="me-5"></span> Reportes
+            </NavLink>
+        </div>
+
+        <a href="/" class="mt-auto text-white-50 text-decoration-none small text-center py-2 border-top border-secondary">
+             Volver al Inicio
+        </a>
+    </div>
+    
+    <div class="flex-grow-1 p-5 overflow-auto"> 
+        @Body 
+    </div>
+</div>
+
+<style>
+    /* Estilos del Menú del Administrador */
+    .admin-sidebar .nav-link.active {
+        background-color: #48BE74 !important; /* El verde CanchaLibre */
+        color: white !important;
+        font-weight: bold;
+        border-radius: 8px;
+        opacity: 1 !important;
+    }
+    .admin-sidebar .nav-link:hover:not(.active) {
+        background-color: rgba(255, 255, 255, 0.05);
+        opacity: 1 !important;
+    }
+</style>

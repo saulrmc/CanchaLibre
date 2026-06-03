@@ -321,3 +321,75 @@
 
 
 /* Estilos para el panel del Admin */
+/* Color verde insignia de CanchaLibre para el menú activo y los números */
+.active-green {
+    background-color: #198754 !important;
+    border-radius: 6px;
+}
+.text-success-custom {
+    color: #10a352;
+}
+
+/* Efecto hover suave en la barra lateral */
+.hover-dark:hover {
+    background-color: #242f3a;
+    border-radius: 6px;
+}
+
+/* Estructura del Gráfico CSS Puro */
+.chart-container-custom {
+    display: flex;
+    height: 300px;
+    position: relative;
+    padding-left: 40px;
+}
+
+.chart-y-axis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 30px;
+    display: flex;
+    flex-column: reverse;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    color: #6c757d;
+    font-size: 11px;
+    text-align: right;
+    width: 30px;
+}
+
+.chart-bars-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-grow: 1;
+    border-left: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 5px;
+    height: calc(100% - 30px);
+}
+
+.chart-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.chart-bar {
+    width: 45%;
+    background-color: #10a352;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease-in-out;
+}
+
+.chart-bar-wrapper span {
+    position: absolute;
+    bottom: -25px;
+    font-size: 11px;
+    color: #6c757d;
+}
