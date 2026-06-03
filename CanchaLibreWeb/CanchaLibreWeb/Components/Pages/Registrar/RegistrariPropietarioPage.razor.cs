@@ -23,6 +23,6 @@ public partial class RegistrarPropietarioPage : ComponentBase
 
         // Pasamos los datos recolectados por QueryString a la pantalla final de Propietario
         var query = $"?nombre={HttpUtility.UrlEncode(Modelo.Nombres)}&correo={HttpUtility.UrlEncode(Modelo.Correo)}&pass={HttpUtility.UrlEncode(Modelo.Contrasena)}";
-        Nav.NavigateTo($"/Registrar/Propietario/Detalles{query}");
+        Nav.NavigateTo($"/Registrar/Propietario/Detalles");
     }
 }
