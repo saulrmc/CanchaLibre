@@ -1,85 +1,48 @@
 ﻿@page "/mis-reservas"
-@using CanchaLibreWeb.Components.Pages.MisReservas;
+@using CanchaLibreWeb.ViewModels
+@using CanchaLibreWeb.Components.Pages.MisReservas
+<div class="reservas-shell-global">
+    <NavMenu />
 
-<section class="hero-cancha">
-    <div class="navbar-cancha">
-        <img src="Logo.png" class="logo-cancha" />
-        <span class="brand-name">CanchaLibre</span>
+    <div class="reservas-contenido">
+        <h1>Mis Reservas</h1>
 
-        <div class="menu-cancha">
-            <a href="/">Inicio</a>
-            <a href="/encuentra-cancha">Encuentra cancha</a>
-            <a href="/mis-reservas" class="activo-link">Mis Reservas</a>
-            <a href="#">Portal Propietario</a>
-        
-            <a href="/login" class="icono-usuario">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                </svg>
-            </a>
-            <a href="/registrar" class="btn-registro">Regístrate</a>
-        </div>
-    </div>
-</section>
-
-<div class="reservas-shell">
-    <h1>Mis Reservas</h1>
-
-    <div class="lista-reservas">
-        @if (reservasUsuario == null || !reservasUsuario.Any())
-        {
-            <div class="sin-reservas">
-                <p>No tienes ninguna reserva registrada actualmente.</p>
-                <a href="/encuentra-cancha" class="btn-buscar">Buscar Canchas</a>
-            </div>
-        }
-        else
-        {
-            @foreach (var reserva in reservasUsuario)
+        <div class="lista-reservas">
+            @if (reservasUsuario == null || !reservasUsuario.Any())
             {
-                <div class="card-reserva-item">
-                    <div class="reserva-imagen">
-                        <img src="@reserva.ImagenUrl" alt="@reserva.CanchaNombre" />
-                    </div>
-                    
-                    <div class="reserva-info">
-                        <h3>@reserva.CanchaNombre</h3>
-                        <p class="reserva-ubicacion">📍 @reserva.Distrito</p>
-                        <p class="reserva-fecha-hora"><strong>@reserva.Fecha.ToString("dd/MM/yyyy") - @reserva.Horario</strong></p>
-                        <p class="reserva-precio">S/. @reserva.PrecioTotal</p>
-                    </div>
-
-                    <div class="reserva-meta">
-                        <span class="meta-item">Booking ID: @reserva.BookingId</span>
-                        <span class="meta-item">Transaction ID: @reserva.TransactionId</span>
-                    </div>
-
-                    <div class="reserva-acciones">
-                        <button class="btn-modificar" @onclick="() => ModificarReserva(reserva.BookingId)">Modificar</button>
-                        <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.BookingId)">Cancelar</button>
-                    </div>
+                <div class="sin-reservas">
+                    <p>No tienes ninguna reserva registrada actualmente.</p>
+                    <a href="/encuentra-cancha" class="btn-buscar">Buscar Canchas</a>
                 </div>
             }
-        }
+            else
+            {
+                @foreach (var reserva in reservasUsuario)
+                {
+                    <div class="card-reserva-item">
+                        <div class="reserva-imagen">
+                            <img src="@reserva.ImagenUrl" alt="@reserva.CanchaNombre" />
+                        </div>
+                        
+                        <div class="reserva-info">
+                            <h3>@reserva.CanchaNombre</h3>
+                            <p class="reserva-ubicacion">📍 @reserva.Distrito</p>
+                            <p class="reserva-fecha-hora"><strong>📅 @reserva.Fecha.ToString("dd/MM/yyyy") — ⏰ @reserva.Horario</strong></p>
+                            <p class="reserva-precio">S/. @reserva.PrecioTotal</p>
+                        </div>
+
+                        <div class="reserva-meta">
+                            <span><strong>Booking ID:</strong> @reserva.BookingId</span>
+                            <span><strong>Transaction:</strong> @reserva.TransactionId</span>
+                        </div>
+
+                        <div class="reserva-acciones">
+                            <button class="btn-modificar" @onclick="() => ModificarReserva(reserva.BookingId)">Modificar</button>
+                            <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.BookingId)">Cancelar</button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     </div>
 </div>
-
-<footer class="footer-cancha">
-    <div class="footer-izquierda">
-        <div class="footer-logo">
-            <img src="Logo.png" alt="Logo" class="logo-cancha" />
-            <span class="brand-name">CanchaLibre</span>
-        </div>
-        <p class="footer-descripcion">
-            Reserva pistas deportivas al instante. Pagos seguros mediante Yape y Plin. Compatible con múltiples deportes e instalaciones en toda la ciudad.
-        </p>
-        <p class="footer-copy">
-            © 2026 <a href="/">CanchaLibre</a> — Todos los derechos reservados
-        </p>
-    </div>
-    <div class="footer-derecha">
-        <h4>Contact us</h4>
-        <p>📞 (222) 333-7767</p>
-        <p>✉️ support@unknowna.com</p>
-    </div>
-</footer>
