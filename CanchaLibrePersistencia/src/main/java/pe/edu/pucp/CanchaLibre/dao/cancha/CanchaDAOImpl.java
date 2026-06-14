@@ -1,14 +1,13 @@
 package pe.edu.pucp.CanchaLibre.dao.cancha;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Deporte;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Etiqueta;
-import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
+import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.cancha.Deporte;
+import pe.edu.pucp.canchalibre.modelo.cancha.Etiqueta;
+import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     @Override

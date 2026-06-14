@@ -1,7 +1,7 @@
 package pe.edu.pucp.CanchaLibre.dao.usuario;
 
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.usuario.Administrador;
+import pe.edu.pucp.canchalibre.modelo.usuario.Administrador;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

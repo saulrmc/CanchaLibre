@@ -1,9 +1,9 @@
 package pe.edu.pucp.CanchaLibre.dao.resena;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.resena.Resena;
-import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
+import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.resena.Resena;
+import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
 import java.time.LocalDateTime;

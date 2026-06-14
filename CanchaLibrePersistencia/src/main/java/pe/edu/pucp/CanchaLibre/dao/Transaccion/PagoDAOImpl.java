@@ -1,8 +1,8 @@
 package pe.edu.pucp.CanchaLibre.dao.Transaccion;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
+import pe.edu.pucp.canchalibre.modelo.transaccion.MetodoPago;
 
 import java.sql.*;
 

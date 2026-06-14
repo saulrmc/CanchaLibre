@@ -1,18 +1,14 @@
 package pe.edu.pucp.CanchaLibre.dao.reserva;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
-import pe.edu.pucp.CanchaLibre.modelo.reserva.EstadoReserva;
-import pe.edu.pucp.CanchaLibre.modelo.reserva.Reserva;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.MetodoPago;
-import pe.edu.pucp.CanchaLibre.modelo.transaccion.Pago;
-import pe.edu.pucp.CanchaLibre.modelo.usuario.Cliente;
+import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
+import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
+import pe.edu.pucp.canchalibre.modelo.transaccion.MetodoPago;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
+import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
 public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDAO {

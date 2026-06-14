@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pe.edu.pucp</groupId>
+    <groupId>pe.edu.pucp.canchalibre</groupId>
     <artifactId>CanchaLibre</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -14,6 +14,7 @@
         <module>CanchaLibrePersistencia</module>
         <module>CanchaLibreDBManager</module>
         <module>CanchaLibreNegocio</module>
+        <module>CanchaLibreRS</module>
     </modules>
 
     <properties>

@@ -3,9 +3,9 @@ package pe.edu.pucp.CanchaLibre.dao.usuario;
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
-import pe.edu.pucp.CanchaLibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 
-import pe.edu.pucp.CanchaLibre.modelo.usuario.Propietario;
+import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

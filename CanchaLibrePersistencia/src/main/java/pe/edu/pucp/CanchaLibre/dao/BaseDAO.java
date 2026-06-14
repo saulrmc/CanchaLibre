@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import pe.edu.pucp.CanchaLibre.db.DBFactoryProvider;
-import pe.edu.pucp.CanchaLibre.db.DBManager;
+import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
+import pe.edu.pucp.canchalibre.db.DBManager;
 
 /**
  * Contrato base genérico para DAOs basados en comandos SQL.

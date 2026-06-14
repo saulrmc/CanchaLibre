@@ -1,7 +1,7 @@
 package pe.edu.pucp.CanchaLibre.dao;
 
-import pe.edu.pucp.CanchaLibre.db.DBFactoryProvider;
-import pe.edu.pucp.CanchaLibre.db.DBManager;
+import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
+import pe.edu.pucp.canchalibre.db.DBManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
