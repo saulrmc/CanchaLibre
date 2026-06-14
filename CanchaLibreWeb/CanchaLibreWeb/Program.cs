@@ -1,10 +1,29 @@
 using CanchaLibreWeb.Components;
+using CanchaLibreWeb.Servicios.Cuentas;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opciones =>
+    {
+        opciones.LoginPath = "/Login";
+        opciones.AccessDeniedPath = "/Login";
+        opciones.SlidingExpiration = true;
+        opciones.ExpireTimeSpan = TimeSpan.FromHours(8);
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ICuentasUsuarioServiceClient, CuentasUsuarioRestClient>();
+//add more RestClient
 
 var app = builder.Build();
 
@@ -16,7 +35,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+//app.MapAuthEndpoints();
 
 app.UseAntiforgery();
 

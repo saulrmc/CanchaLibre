@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CanchaLibreWeb.ViewModels;
 
-public abstract class UsuarioViewModel
+public class UsuarioViewModel
 {
     public int Id {get; set;}
 
@@ -18,5 +18,7 @@ public abstract class UsuarioViewModel
     public String Telefono { get; set; } = string.Empty;
     public int IntentosFallidos {get;}
     public DateTime UltimaSesion {get; set;}
-    
+
+    //public bool Activo { get; set; } = true;
+
 }
