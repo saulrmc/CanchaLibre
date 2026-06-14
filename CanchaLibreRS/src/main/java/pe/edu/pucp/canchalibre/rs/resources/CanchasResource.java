@@ -59,7 +59,7 @@ public class CanchasResource {
                 cancha.getNombre().isEmpty()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear el área es inválido"))
+                    .entity(Map.of("error", "El payload para crear la cancha es inválido"))
                     .build();
         }
 
@@ -84,7 +84,7 @@ public class CanchasResource {
 
         if (canchaBO.obtener(idCancha) == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cancha con id:  "
+                    .entity(Map.of("error", "La cancha con id:  "
                             + idCancha + ", no existe"))
                     .build();
         }
@@ -95,7 +95,7 @@ public class CanchasResource {
                 cancha.getNombre().isEmpty()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear el área es inválido"))
+                    .entity(Map.of("error", "El payload para crear la cancha es inválido"))
                     .build();
         }
 
@@ -116,7 +116,7 @@ public class CanchasResource {
         Cancha cancha = canchaBO.obtener(idCancha);
         if (cancha == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cancha con id:  "
+                    .entity(Map.of("error", "La cancha con id:  "
                             + idCancha + ", no existe"))
                     .build();
         }
