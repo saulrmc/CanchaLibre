@@ -13,6 +13,7 @@
         <module>CanchaLibreApp</module>
         <module>CanchaLibrePersistencia</module>
         <module>CanchaLibreDBManager</module>
+        <module>CanchaLibreNegocio</module>
     </modules>
 
     <properties>
