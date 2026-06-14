@@ -1,7 +1,8 @@
 @page "/Admin/Reportes"
 @layout Layout.AdminLayout  
 @rendermode InteractiveServer
-@attribute [AllowAnonymous]
+@* @attribute [AllowAnonymous]*@
+@attribute [Authorize(Roles = "Administrador")]
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="fw-bold h2 text-dark mb-0">Reportes</h1>

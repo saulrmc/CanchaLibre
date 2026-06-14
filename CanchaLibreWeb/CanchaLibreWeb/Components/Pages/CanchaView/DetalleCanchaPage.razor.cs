@@ -56,6 +56,6 @@ public partial class DetalleCanchaPage : ComponentBase
 
     private void IrAPAgar()
     {
-        NavigationManager.NavigateTo("/reserva-confirmada");
+        NavigationManager.NavigateTo("/ReservaConfirmada");
     }
 }

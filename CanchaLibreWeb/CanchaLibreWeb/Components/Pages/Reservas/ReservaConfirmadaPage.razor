@@ -1,6 +1,6 @@
-﻿@page "/reserva-confirmada"
+﻿@page "/ReservaConfirmada"
 @rendermode InteractiveServer
-
+@attribute [Authorize(Roles = "Cliente")]
 @using CanchaLibreWeb.ViewModels
 
 <div class="confirmada-shell">

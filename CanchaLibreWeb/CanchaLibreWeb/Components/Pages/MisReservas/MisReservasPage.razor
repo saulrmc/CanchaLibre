@@ -1,6 +1,9 @@
-﻿@page "/Mis-Reservas"
+﻿@page "/MisReservas"
 @using CanchaLibreWeb.ViewModels
 @using CanchaLibreWeb.Components.Pages.MisReservas
+@attribute [Authorize(Roles = "Cliente")]
+
+
 @layout Layout.OnlyNavMenu
 <div class="reservas-shell-global">
 

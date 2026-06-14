@@ -1,7 +1,7 @@
-﻿@page "/Portal-Propietario"
+﻿@page "/PortalUsuario"
 @using CanchaLibreWeb.Components.Pages.PortalPropietario
 @using CanchaLibreWeb.ViewModels
-
+@attribute [Authorize(Roles = "Propietario")]
 
 
 <div class="dashboard-shell">
