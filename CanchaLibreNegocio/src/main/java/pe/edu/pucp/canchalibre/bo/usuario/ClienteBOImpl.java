@@ -16,46 +16,7 @@ public class ClienteBOImpl extends UsuarioBOImpl<Cliente> implements ClienteBO {
     }
 
     @Override
-    public void crear(Cliente modelo, Estado estado) {
-        validarCliente(modelo);
-
-        int id = this.clienteDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear el cliente");
-        }
-        modelo.setIdUsuario(id);
-    }
-
-    @Override
-    public List<Cliente> listar() {
-        return this.clienteDao.leerTodos();
-    }
-
-    @Override
-    public Cliente obtener(int id) {
-        validarIdPositivo(id, "id");
-        return this.clienteDao.leer(id);
-    }
-
-    @Override
-    public void eliminar(int id) {
-        validarIdPositivo(id, "id");
-        if (!this.clienteDao.eliminar(id)) {
-            throw new IllegalStateException("No se pudo eliminar el cliente con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Cliente modelo) {
-        validarCliente(modelo);
-
-        validarIdPositivo(modelo.getIdUsuario(), "id del cliente");
-        if (!this.clienteDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar el cliente con id: " + modelo.getIdUsuario());
-        }
-    }
-
-    private void validarCliente(Cliente modelo) {
-        validarPersonaBasica(modelo, "cliente");
+    protected BaseDAO<Cliente, Integer> getDao(){
+        return this.clienteDao;
     }
 }
