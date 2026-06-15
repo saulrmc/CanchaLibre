@@ -4,6 +4,7 @@ import pe.edu.pucp.canchalibre.bo.BaseBO;
 import pe.edu.pucp.CanchaLibre.dao.resena.ResenaDAO;
 import pe.edu.pucp.CanchaLibre.dao.resena.ResenaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
+import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.resena.Resena;
 
 import java.util.List;
@@ -17,14 +18,26 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
     }
 
     @Override
-    public void crear(Resena modelo, Estado estado) {
+    public void guardar(Resena modelo, Estado estado) {
         validarResena(modelo);
+        validarEstado(estado);
 
-        int id = this.resenaDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear la reseña");
+        if (estado == Estado.Nuevo) {
+            int id = this.resenaDao.crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear la reseña");
+            }
+            modelo.setIdResena(id);
         }
-        modelo.setIdResena(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getIdResena(), "id de la reseña");
+            if (!this.resenaDao.actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar la reseña con id: " + modelo.getIdResena());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
@@ -43,16 +56,6 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
         validarIdPositivo(id, "id");
         if (!this.resenaDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar la reseña con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Resena modelo) {
-        validarResena(modelo);
-
-        validarIdPositivo(modelo.getIdResena(), "id de la reseña");
-        if (!this.resenaDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar la reseña con id: " + modelo.getIdResena());
         }
     }
 

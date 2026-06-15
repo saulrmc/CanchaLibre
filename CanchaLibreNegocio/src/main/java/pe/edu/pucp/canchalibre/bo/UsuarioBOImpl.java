@@ -31,31 +31,31 @@ public abstract class UsuarioBOImpl<M extends Usuario> extends BaseBO implements
     }
 
     @Override
-    public void crear(M modelo, Estado estado) {
+    public void guardar(M modelo, Estado estado) {
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
-        //validarEspecifico(modelo);
+        validarEstado(estado);
 
-        int id = getDao().crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear el registro");
+        if (estado == Estado.Nuevo) {
+            int id = this.getDao().crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear el usuario");
+            }
+            modelo.setIdUsuario(id);
         }
-        modelo.setIdUsuario(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getIdUsuario(), "id del usuario");
+            if (!this.getDao().actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar el usuario con id: " + modelo.getIdUsuario());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
     public List<M> listar() {
         return getDao().leerTodos();
-    }
-
-    @Override
-    public void actualizar(M modelo) {
-        validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
-        //validarEspecifico(modelo);
-        validarIdPositivo(modelo.getIdUsuario(), "id de " + modelo.getClass().getSimpleName().toLowerCase());
-
-        if (!getDao().actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar el registro con id: " + modelo.getIdUsuario());
-        }
     }
 
     @Override

@@ -17,14 +17,26 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
     }
 
     @Override
-    public void crear(Pago modelo, Estado estado) {
+    public void guardar(Pago modelo, Estado estado) {
         validarPago(modelo);
+        validarEstado(estado);
 
-        int id = this.pagoDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear el pago");
+        if (estado == Estado.Nuevo) {
+            int id = this.pagoDao.crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear el pago");
+            }
+            modelo.setId(id);
         }
-        modelo.setId(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getId(), "id del pago");
+            if (!this.pagoDao.actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar el pago con id: " + modelo.getId());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
@@ -43,16 +55,6 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
         validarIdPositivo(id, "id");
         if (!this.pagoDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar el pago con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Pago modelo) {
-        validarPago(modelo);
-
-        validarIdPositivo(modelo.getId(), "id del pago");
-        if (!this.pagoDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar el pago con id: " + modelo.getId());
         }
     }
 

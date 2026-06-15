@@ -62,7 +62,7 @@ public class ClientesResource {
                     .build();
         }
 
-        clienteBO.crear(cliente, Estado.Nuevo);
+        clienteBO.guardar(cliente, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(cliente.getIdUsuario()))
                 .build();
@@ -101,7 +101,7 @@ public class ClientesResource {
                     .build();
         }
 
-        clienteBO.crear(cliente, Estado.Modificado);
+        clienteBO.guardar(cliente, Estado.Modificado);
 
         return Response.ok(cliente).build();
     }

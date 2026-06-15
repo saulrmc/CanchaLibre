@@ -5,6 +5,7 @@ import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAO;
 import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,14 +18,26 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
     }
 
     @Override
-    public void crear(Comprobante modelo, Estado estado) {
+    public void guardar(Comprobante modelo, Estado estado) {
         validarComprobante(modelo);
+        validarEstado(estado);
 
-        int id = this.comprobanteDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear el comprobante");
+        if (estado == Estado.Nuevo) {
+            int id = this.comprobanteDao.crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear el comprobante");
+            }
+            modelo.setIdComprobante(id);
         }
-        modelo.setIdComprobante(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getIdComprobante(), "id del comprobante");
+            if (!this.comprobanteDao.actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar el comprobante con id: " + modelo.getIdComprobante());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
@@ -43,16 +56,6 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
         validarIdPositivo(id, "id");
         if (!this.comprobanteDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar el comprobante con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Comprobante modelo) {
-        validarComprobante(modelo);
-
-        validarIdPositivo(modelo.getIdComprobante(), "id del comprobante");
-        if (!this.comprobanteDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar el comprobante con id: " + modelo.getIdComprobante());
         }
     }
 

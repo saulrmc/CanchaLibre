@@ -17,14 +17,26 @@ public class CanchaBOImpl extends BaseBO implements CanchaBO {
     }
 
     @Override
-    public void crear(Cancha modelo, Estado estado) {
+    public void guardar(Cancha modelo, Estado estado) {
         validarCancha(modelo);
+        validarEstado(estado);
 
-        int id = this.canchaDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear la cancha");
+        if (estado == Estado.Nuevo) {
+            int id = this.canchaDao.crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear la cancha");
+            }
+            modelo.setIdCancha(id);
         }
-        modelo.setIdCancha(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getIdCancha(), "id de la cancha");
+            if (!this.canchaDao.actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar la cancha con id: " + modelo.getIdCancha());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
@@ -43,16 +55,6 @@ public class CanchaBOImpl extends BaseBO implements CanchaBO {
         validarIdPositivo(id, "id");
         if (!this.canchaDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar la cancha con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Cancha modelo) {
-        validarCancha(modelo);
-
-        validarIdPositivo(modelo.getIdCancha(), "id de la cancha");
-        if (!this.canchaDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar la cancha con id: " + modelo.getIdCancha());
         }
     }
 

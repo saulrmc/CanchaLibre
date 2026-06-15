@@ -18,14 +18,26 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
     }
 
     @Override
-    public void crear(Reserva modelo, Estado estado) {
+    public void guardar(Reserva modelo, Estado estado) {
         validarReserva(modelo);
+        validarEstado(estado);
 
-        int id = this.reservaDao.crear(modelo);
-        if (id <= 0) {
-            throw new IllegalStateException("No se pudo crear la reserva");
+        if (estado == Estado.Nuevo) {
+            int id = this.reservaDao.crear(modelo);
+            if (id <= 0) {
+                throw new IllegalStateException("No se pudo crear la reserva");
+            }
+            modelo.setIdReserva(id);
         }
-        modelo.setIdReserva(id);
+        else if (estado == Estado.Modificado) {
+            validarIdPositivo(modelo.getIdReserva(), "id de la reserva");
+            if (!this.reservaDao.actualizar(modelo)) {
+                throw new IllegalStateException("No se pudo actualizar la reserva con id: " + modelo.getIdReserva());
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
+        }
     }
 
     @Override
@@ -44,16 +56,6 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
         validarIdPositivo(id, "id");
         if (!this.reservaDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar la reserva con id: " + id);
-        }
-    }
-
-    @Override
-    public void actualizar(Reserva modelo) {
-        validarReserva(modelo);
-
-        validarIdPositivo(modelo.getIdReserva(), "id de la reserva");
-        if (!this.reservaDao.actualizar(modelo)) {
-            throw new IllegalStateException("No se pudo actualizar la reserva con id: " + modelo.getIdReserva());
         }
     }
 

@@ -63,7 +63,7 @@ public class ReservasResource {
                     .build();
         }
 
-        reservaBO.crear(reserva, Estado.Nuevo);
+        reservaBO.guardar(reserva, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(reserva.getIdReserva()))
                 .build();
@@ -98,7 +98,7 @@ public class ReservasResource {
                     .build();
         }
 
-        reservaBO.crear(reserva, Estado.Modificado);
+        reservaBO.guardar(reserva, Estado.Modificado);
 
         return Response.ok(reserva).build();
     }

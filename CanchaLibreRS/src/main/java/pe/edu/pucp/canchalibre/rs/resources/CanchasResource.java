@@ -63,7 +63,7 @@ public class CanchasResource {
                     .build();
         }
 
-        canchaBO.crear(cancha, Estado.Nuevo);
+        canchaBO.guardar(cancha, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(cancha.getIdCancha()))
                 .build();
@@ -99,7 +99,7 @@ public class CanchasResource {
                     .build();
         }
 
-        canchaBO.crear(cancha, Estado.Modificado);
+        canchaBO.guardar(cancha, Estado.Modificado);
 
         return Response.ok(cancha).build();
     }

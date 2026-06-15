@@ -59,7 +59,7 @@ public class ResenasResource {
                     .build();
         }
 
-        resenaBO.crear(resena, Estado.Nuevo);
+        resenaBO.guardar(resena, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(resena.getIdResena()))
                 .build();
@@ -95,7 +95,7 @@ public class ResenasResource {
                     .build();
         }
 
-        resenaBO.crear(resena, Estado.Modificado);
+        resenaBO.guardar(resena, Estado.Modificado);
 
         return Response.ok(resena).build();
     }

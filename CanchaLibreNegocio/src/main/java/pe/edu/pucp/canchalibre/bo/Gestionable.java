@@ -6,8 +6,7 @@ import pe.edu.pucp.canchalibre.modelo.Estado;
 import java.util.List;
 
 public interface Gestionable<M> {
-    void crear(M modelo, Estado estado);
-    void actualizar(M modelo);
+    void guardar(M modelo, Estado estado);
     List<M> listar();
     M obtener(int id);
     void eliminar(int id);
