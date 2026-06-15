@@ -3,11 +3,7 @@ package pe.edu.pucp.CanchaLibre.dao.usuario;
 import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
 import pe.edu.pucp.canchalibre.modelo.usuario.Administrador;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implements AdministradorDAO {
     //on BaseDAO
@@ -108,7 +104,25 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
 
     @Override
     public boolean login(String username, String password) {
-        //TODO: ando haciendolo ahora
-        throw new UnsupportedOperationException();
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoLogin(conn, username, password)) {
+                if (cmd instanceof CallableStatement callableCmd) {
+                    callableCmd.execute();
+                    return callableCmd.getBoolean("p_valido");
+                }
+                return false;
+            }
+        });
+    }
+
+    protected PreparedStatement comandoLogin(Connection conn,
+                                             String username,
+                                             String password) throws SQLException {
+        String sql = "{call loginUsuario(?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_username", username);
+        cmd.setString("p_password", password);
+        cmd.registerOutParameter("p_valido", Types.BOOLEAN);
+        return cmd;
     }
 }

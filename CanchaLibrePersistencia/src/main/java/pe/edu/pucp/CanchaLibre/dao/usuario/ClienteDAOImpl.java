@@ -6,11 +6,7 @@ import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,8 +125,26 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     }
 
     public boolean login(String username, String password) {
-        //TODO: ando haciendolo ahora
-        throw new UnsupportedOperationException();
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoLogin(conn, username, password)) {
+                if (cmd instanceof CallableStatement callableCmd) {
+                    callableCmd.execute();
+                    return callableCmd.getBoolean("p_valido");
+                }
+                return false;
+            }
+        });
+    }
+
+    protected PreparedStatement comandoLogin(Connection conn,
+                                             String username,
+                                             String password) throws SQLException {
+        String sql = "{call loginUsuario(?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_username", username);
+        cmd.setString("p_password", password);
+        cmd.registerOutParameter("p_valido", Types.BOOLEAN);
+        return cmd;
     }
 
 }
