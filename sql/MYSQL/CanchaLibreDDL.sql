@@ -1,10 +1,21 @@
 USE CanchaLibre;
 
+DROP TABLE IF EXISTS Administrador;
+DROP TABLE IF EXISTS Resena;
+DROP TABLE IF EXISTS Pago;
+DROP TABLE IF EXISTS Comprobante;
+DROP TABLE IF EXISTS Reserva;
+DROP TABLE IF EXISTS cancha_deportes;
+DROP TABLE IF EXISTS Cancha;
+DROP TABLE IF EXISTS Propietario;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS EsquemaPrecio;
+
 CREATE TABLE EsquemaPrecio (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    precioPorHora DECIMAL(10, 2) NOT NULL,
+    precioHora DECIMAL(10, 2) NOT NULL,
     conIluminacion BOOLEAN,
-    temporada INT
+    temporada enum('ALTA','MEDIA','BAJA')
 );
 
 CREATE TABLE Administrador (
@@ -12,7 +23,9 @@ CREATE TABLE Administrador (
     nombres VARCHAR(150),
     contrasena VARCHAR(255),
     correo VARCHAR(100) UNIQUE,
-    telefono VARCHAR(20)
+    telefono VARCHAR(20),
+    intentosFallidos INT DEFAULT 0,
+    ultimaSesion DATETIME
 );
 
 CREATE TABLE Cliente (
@@ -23,8 +36,6 @@ CREATE TABLE Cliente (
     telefono VARCHAR(20),
     intentosFallidos INT DEFAULT 0,
     ultimaSesion DATETIME NULL,
-    rol VARCHAR(20) DEFAULT 'CLIENTE',
-    activo TINYINT DEFAULT 1,
     calificacion INT DEFAULT 0
 );
 
@@ -36,9 +47,7 @@ CREATE TABLE Propietario (
     telefono VARCHAR(20),
     intentosFallidos INT DEFAULT 0,
     ultimaSesion DATETIME NULL,
-    rol VARCHAR(20) DEFAULT 'PROPIETARIO',
-    activo TINYINT DEFAULT 1,
-    calificacion INT DEFAULT 0
+    calificacion INT
 );
 
 CREATE TABLE Cancha (
@@ -47,46 +56,43 @@ CREATE TABLE Cancha (
     descripcion TEXT,
     imagenUrl VARCHAR(255),
     disponible BOOLEAN,
+    #deportes enum('FUTBOL','BASQUET','VOLEY','TENIS'),
     direccion VARCHAR(255),
-    deporte VARCHAR(50), -- Aquí se usa el Enum Deporte (FUTBOL, BASQUET, etc)
     idPropietario INT,
-    idEsquemaPrecio INT,
-    CONSTRAINT FK_Cancha_Propietario FOREIGN KEY (idPropietario) REFERENCES Propietario(idPropietario),
-    CONSTRAINT FK_Cancha_Precio FOREIGN KEY (idEsquemaPrecio) REFERENCES EsquemaPrecio(id)
+    CONSTRAINT FK_Cancha_Propietario FOREIGN KEY (idPropietario) REFERENCES Propietario(idPropietario)
 );
-
-CREATE TABLE Pago (
-    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    metodoPago VARCHAR(50), -- Aquí se usa el Enum MetodoPago (YAPE, PLIN)
-    monto DECIMAL(10, 2),
-    fechaPago DATETIME
+CREATE TABLE cancha_deportes (
+    idCancha INT NOT NULL,
+    deporte ENUM('FUTBOL', 'BASQUET', 'VOLEY', 'TENIS') NOT NULL,
+    PRIMARY KEY (idCancha, deporte), -- Evita deportes duplicados en la misma cancha
+    CONSTRAINT FK_Deportes_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha) ON DELETE CASCADE
 );
-
 CREATE TABLE Reserva (
     idReserva INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     fechaHora DATETIME,
     duracion TIME,
-    estado VARCHAR(50), -- Aquí se usa el Enum EstadoReserva
+    estado enum('ESPERA','PAGADO','CANCELADO','COMPLETADO'), 
     idCancha INT,
     idCliente INT,
-    idPago INT,
     CONSTRAINT FK_Reserva_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha),
-    CONSTRAINT FK_Reserva_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente),
-    CONSTRAINT FK_Reserva_Pago FOREIGN KEY (idPago) REFERENCES Pago(id)
+    CONSTRAINT FK_Reserva_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente)
 );
 
-CREATE TABLE Notificacion (
-    idNotificacion INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    descripcion TEXT,
-    fechaEnvio DATETIME,
-    idReceptor INT -- Se asocia al ID de quien recibe la notificación
+CREATE TABLE Pago (
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    metodoPago enum('YAPE','PLIN','EFECTIVO'), 
+    monto DECIMAL(10, 2),
+    fechaPago DATETIME,
+    idReserva INT,
+    CONSTRAINT FK_Pago_Reserva FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
 );
 
 CREATE TABLE Comprobante (
     idComprobante INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    igv DECIMAL(4, 2),
+    tipoReserva INT,
+    igv DECIMAL (10,2) DEFAULT 0.18,
     monto DECIMAL(10, 2),
-    fechaEmision DATE,
+    fechaEmision DATETIME,
     idReserva INT UNIQUE,
     CONSTRAINT FK_Comprobante_Reserva FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
 );
@@ -94,17 +100,10 @@ CREATE TABLE Comprobante (
 CREATE TABLE Resena (
     idResena INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     calificacion INT,
-    descripcion TEXT,
-    fechaPublicacion TIME, -- Atributo literal del diagrama
+    descripcion VARCHAR(120),
+    fechaPublicacion DATETIME, 
     idCancha INT,
     idCliente INT,
     CONSTRAINT FK_Resena_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha),
     CONSTRAINT FK_Resena_Cliente FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente)
-);
-
-CREATE TABLE cancha_deportes (
-	idCanchaDeportes INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    idCancha INT,
-    deporte ENUM('Futbol', 'Basquet', 'Voley', 'Tenis'),
-    CONSTRAINT FK_Deporte_Cancha FOREIGN KEY (idCancha) REFERENCES Cancha(idCancha)
 );
