@@ -129,4 +129,9 @@ public class PropietarioDAOImpl extends UsuarioBaseDAO<Propietario> implements P
         return idx + 1;
     }
 
+    public boolean login(String username, String password) {
+        //TODO: ando haciendolo ahora
+        throw new UnsupportedOperationException();
+    }
+
 }

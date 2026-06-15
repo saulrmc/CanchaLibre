@@ -106,4 +106,9 @@ public class AdministradorDAOImpl extends UsuarioBaseDAO<Administrador> implemen
         return idx;
     }
 
+    @Override
+    public boolean login(String username, String password) {
+        //TODO: ando haciendolo ahora
+        throw new UnsupportedOperationException();
+    }
 }

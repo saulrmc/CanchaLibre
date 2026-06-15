@@ -1,12 +1,15 @@
 package pe.edu.pucp.canchalibre.bo;
 
+import pe.edu.pucp.CanchaLibre.dao.UsuarioDAO;
+import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.usuario.Usuario;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class UsuarioBOImpl<M extends Usuario> extends BaseBO implements UsuarioBO<M> {
 
-    protected abstract BaseDAO<M, Integer> getDao();
+    protected abstract UsuarioDAO<M, Integer> getDao();
 
     protected void validarPersonaBasica(M modelo, String nombreEntidad) {
         Objects.requireNonNull(modelo, "El " + nombreEntidad + " es obligatorio");
@@ -20,7 +23,7 @@ public abstract class UsuarioBOImpl<M extends Usuario> extends BaseBO implements
         validarTextoObligatorio(username,"username");
         validarTextoObligatorio(password,"password");
 
-        if(getDao() instanceof UsuarioDAO<M> usuarioDao){
+        if(getDao() instanceof UsuarioDAO<M, Integer> usuarioDao){
             return usuarioDao.login(username,password);
         }
 
@@ -28,7 +31,7 @@ public abstract class UsuarioBOImpl<M extends Usuario> extends BaseBO implements
     }
 
     @Override
-    public void crear(M modelo) {
+    public void crear(M modelo, Estado estado) {
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
         //validarEspecifico(modelo);
 

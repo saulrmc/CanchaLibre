@@ -1,6 +1,7 @@
 package pe.edu.pucp.canchalibre.bo;
 
 import pe.edu.pucp.canchalibre.modelo.Estado;
+import pe.edu.pucp.canchalibre.modelo.usuario.Usuario;
 
 import java.util.Objects;
 
@@ -20,4 +21,6 @@ public abstract class BaseBO {
             throw new IllegalArgumentException("El " + nombreCampo + " es obligatorio");
         }
     }
+
+    //public abstract <M> void crear(M modelo, Estado estado);
 }

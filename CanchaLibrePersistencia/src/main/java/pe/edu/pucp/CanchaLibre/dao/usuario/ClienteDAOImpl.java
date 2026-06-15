@@ -128,4 +128,9 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
         return idx + 1;
     }
 
+    public boolean login(String username, String password) {
+        //TODO: ando haciendolo ahora
+        throw new UnsupportedOperationException();
+    }
+
 }
