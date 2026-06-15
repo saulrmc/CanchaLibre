@@ -12,6 +12,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+@Path("v1/propietarios")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class PropietariosResource {
     private final PropietarioBO propietarioBO;
 
