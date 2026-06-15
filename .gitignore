@@ -41,3 +41,9 @@ build/
 ### Mac OS ###
 .DS_Store
 /.vs/slnx.sqlite
+
+
+# Local Server & Runtime Exclusions
+glassfish/
+glassfish*/
+**/glassfish/

@@ -480,7 +480,3 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-
-# Local Server & Runtime Exclusions
-glassfish/
-glassfish*/
