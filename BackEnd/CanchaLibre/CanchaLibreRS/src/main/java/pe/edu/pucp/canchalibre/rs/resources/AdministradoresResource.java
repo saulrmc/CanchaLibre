@@ -1,6 +1,7 @@
 package pe.edu.pucp.canchalibre.rs.resources;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import pe.edu.pucp.canchalibre.bo.usuario.AdministradorBO;
