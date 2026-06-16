@@ -27,14 +27,14 @@ public class AdministradoresResource {
     }
 
     @GET
-    public List<Administrador> listaAdministradors() {
+    public List<Administrador> listaAdministradores() {
         return administradorBO.listar();
     }
 
     @GET
     @Path("{id}")
     public Response obtenerAdministradorPorId(@PathParam("id") int idAdministrador) {
-        if (idAdministrador < 0) {
+        if (idAdministrador <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
