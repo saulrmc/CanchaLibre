@@ -11,18 +11,18 @@ public class Resena{
 	private int calificacion;
 	private LocalDateTime fechaPublicacion;
 	private Cliente cliente;
-	private Cancha cancha;//error mío al considerar que las reseñas
+	//private Cancha cancha;//error mío al considerar que las reseñas
 	// eran para los usuarios cuando eso era para las calificaciones.
 	// Las reseñas son exclusivas de las canchas
 
 
-	public Cancha getCancha() {
-		return cancha;
-	}
-
-	public void setCancha(Cancha cancha) {
-		this.cancha = cancha;
-	}
+//	public Cancha getCancha() {
+//		return cancha;
+//	}
+//
+//	public void setCancha(Cancha cancha) {
+//		this.cancha = cancha;
+//	}
 
 
 	public int getCalificacion() {

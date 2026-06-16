@@ -18,6 +18,5 @@ public class CanchaViewModel
 
     [Required(ErrorMessage = "Debe agregar una dirección")]
     public String direccion {get; set;} = string.Empty;
-    public PropietarioViewModel? propietario {get; set;} 
     public List<EtiquetaEnum>? etiquetas {get; set;} 
 }

@@ -11,6 +11,8 @@ public class ComprobanteViewModel
     [Required(ErrorMessage = "Debe tener una fecha")]
 	public DateTime FechaEmision {get; set;}
 
-    [Required(ErrorMessage = "Debe tener una reserva asignada")]
-	public ReservaViewModel? Reserva {get; set;}
+    // Es innecesario ya que NO se puede crear un comprobante sin una reserva, por lo que
+    // se asignará automáticamente al momento de crear la reserva
+    //[Required(ErrorMessage = "Debe tener una reserva asignada")]
+	//public ReservaViewModel? Reserva {get; set;}
 }

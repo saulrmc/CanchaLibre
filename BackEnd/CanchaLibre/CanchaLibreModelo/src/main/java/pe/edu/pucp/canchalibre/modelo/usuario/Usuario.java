@@ -11,6 +11,7 @@ public abstract class Usuario {
     private int intentosFallidos; //bloquear inicio de sesión después de 3 intentos
     private LocalDateTime ultimaSesion; //medir que el límite de fallos no sobrepase el minuto
     public abstract Rol getRol();
+    private CuentaUsuario cuentaUsuario;
 
     public String getTelefono() {
         return telefono;

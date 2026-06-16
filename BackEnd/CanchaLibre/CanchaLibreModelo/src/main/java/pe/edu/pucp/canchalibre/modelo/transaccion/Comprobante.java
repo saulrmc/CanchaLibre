@@ -10,15 +10,15 @@ public class Comprobante{
 	//private double precioHora; el precio de la Hora está contenido en un EsquemaPrecio
 	//que tiene una Cancha, que asu vez tiene una Reserva
 	private LocalDateTime fechaEmision;
-	private Reserva reserva;
+	//private Reserva reserva;
 
-	public Reserva getReserva() {
-		return reserva;
-	}
-
-	public void setReserva(Reserva reserva) {
-		this.reserva = reserva;
-	}
+//	public Reserva getReserva() {
+//		return reserva;
+//	}
+//
+//	public void setReserva(Reserva reserva) {
+//		this.reserva = reserva;
+//	}
 
 	public LocalDateTime getFechaEmision() {
 		return fechaEmision;

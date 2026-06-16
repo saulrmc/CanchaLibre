@@ -15,6 +15,9 @@ public class PagoViewModel
     [Required(ErrorMessage = "Debe ingresar una fecha")]
     public DateTime fechaPago {get; set;}
 
-    [Required(ErrorMessage = "Debe tener una reserva asignada")]
-    public ReservaViewModel? reserva {get; set;}
+    //Es innecesario ya que NO se puede crear un pago sin una reserva, por lo que
+    //se asignará automáticamente al momento de crear la reserva
+
+    //[Required(ErrorMessage = "Debe tener una reserva asignada")]
+    //public ReservaViewModel? reserva {get; set;}
 }

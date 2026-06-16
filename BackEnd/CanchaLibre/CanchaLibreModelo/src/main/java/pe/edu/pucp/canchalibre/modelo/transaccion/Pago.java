@@ -10,8 +10,6 @@ public class Pago {
     private double monto;
     private LocalDateTime fechaPago;
 
-    private Reserva reserva; // NUEVO
-
     public int getId() {
         return id;
     }
@@ -42,13 +40,5 @@ public class Pago {
 
     public void setFechaPago(LocalDateTime fechaPago) {
         this.fechaPago = fechaPago;
-    }
-
-    public Reserva getReserva() {
-        return reserva;
-    }
-
-    public void setReserva(Reserva reserva) {
-        this.reserva = reserva;
     }
 }
