@@ -1,4 +1,4 @@
-namespace CanchaLibreWeb.Servicios.Rest.Dtos.Usu;
+namespace CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 
 public sealed class CuentaUsuarioRestDto {
     public int Id { get; set; }
