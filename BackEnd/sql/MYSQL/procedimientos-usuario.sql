@@ -20,4 +20,4 @@ BEGIN
     ELSE
         SET p_valido = FALSE;
     END IF;
-END //
+END 
