@@ -7,15 +7,35 @@
     <div class="menu-cancha">
         <NavLink class="nav-link-cancha" href="/" Match="NavLinkMatch.All">Inicio</NavLink>
         <NavLink class="nav-link-cancha" href="/EncuentraCancha">Encuentra cancha</NavLink>
-        <NavLink class="nav-link-cancha" href="/MisReservas">Mis Reservas</NavLink>
-        <NavLink class="nav-link-cancha" href="/PortalUsuario">Portal</NavLink>
         
-        <NavLink class="icono-usuario" href="/Login">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-            </svg>
-        </NavLink>
-        
-        <NavLink class="btn-registro" href="/Registrar">Regístrate</NavLink>
+        <AuthorizeView>
+            <Authorized>
+                @if (context.User.IsInRole("Admin"))
+                {
+                    <NavLink class="nav-link-cancha" href="/Admin/Dashboard">Portal Admin</NavLink>
+                }
+                else if (context.User.IsInRole("Propietario"))
+                {
+                    <NavLink class="nav-link-cancha" href="/PortalPropietario/Publicar">Portal Propietario</NavLink>
+                }
+                else if (context.User.IsInRole("Cliente"))
+                {
+                    
+                    <NavLink class="nav-link-cancha" href="/Portal/MisReservas">Portal</NavLink>
+                }
+
+                <NavLink class="icono-usuario" href="/MiPerfil">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                    </svg>
+                </NavLink>
+            </Authorized>
+            
+            <NotAuthorized>
+                @* Si no está logueado, el "Portal" lo puede mandar al Login *@
+                <NavLink class="nav-link-cancha" href="/Login">Portal</NavLink>
+                <NavLink class="btn-registro" href="/Registrar">Regístrate</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </div>
