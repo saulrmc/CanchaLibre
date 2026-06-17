@@ -3,8 +3,6 @@ package pe.edu.pucp.canchalibre.modelo;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 
-import java.util.Date;
-
 public abstract class Persona extends Registro {
     private int idUsuario;
     private String nombre;

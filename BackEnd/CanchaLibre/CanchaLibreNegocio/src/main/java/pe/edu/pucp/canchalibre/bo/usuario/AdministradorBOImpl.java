@@ -1,6 +1,5 @@
 package pe.edu.pucp.canchalibre.bo.usuario;
 
-import pe.edu.pucp.CanchaLibre.dao.PersonaDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.AdministradorDAO;
 import pe.edu.pucp.CanchaLibre.dao.usuario.AdministradorDAOImpl;
 import pe.edu.pucp.canchalibre.bo.PersonaBOImpl;
