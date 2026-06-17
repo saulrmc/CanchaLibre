@@ -5,8 +5,7 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 
 public abstract class Persona extends Registro {
     private int idUsuario;
-    private String nombre;
-    private String apellidoPaterno;
+    private String nombres;
     private String correo;
     private String telefono;
     private CuentaUsuario cuentaUsuario;
@@ -45,12 +44,12 @@ public abstract class Persona extends Registro {
         this.idUsuario = idUsuario;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombre) {
+        this.nombres = nombres;
     }
 
     public String getApellidoPaterno() {

@@ -20,10 +20,9 @@ public abstract class PersonaBaseDAO<M extends Persona> extends DefaultBaseDAO<M
     protected int setCamposPersona(PreparedStatement cmd, int startIndex,
                                    M modelo) throws SQLException{
         //cmd.setInt(startIndex,modelo.getIdUsuario());
-        cmd.setString(startIndex,modelo.getNombre());
-        cmd.setString(startIndex+1,modelo.getApellidoPaterno());
-        cmd.setString(startIndex+2,modelo.getCorreo());
-        cmd.setString(startIndex+3,modelo.getTelefono());
+        cmd.setString(startIndex,modelo.getNombres());
+        cmd.setString(startIndex+1,modelo.getCorreo());
+        cmd.setString(startIndex+2,modelo.getTelefono());
         //cmd.setInt(startIndex+4,modelo.getIntentosFallidos());
 //
 //        if(modelo.getUltimaSesion() != null){
@@ -33,13 +32,12 @@ public abstract class PersonaBaseDAO<M extends Persona> extends DefaultBaseDAO<M
 //        }
         //cmd.setString(startIndex+7,modelo.getRol().name());
 
-        return startIndex+4;
+        return startIndex+3;
     }
 
     protected void mapearCamposPersona(ResultSet rs, M modelo) throws SQLException{
         //modelo.setIdUsuario(rs.getInt("idUsuario"));
-        modelo.setNombre(rs.getString("nombre"));
-        modelo.setApellidoPaterno(rs.getString("apellidoPaterno"));
+        modelo.setNombres(rs.getString("nombres"));
         //modelo.setContrasena(rs.getString("contrasena"));
         modelo.setCorreo(rs.getString("correo"));
         modelo.setTelefono(rs.getString("telefono"));
