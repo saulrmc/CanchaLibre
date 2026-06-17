@@ -4,12 +4,13 @@ import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Resena{
 	private int idResena;
 	private String descripcion;
 	private int calificacion;
-	private LocalDateTime fechaPublicacion;
+	private Date fechaPublicacion;
 	private Cliente cliente;
 	private Cancha cancha;//error mío al considerar que las reseñas
 	// eran para los usuarios cuando eso era para las calificaciones.
@@ -41,11 +42,11 @@ public class Resena{
 		this.cliente = cliente;
 	}
 
-	public LocalDateTime getFechaPublicacion() {
+	public Date getFechaPublicacion() {
 		return fechaPublicacion;
 	}
 
-	public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
+	public void setFechaPublicacion(Date fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
