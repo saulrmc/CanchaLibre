@@ -1,13 +1,14 @@
 namespace CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
-
-public sealed class PropietarioRestDto {
-    public int Id { get; set; }
-    public string Nombres { get; set; } = string.Empty;
-    public string Contraseña { get; set; } = string.Empty;
-    public string? Correo { get; set; }
-    public string? Telefono { get; set; }
-    public CuentaUsuarioRestDto? CuentaUsuario { get; set; }
-    public int intentosFallidos { get; set; }
-    public DateTime ultimaSesion; 
-    public string? Rol { get; set; } = string.Empty;
+public sealed class PropietarioRestDto
+{
+    public int IdUsuario { get; set; }
+    public string? Nombres { get; set; } = string.Empty;
+    public string? Contrasena { get; set; } = string.Empty;
+    public string? Correo { get; set; } = string.Empty;
+    public string? Telefono { get; set; } = string.Empty;
+    public int IntentosFallidos { get; set; } 
+    public DateTime UltimaSesion { get; set; }
+    public string Rol { get; set; } = string.Empty;
+    private List<CanchaRestDto>? canchas { get; set; }
+    public int Calificacion { get; set; }
 }

@@ -1,7 +1,9 @@
 namespace CanchaLibreWeb.Servicios.Rest.Dtos.Pagos;
 public sealed class PagoRestDto {
-    public int Id { get; set; }
-    public decimal Monto { get; set; }
-    public DateTime Fecha { get; set; }
-    public string? MetodoPago { get; set; } = string.Empty;
+    public int id{ get; set; }
+    public string? metodoPago{ get; set; } = string.Empty;
+    public double monto{ get; set; }
+    public DateTime fechaPago{ get; set; }
+
+    public int IdReserva{ get; set; } 
 }
