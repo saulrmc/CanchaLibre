@@ -1,4 +1,4 @@
-package pe.edu.pucp.canchalibre.modelo.cancha;
+package pe.edu.pucp.canchalibre.modelo.delete;
 
 public class EsquemaPrecio {
     private int id;

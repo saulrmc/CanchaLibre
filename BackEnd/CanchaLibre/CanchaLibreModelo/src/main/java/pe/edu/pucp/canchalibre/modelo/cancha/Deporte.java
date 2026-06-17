@@ -4,5 +4,5 @@ public enum Deporte {
     FUTBOL,
     BASQUET,
     VOLEY,
-    TENIS
+    TENIS,
 }

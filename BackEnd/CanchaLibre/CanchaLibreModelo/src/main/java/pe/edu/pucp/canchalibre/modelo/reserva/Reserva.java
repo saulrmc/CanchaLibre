@@ -15,20 +15,10 @@ public class Reserva {
     private Cancha cancha;
     private Pago pago;
     private LocalTime duracion;
-    private Comprobante comprobante;
-
-    public Comprobante getComprobante() {
-        return comprobante;
-    }
-
-    public void setComprobante(Comprobante comprobante) {
-        this.comprobante = comprobante;
-    }
 
     public LocalTime getDuracion() {
         return duracion;
     }
-
     public void setDuracion(LocalTime duracion) {
         this.duracion = duracion;
     }
@@ -36,7 +26,6 @@ public class Reserva {
     public Pago getPago() {
         return pago;
     }
-
     public void setPago(Pago pago) {
         this.pago = pago;
     }
@@ -44,7 +33,6 @@ public class Reserva {
     public Cancha getCancha() {
         return cancha;
     }
-
     public void setCancha(Cancha cancha) {
         this.cancha = cancha;
     }
@@ -52,7 +40,6 @@ public class Reserva {
     public Cliente getCliente() {
         return cliente;
     }
-
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
@@ -60,7 +47,6 @@ public class Reserva {
     public EstadoReserva getEstado() {
         return estado;
     }
-
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
     }
@@ -68,7 +54,6 @@ public class Reserva {
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
-
     public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
@@ -76,7 +61,6 @@ public class Reserva {
     public int getIdReserva() {
         return idReserva;
     }
-
     public void setIdReserva(int idReserva) {
         this.idReserva = idReserva;
     }

@@ -9,7 +9,6 @@ public class NotificacionComprobante extends Notificacion {
     public Comprobante getComprobante() {
         return comprobante;
     }
-
     public void setComprobante(Comprobante comprobante) {
         this.comprobante = comprobante;
     }
@@ -17,7 +16,6 @@ public class NotificacionComprobante extends Notificacion {
     public void setDescripcionComprobante(String descripcionComprobante) {
         this.descripcionComprobante = descripcionComprobante;
     }
-
     public String getDescripcionComprobante() {
         return descripcionComprobante;
     }

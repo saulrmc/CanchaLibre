@@ -5,21 +5,59 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 import java.util.List;
 
 public class Cancha {
+    //DETALLE
     private int idCancha;
     private String nombre;
     private String descripcion;
-    private List<Deporte> deportes;
-    private String imagenUrl;
-    private boolean disponible;
     private String direccion;
+    private String imagenUrl;
     private Propietario propietario;
+    private List<Deporte> deportes;
     private List<Etiqueta> etiquetas;
+    private boolean disponible;
+
+    //REVIEWS
     private List<Resena> resenas;
+
+    //HORARIO
+    private List<BloqueHorario> bloques;
+    private int horaApertura;
+    private int horaCierre;
+    private double precioBase;
+
+    public int getHoraApertura() {
+        return horaApertura;
+    }
+    public void setHoraApertura(int horaApertura) {
+        this.horaApertura = horaApertura;
+    }
+
+
+    public int getHoraCierre() {
+        return horaCierre;
+    }
+    public void setHoraCierre(int horaCierre) {
+        this.horaCierre = horaCierre;
+    }
+
+
+    public List<BloqueHorario> getBloques() {
+        return bloques;
+    }
+    public void setBloques(List<BloqueHorario> bloques) {
+        this.bloques = bloques;
+    }
+
+    public double getPrecioBase() {
+        return precioBase;
+    }
+    public void setPrecioBase(double precioBase) {
+        this.precioBase = precioBase;
+    }
 
     public List<Resena> getResenas() {
         return resenas;
     }
-
     public void setResenas(List<Resena> resenas) {
         this.resenas = resenas;
     }

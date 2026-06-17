@@ -4,18 +4,19 @@ import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 
 public abstract class Persona extends Registro {
-    private int idUsuario;
+    //private int idUsuario;
     private String nombres;
     private String correo;
     private String telefono;
     private CuentaUsuario cuentaUsuario;
+    private Rol rol;
 
-    public abstract Rol getRol();
+    public Rol getRol(){return rol;}
+    public void setRol(Rol rol){this.rol=rol;}
 
     public String getTelefono() {
         return telefono;
     }
-
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
@@ -23,7 +24,6 @@ public abstract class Persona extends Registro {
     public String getCorreo() {
         return correo;
     }
-
     public void setCorreo(String correo) {
         this.correo = correo;
     }
@@ -31,32 +31,30 @@ public abstract class Persona extends Registro {
     public CuentaUsuario getCuentaUsuario() {
         return cuentaUsuario;
     }
-
     public void setCuentaUsuario(CuentaUsuario cuentaUsuario) {
         this.cuentaUsuario = cuentaUsuario;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+//    public int getIdUsuario() {
+//        return idUsuario;
+//    }
+//
+//    public void setIdUsuario(int idUsuario) {
+//        this.idUsuario = idUsuario;
+//    }
 
     public String getNombres() {
         return nombres;
     }
-
     public void setNombres(String nombre) {
         this.nombres = nombres;
     }
 
-    public String getApellidoPaterno() {
-        return apellidoPaterno;
-    }
-
-    public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
-    }
+//    public String getApellidoPaterno() {
+//        return apellidoPaterno;
+//    }
+//
+//    public void setApellidoPaterno(String apellidoPaterno) {
+//        this.apellidoPaterno = apellidoPaterno;
+//    }
 }

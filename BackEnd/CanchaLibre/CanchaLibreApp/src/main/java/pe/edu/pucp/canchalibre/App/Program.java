@@ -133,7 +133,7 @@ public class Program {
                 pago.setReserva(reserva);
 
                 id = pagoDAO.crear(pago);
-                pago.setId(id);
+                pago.setIdPago(id);
 
                 reserva.setPago(pago);
 

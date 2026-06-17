@@ -9,7 +9,6 @@ public class NotificacionReserva extends Notificacion {
     public Reserva getReserva() {
         return reserva;
     }
-
     public void setReserva(Reserva reserva) {
         this.reserva = reserva;
     }
@@ -17,7 +16,6 @@ public class NotificacionReserva extends Notificacion {
     public void setDescripcionReserva(String descripcionReserva) {
         this.descripcionReserva = descripcionReserva;
     }
-
     public String getDescripcionReserva() {
         return descripcionReserva;
     }
