@@ -1,6 +1,8 @@
 package pe.edu.pucp.canchalibre.modelo.usuario;
-public class Administrador extends Usuario {
+
+import pe.edu.pucp.canchalibre.modelo.Persona;
+
+public class Administrador extends Persona {
     @Override
     public Rol getRol(){return Rol.ADMINISTRADOR;}
-
 }

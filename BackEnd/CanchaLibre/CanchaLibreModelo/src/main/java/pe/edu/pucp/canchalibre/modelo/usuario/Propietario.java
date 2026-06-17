@@ -1,10 +1,11 @@
 package pe.edu.pucp.canchalibre.modelo.usuario;
 
+import pe.edu.pucp.canchalibre.modelo.Persona;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 
 import java.util.List;
 
-public class Propietario  extends Usuario{
+public class Propietario  extends Persona {
     private List<Cancha> canchas;
     private int calificacion;
 

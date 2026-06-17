@@ -1,5 +1,6 @@
 package pe.edu.pucp.canchalibre.modelo.reserva;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
@@ -14,6 +15,15 @@ public class Reserva {
     private Cancha cancha;
     private Pago pago;
     private LocalTime duracion;
+    private Comprobante comprobante;
+
+    public Comprobante getComprobante() {
+        return comprobante;
+    }
+
+    public void setComprobante(Comprobante comprobante) {
+        this.comprobante = comprobante;
+    }
 
     public LocalTime getDuracion() {
         return duracion;

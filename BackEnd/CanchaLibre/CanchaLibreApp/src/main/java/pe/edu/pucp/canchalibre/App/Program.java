@@ -1,9 +1,9 @@
 package pe.edu.pucp.canchalibre.App;
 
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAOImpl;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.PagoDAOImpl;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.ComprobanteDAO;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.ComprobanteDAOImpl;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.PagoDAO;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.PagoDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
 import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
@@ -46,19 +46,21 @@ public class Program {
             try {
                 // ── 1. CLIENTE ──────────────────────────────────────────────── OK
                 Cliente cliente = new Cliente();
-                cliente.setNombres("Maria Garcia");
+                cliente.setNombre("Maria");
+                cliente.setApellidoPaterno("Garcia");
                 cliente.setCorreo("maria.garcia@test.com");
-                cliente.setContrasena("clave123");
+                //cliente.set("clave123");
                 cliente.setTelefono("999888777");
                 cliente.setCalificacion(5);
-                cliente.setIntentosFallidos(0);
-                cliente.setUltimaSesion(LocalDateTime.now());
+                //cliente.setIntentosFallidos(0);
+                //cliente.setUltimaSesion(LocalDateTime.now());
 
                 idCliente = clienteDAO.crear(cliente);
                 cliente.setIdUsuario(idCliente);
                 System.out.println("Cliente creado: " + clienteDAO.leer(idCliente));
 
-                cliente.setNombres("Maria Garcia Lopez");
+                cliente.setNombre("Maria Garcia");
+                cliente.setApellidoPaterno("Lopez");
                 cliente.setCalificacion(4);
                 clienteDAO.actualizar(cliente);
                 System.out.println("Cliente actualizado: " + clienteDAO.leer(idCliente));
@@ -67,19 +69,21 @@ public class Program {
 
 //                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
                 Propietario propietario = new Propietario();
-                propietario.setNombres("Roberto Tueño");
+                propietario.setNombre("Roberto");
+                propietario.setApellidoPaterno("Tueño");
                 propietario.setCorreo("roberto.canchas2@negocio.com");
-                propietario.setContrasena("adminPass2026");
+                //propietario.setContrasena("adminPass2026");
                 propietario.setTelefono("987654321");
-                propietario.setIntentosFallidos(0);
-                propietario.setUltimaSesion(LocalDateTime.now());
+                //propietario.setIntentosFallidos(0);
+                //propietario.setUltimaSesion(LocalDateTime.now());
                 propietario.setCalificacion(5);
 
                 idPropietario = propietarioDAO.crear(propietario);
                 propietario.setIdUsuario(idPropietario);
                 System.out.println("Propietario creado: " + propietarioDAO.leer(idPropietario));
 
-                propietario.setNombres("Roberto Carlos Dueño");
+                propietario.setNombre("Roberto Carlos");
+                propietario.setApellidoPaterno("Dueño");
                 propietario.setCalificacion(4);
                 propietarioDAO.actualizar(propietario);
                 System.out.println("Propietario actualizado: " + propietarioDAO.leer(idPropietario));
@@ -95,7 +99,6 @@ public class Program {
                 cancha.setDisponible(true);
                 cancha.setDireccion("Av. Deporte 123, Lima");
                 cancha.setPropietario(propietario);
-                //TODO: EsquemaPrecio?
 
                 idCancha = canchaDAO.crear(cancha);
                 cancha.setIdCancha(idCancha);

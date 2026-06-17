@@ -1,4 +1,5 @@
 package pe.edu.pucp.canchalibre.modelo.cancha;
+import pe.edu.pucp.canchalibre.modelo.resena.Resena;
 import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
 import java.util.List;
@@ -13,6 +14,15 @@ public class Cancha {
     private String direccion;
     private Propietario propietario;
     private List<Etiqueta> etiquetas;
+    private List<Resena> resenas;
+
+    public List<Resena> getResenas() {
+        return resenas;
+    }
+
+    public void setResenas(List<Resena> resenas) {
+        this.resenas = resenas;
+    }
 
     public List<Etiqueta> getEtiquetas() {return etiquetas; }
 

@@ -1,10 +1,11 @@
 package pe.edu.pucp.canchalibre.modelo.usuario;
 
+import pe.edu.pucp.canchalibre.modelo.Persona;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.util.List;
 
-public class Cliente extends Usuario {
+public class Cliente extends Persona {
     private List<Reserva> historialReservas; //RF09
     private int calificacion;
 
@@ -23,6 +24,7 @@ public class Cliente extends Usuario {
     public void setCalificacion(int calificacion) {
         this.calificacion = calificacion;
     }
+
     @Override
     public Rol getRol(){return Rol.CLIENTE;}
 

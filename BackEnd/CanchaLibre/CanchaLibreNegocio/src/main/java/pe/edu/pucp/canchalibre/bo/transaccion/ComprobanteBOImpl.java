@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.transaccion;
 
 import pe.edu.pucp.canchalibre.bo.BaseBO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAO;
-import pe.edu.pucp.CanchaLibre.dao.Transaccion.ComprobanteDAOImpl;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.ComprobanteDAO;
+import pe.edu.pucp.CanchaLibre.dao.transaccion.ComprobanteDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
 

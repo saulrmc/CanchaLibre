@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
-    @Override
+
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cancha modelo) throws SQLException{
         String sql = """
@@ -39,7 +39,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
-    @Override
+
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Cancha modelo) throws SQLException{
         String sql = """
@@ -68,7 +68,6 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
         String sql = """
@@ -80,7 +79,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
-    @Override
+
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
         String sql = """
@@ -92,7 +91,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return cmd;
     }
 
-    @Override
+
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
         String sql = """
                 SELECT * FROM Cancha
@@ -147,7 +146,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }
     }
 
-    @Override
+
     protected Cancha mapearModelo(ResultSet rs) throws SQLException{
         Cancha cancha = new Cancha();
         cancha.setIdCancha(rs.getInt("idCancha"));

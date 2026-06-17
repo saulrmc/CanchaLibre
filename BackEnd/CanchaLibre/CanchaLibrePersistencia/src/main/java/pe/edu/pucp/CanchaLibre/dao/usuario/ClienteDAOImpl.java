@@ -1,6 +1,6 @@
 package pe.edu.pucp.CanchaLibre.dao.usuario;
 
-import pe.edu.pucp.CanchaLibre.dao.UsuarioBaseDAO;
+import pe.edu.pucp.CanchaLibre.dao.PersonaBaseDAO;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
 import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDAO {
+public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
     //on BaseDAO
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
@@ -45,7 +45,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
         """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposUsuario(cmd,1,modelo);
+        int nextIndex = setCamposPersona(cmd,1,modelo);
         cmd.setInt(nextIndex, modelo.getCalificacion());
         cmd.setInt(nextIndex+1, modelo.getIdUsuario());
 
@@ -97,7 +97,7 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     protected Cliente mapearModelo(ResultSet rs) throws SQLException{
         Cliente modelo = new Cliente();
         modelo.setIdUsuario(rs.getInt("idCliente"));
-        mapearCamposUsuario(rs,modelo);
+        mapearCamposPersona(rs,modelo);
         modelo.setCalificacion(rs.getInt("calificacion"));
 
         ReservaDAO reservaDAO = new ReservaDAOImpl();
@@ -119,32 +119,10 @@ public class ClienteDAOImpl extends UsuarioBaseDAO<Cliente> implements ClienteDA
     private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
         int startIndex=1;
         cmd.setInt(startIndex,modelo.getIdUsuario());
-        int idx = setCamposUsuario(cmd,startIndex+1,modelo);
+        int idx = setCamposPersona(cmd,startIndex+1,modelo);
         cmd.setInt(idx, modelo.getCalificacion());
         return idx + 1;
     }
 
-    public boolean login(String username, String password) {
-        return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoLogin(conn, username, password)) {
-                if (cmd instanceof CallableStatement callableCmd) {
-                    callableCmd.execute();
-                    return callableCmd.getBoolean("p_valido");
-                }
-                return false;
-            }
-        });
-    }
-
-    protected PreparedStatement comandoLogin(Connection conn,
-                                             String username,
-                                             String password) throws SQLException {
-        String sql = "{call loginUsuario(?, ?, ?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setString("p_username", username);
-        cmd.setString("p_password", password);
-        cmd.registerOutParameter("p_valido", Types.BOOLEAN);
-        return cmd;
-    }
 
 }
