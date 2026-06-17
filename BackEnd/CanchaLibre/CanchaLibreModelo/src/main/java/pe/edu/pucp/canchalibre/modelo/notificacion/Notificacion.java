@@ -1,5 +1,5 @@
 package pe.edu.pucp.canchalibre.modelo.notificacion;
-import pe.edu.pucp.canchalibre.modelo.usuario.Usuario;
+import pe.edu.pucp.canchalibre.modelo.Persona;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 * */
 
 public class Notificacion {
-    private Usuario destinatario;
+    private Persona destinatario;
     private LocalDateTime fechaEnvio;
 
     public LocalDateTime getFechaEnvio() {
@@ -20,11 +20,11 @@ public class Notificacion {
         this.fechaEnvio = fechaEnvio;
     }
 
-    public Usuario getDestinatario() {
+    public Persona getDestinatario() {
         return destinatario;
     }
 
-    public void setDestinatario(Usuario destinatario) {
+    public void setDestinatario(Persona destinatario) {
         this.destinatario = destinatario;
     }
 }
