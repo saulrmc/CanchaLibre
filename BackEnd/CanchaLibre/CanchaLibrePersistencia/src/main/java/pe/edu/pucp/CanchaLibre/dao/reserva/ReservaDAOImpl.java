@@ -61,18 +61,18 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     }
 
     @Override
-    protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
+    protected PreparedStatement comandoEliminar(Connection conn, Integer idPago) throws SQLException {
         String sql = """
         DELETE FROM Reserva WHERE idReserva = ?
     """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
+        cmd.setInt(1, idPago);
         return cmd;
     }
 
     @Override
-    protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException{
+    protected PreparedStatement comandoLeer(Connection conn, Integer idPago) throws SQLException{
         String sql = """
         SELECT 
             r.idReserva,
@@ -81,7 +81,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             r.estado,
             r.idCancha,
             r.idCliente,
-            p.id AS idPago,
+            p.idPago AS idPago,
             p.metodoPago,
             p.monto,
             p.fechaPago
@@ -91,7 +91,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     """;
 
         PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
+        cmd.setInt(1, idPago);
 
 
         return cmd;
@@ -107,7 +107,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             r.estado,
             r.idCancha,
             r.idCliente,
-            p.id AS idPago,
+            p.idPago AS idPago,
             p.metodoPago,
             p.monto,
             p.fechaPago
@@ -138,7 +138,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
         if (!rs.wasNull()) {
             Pago pago = new Pago();
-            pago.setId(idPago);
+            pago.setIdPago(idPago);
             pago.setMonto(rs.getDouble("monto"));
 
             String metodoPago = rs.getString("metodoPago");

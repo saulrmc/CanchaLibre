@@ -14,15 +14,14 @@ public class Resena{
 	private Date fechaPublicacion;
 	//private Cliente cliente;
 	private Reserva reserva;//Se comprueba tener una reserva para dejar resena, extraer idClliente de reserva
-	private Cancha cancha;// Las reseñas son exclusivas de las canchas
+	//private Cancha cancha;// Las reseñas son exclusivas de las canchas
 
-
-	public Cancha getCancha() {
-		return cancha;
-	}
-	public void setCancha(Cancha cancha) {
-		this.cancha = cancha;
-	}
+//	public Cancha getCancha() {
+//		return cancha;
+//	}
+//	public void setCancha(Cancha cancha) {
+//		this.cancha = cancha;
+//	}
 
 	public Reserva getReserva(){ return reserva; }
 	public void setReserva(Reserva reserva){ this.reserva = reserva;}

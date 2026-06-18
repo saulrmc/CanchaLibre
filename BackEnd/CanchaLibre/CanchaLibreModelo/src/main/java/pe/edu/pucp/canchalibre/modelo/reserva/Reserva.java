@@ -9,8 +9,8 @@ import java.time.LocalTime;
 
 public class Reserva {
     private int idReserva;
-    private LocalDateTime fechaHora;
     private EstadoReserva estado;
+    private LocalDateTime fechaHora;
     private Cliente cliente;
     private Cancha cancha;
     private Pago pago;

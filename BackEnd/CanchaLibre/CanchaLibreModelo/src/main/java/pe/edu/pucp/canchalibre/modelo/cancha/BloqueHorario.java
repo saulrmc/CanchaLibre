@@ -1,8 +1,10 @@
 package pe.edu.pucp.canchalibre.modelo.cancha;
 
+import pe.edu.pucp.canchalibre.modelo.Registro;
+
 import java.time.LocalDateTime;
 
-public class BloqueHorario {
+public class BloqueHorario extends Registro {
     private LocalDateTime horaInicio;
     private LocalDateTime horaFin;
     private double precio;
