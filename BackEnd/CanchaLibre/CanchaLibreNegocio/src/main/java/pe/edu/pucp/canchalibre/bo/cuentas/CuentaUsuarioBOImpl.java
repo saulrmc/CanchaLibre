@@ -2,8 +2,8 @@ package pe.edu.pucp.canchalibre.bo.cuentas;
 
 import java.util.List;
 import java.util.Objects;
-import pe.edu.pucp.CanchaLibre.dao.cuentas.CuentaUsuarioDAO;
-import pe.edu.pucp.CanchaLibre.dao.cuentas.CuentaUsuarioDAOImpl;
+import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAO;
+import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.bo.BaseBO;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;

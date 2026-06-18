@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.transaccion;
 
 import pe.edu.pucp.canchalibre.bo.BaseBO;
-import pe.edu.pucp.CanchaLibre.dao.transaccion.PagoDAO;
-import pe.edu.pucp.CanchaLibre.dao.transaccion.PagoDAOImpl;
+import pe.edu.pucp.canchalibre.dao.transaccion.PagoDAO;
+import pe.edu.pucp.canchalibre.dao.transaccion.PagoDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 

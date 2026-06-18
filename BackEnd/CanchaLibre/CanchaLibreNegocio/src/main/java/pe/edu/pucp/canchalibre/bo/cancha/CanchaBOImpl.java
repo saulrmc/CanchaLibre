@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.cancha;
 
 import pe.edu.pucp.canchalibre.bo.BaseBO;
-import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAO;
-import pe.edu.pucp.CanchaLibre.dao.cancha.CanchaDAOImpl;
+import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAO;
+import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 

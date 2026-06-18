@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.usuario;
 
-import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAO;
+import pe.edu.pucp.canchalibre.dao.usuario.ClienteDAO;
 import pe.edu.pucp.canchalibre.bo.PersonaBOImpl;
-import pe.edu.pucp.CanchaLibre.dao.usuario.ClienteDAOImpl;
+import pe.edu.pucp.canchalibre.dao.usuario.ClienteDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 

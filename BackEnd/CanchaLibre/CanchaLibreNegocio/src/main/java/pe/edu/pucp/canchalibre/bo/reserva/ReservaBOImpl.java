@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.reserva;
 
 import pe.edu.pucp.canchalibre.bo.BaseBO;
-import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAO;
-import pe.edu.pucp.CanchaLibre.dao.reserva.ReservaDAOImpl;
+import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAO;
+import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 

@@ -1,8 +1,8 @@
 package pe.edu.pucp.canchalibre.bo.resena;
 
 import pe.edu.pucp.canchalibre.bo.BaseBO;
-import pe.edu.pucp.CanchaLibre.dao.resena.ResenaDAO;
-import pe.edu.pucp.CanchaLibre.dao.resena.ResenaDAOImpl;
+import pe.edu.pucp.canchalibre.dao.resena.ResenaDAO;
+import pe.edu.pucp.canchalibre.dao.resena.ResenaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.resena.Resena;
 
