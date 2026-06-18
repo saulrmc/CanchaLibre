@@ -15,22 +15,16 @@ public class Cancha extends Registro {
     private Propietario propietario;
     private List<Deporte> deportes;
     private List<Etiqueta> etiquetas;
-
-    //REVIEWS
-//    private List<Resena> resenas;
-
     //HORARIO
     private List<BloqueHorario> bloques;
-    private int horaApertura;
-    private int horaCierre;
     private double precioBase;
+    //REVIEWS
+    //private List<Resena> resenas;
+    private double promedioCalificacion;
 
-    public int getHoraApertura() { return horaApertura;}
-    public void setHoraApertura(int horaApertura) { this.horaApertura = horaApertura;}
-
-    public int getHoraCierre() { return horaCierre;}
-    public void setHoraCierre(int horaCierre) { this.horaCierre = horaCierre;}
-
+    public double getPromedioCalificacion() {return promedioCalificacion;}
+    public void setPromedioCalificacion(double promedioCalificacion) {this.promedioCalificacion = promedioCalificacion;}
+    
     public List<BloqueHorario> getBloques() {return bloques;}
     public void setBloques(List<BloqueHorario> bloques) {this.bloques = bloques;}
 
