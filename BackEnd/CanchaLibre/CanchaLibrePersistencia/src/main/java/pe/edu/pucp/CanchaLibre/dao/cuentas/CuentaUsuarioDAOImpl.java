@@ -2,6 +2,7 @@ package pe.edu.pucp.CanchaLibre.dao.cuentas;
 
 import pe.edu.pucp.CanchaLibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
+import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 
 import java.sql.Connection;
 import java.sql.CallableStatement;
@@ -27,22 +28,46 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
 
     protected PreparedStatement comandoCrear(Connection conn,
                                              CuentaUsuario modelo) throws SQLException {
-        String sql = "{call insertarCuentaUsuario(?, ?, ?, ?)}";
+        String sql = "{call insertarCuentaUsuario(?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_userName", modelo.getUserName());
         cmd.setString("p_password", modelo.getPassword());
+        if (modelo.getRol() != null) {
+            cmd.setString("p_rol", modelo.getRol().name());
+        } else {
+            throw new SQLException("No se puede crear una cuenta de usuario sin asignar un rol.");
+        }
+        if (modelo.getFechaBloqueo() != null) {
+            cmd.setTimestamp("p_fechaBloqueo", java.sql.Timestamp.valueOf(modelo.getFechaBloqueo()));
+        } else {
+            cmd.setNull("p_fechaBloqueo", Types.TIMESTAMP);
+        }
         cmd.setBoolean("p_activo", modelo.isActivo());
         cmd.registerOutParameter("p_id", Types.INTEGER);
         return cmd;
     }
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   CuentaUsuario modelo) throws SQLException {
-        String sql = "{call modificarCuentaUsuario(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call modificarCuentaUsuario(?, ?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_userName", modelo.getUserName());
         cmd.setString("p_password", modelo.getPassword());
+        if (modelo.getRol() != null) {
+            cmd.setString("p_rol", modelo.getRol().name());
+        } else {
+            cmd.setNull("p_rol", Types.VARCHAR);
+        }
         cmd.setInt("p_intentosFallidos",modelo.getIntentosFallidos());
-        cmd.setTimestamp("p_ultimaSesion",java.sql.Timestamp.valueOf(modelo.getUltimaSesion()));
+        if (modelo.getUltimaSesion() != null) {
+            cmd.setTimestamp("p_ultimaSesion", java.sql.Timestamp.valueOf(modelo.getUltimaSesion()));
+        } else{
+            cmd.setNull("p_ultimaSesion", Types.TIMESTAMP);
+        }
+        if (modelo.getFechaBloqueo() != null) {
+            cmd.setTimestamp("p_fechaBloqueo", java.sql.Timestamp.valueOf(modelo.getFechaBloqueo()));
+        } else {
+            cmd.setNull("p_fechaBloqueo", Types.TIMESTAMP);
+        }
         cmd.setBoolean("p_activo", modelo.isActivo());
         cmd.setInt("p_id", modelo.getId());
         return cmd;
@@ -86,8 +111,18 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
         modelo.setId(rs.getInt("id"));
         modelo.setUserName(rs.getString("userName"));
         modelo.setPassword(rs.getString("password"));
-        modelo.setIntentosFallidos(rs.getInt("intentosFallidos"));
-        modelo.setUltimaSesion(rs.getTimestamp("ultimaSesion").toLocalDateTime());
+        String rolStr = rs.getString("rol");
+        if (rolStr != null) {
+            modelo.setRol(Rol.valueOf(rolStr));
+        }
+        java.sql.Timestamp tsUltimaSesion = rs.getTimestamp("ultimaSesion");
+        if (tsUltimaSesion != null) {
+            modelo.setUltimaSesion(tsUltimaSesion.toLocalDateTime());
+        }
+        java.sql.Timestamp tsFechaBloqueo = rs.getTimestamp("fechaBloqueo");
+        if (tsFechaBloqueo != null) {
+            modelo.setFechaBloqueo(tsFechaBloqueo.toLocalDateTime());
+        }
         modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
     }

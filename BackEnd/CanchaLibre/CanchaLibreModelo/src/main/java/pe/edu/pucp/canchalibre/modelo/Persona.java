@@ -8,10 +8,10 @@ public abstract class Persona extends Registro {
     private String correo;
     private String telefono;
     private CuentaUsuario cuentaUsuario;
-    private Rol rol;
-
-    public Rol getRol(){return rol;}
-    public void setRol(Rol rol){this.rol=rol;}
+//    private Rol rol;
+//
+//    public Rol getRol(){return rol;}
+//    public void setRol(Rol rol){this.rol=rol;}
 
     public String getTelefono() {
         return telefono;
