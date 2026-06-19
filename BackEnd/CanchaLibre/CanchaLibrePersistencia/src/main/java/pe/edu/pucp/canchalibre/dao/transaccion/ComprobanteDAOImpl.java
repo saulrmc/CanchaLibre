@@ -10,98 +10,56 @@ import java.sql.*;
 public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements ComprobanteDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Comprobante modelo) throws SQLException {
-        String sql = """
-        INSERT INTO Comprobante (
-            igv,
-            monto,
-            fechaEmision,
-            idReserva
-        ) VALUES (?, ?, ?, ?)
-    """;
+        String sql = "{call insertarComprobante(?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
 
-        PreparedStatement cmd = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        Reserva res = modelo.getReserva();
-
-        cmd.setDouble(1, modelo.getIgv());
-        cmd.setDouble(2, res.getPago().getMonto());
-        cmd.setTimestamp(3, Timestamp.valueOf(modelo.getFechaEmision()));
-        cmd.setInt(4, res.getIdReserva());
+        cmd.setString("p_serie",modelo.getSerie());
+        cmd.setDouble("p_subtotal",modelo.getMontoBloques());
+        //numero,fechaEmision,valorVenta,igv calculados en sql
+        cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Comprobante modelo) throws SQLException{
-        String sql = """
-        UPDATE Comprobante
-        SET igv = ?,
-            monto = ?,
-            fechaEmision = ?,
-            idReserva = ?
-        WHERE idComprobante = ?
-    """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-
-        Reserva res = modelo.getReserva();
-
-        cmd.setDouble(1, modelo.getIgv());
-        cmd.setDouble(2, res.getPago().getMonto());
-        cmd.setTimestamp(3, Timestamp.valueOf(modelo.getFechaEmision()));
-        cmd.setInt(4, res.getIdReserva());
-        cmd.setInt(5, modelo.getIdComprobante());
-
-        return cmd;
+        throw new UnsupportedOperationException("Error: Los comprobantes de venta no pueden ser modificados por regulación fiscal");
     }
 
     protected PreparedStatement comandoEliminar(Connection conn,
                                                 Integer id) throws SQLException{
-        String sql = """
-                DELETE FROM Comprobante WHERE idComprobante = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
-
+        String sql = "{call eliminarComprobante(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id",id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeer(Connection conn,
                                             Integer id) throws SQLException{
-        String sql = """
-                SELECT * FROM Comprobante WHERE idComprobante = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
-
+        String sql = "{call buscarComprobantePorId(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id",id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
-        String sql = """
-                SELECT * FROM Comprobante
-                """;
-        return conn.prepareStatement(sql);
+        String sql = "{call listarComprobantes()}";
+        return conn.prepareCall(sql);
     }
 
     protected Comprobante mapearModelo(ResultSet rs) throws SQLException{
         Comprobante comprobante = new Comprobante();
 
-        Reserva reserva = new Reserva();
-        reserva.setIdReserva(rs.getInt("idReserva"));
-
-        Pago pago = new Pago();
-        pago.setMonto(rs.getDouble("monto"));
-
-        reserva.setPago(pago);
-        comprobante.setReserva(reserva);
-
         comprobante.setIdComprobante(rs.getInt("idComprobante"));
+        comprobante.setSerie(rs.getString("serie"));
+        comprobante.setNumero(rs.getString("numero"));
+        java.sql.Timestamp tsFecha = rs.getTimestamp("fechaEmision");
+        if (tsFecha != null) {
+            comprobante.setFechaEmision(tsFecha.toLocalDateTime());
+        }
+
+        comprobante.setMontoBloques(rs.getDouble("montoBloques"));
+        comprobante.setValorVenta(rs.getDouble("valorVenta"));
         comprobante.setIgv(rs.getDouble("igv"));
-        comprobante.setFechaEmision(
-                rs.getTimestamp("fechaEmision") != null
-                        ? rs.getTimestamp("fechaEmision").toLocalDateTime()
-                        : null
-        );
         
         return comprobante;
     }

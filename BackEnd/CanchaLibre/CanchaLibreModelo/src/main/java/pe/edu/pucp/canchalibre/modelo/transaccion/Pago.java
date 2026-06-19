@@ -2,13 +2,14 @@ package pe.edu.pucp.canchalibre.modelo.transaccion;
 
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Pago {
     private int idPago;
     private MetodoPago metodoPago;
     private double monto;
-    private Date fechaPago;
+    private LocalDateTime fechaPago;
     private Comprobante comprobante;
 
     public int getIdPago() {
@@ -31,10 +32,10 @@ public class Pago {
         this.monto = monto;
     }
 
-    public Date getFechaPago() {
+    public LocalDateTime getFechaPago() {
         return fechaPago;
     }
-    public void setFechaPago(Date fechaPago) {
+    public void setFechaPago(LocalDateTime fechaPago) {
         this.fechaPago = fechaPago;
     }
 

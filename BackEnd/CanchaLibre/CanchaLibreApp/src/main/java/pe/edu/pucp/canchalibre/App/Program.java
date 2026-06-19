@@ -46,8 +46,7 @@ public class Program {
             try {
                 // ── 1. CLIENTE ──────────────────────────────────────────────── OK
                 Cliente cliente = new Cliente();
-                cliente.setNombre("Maria");
-                cliente.setApellidoPaterno("Garcia");
+                cliente.setNombres("Maria Garcia");
                 cliente.setCorreo("maria.garcia@test.com");
                 //cliente.set("clave123");
                 cliente.setTelefono("999888777");
@@ -59,8 +58,7 @@ public class Program {
                 cliente.setIdUsuario(idCliente);
                 System.out.println("Cliente creado: " + clienteDAO.leer(idCliente));
 
-                cliente.setNombre("Maria Garcia");
-                cliente.setApellidoPaterno("Lopez");
+                cliente.setNombres("Maria Garcia Lopez");
                 cliente.setCalificacion(4);
                 clienteDAO.actualizar(cliente);
                 System.out.println("Cliente actualizado: " + clienteDAO.leer(idCliente));
@@ -69,8 +67,7 @@ public class Program {
 
 //                // ── 2. PROPIETARIO ──────────────────────────────────────────────── OK
                 Propietario propietario = new Propietario();
-                propietario.setNombre("Roberto");
-                propietario.setApellidoPaterno("Tueño");
+                propietario.setNombres("Roberto Tueño");
                 propietario.setCorreo("roberto.canchas2@negocio.com");
                 //propietario.setContrasena("adminPass2026");
                 propietario.setTelefono("987654321");
@@ -82,8 +79,7 @@ public class Program {
                 propietario.setIdUsuario(idPropietario);
                 System.out.println("Propietario creado: " + propietarioDAO.leer(idPropietario));
 
-                propietario.setNombre("Roberto Carlos");
-                propietario.setApellidoPaterno("Dueño");
+                propietario.setNombres("Roberto Carlos Dueño");
                 propietario.setCalificacion(4);
                 propietarioDAO.actualizar(propietario);
                 System.out.println("Propietario actualizado: " + propietarioDAO.leer(idPropietario));
@@ -115,7 +111,7 @@ public class Program {
                 Reserva reserva = new Reserva();
                 reserva.setFechaHora(LocalDateTime.of(2025, 6, 15, 10, 0));
                 reserva.setDuracion(LocalTime.of(1, 30));
-                reserva.setEstado(EstadoReserva.ESPERA);
+                reserva.setEstado(EstadoReserva.PENDIENTE_PAGO);
                 reserva.setCliente(cliente);
                 reserva.setCancha(cancha);
 
@@ -146,7 +142,7 @@ public class Program {
 
 
 //                ── 6. ACTUALIZAR RESERVA ─────────────────────────────────────
-                reserva.setEstado(EstadoReserva.COMPLETADO);
+                reserva.setEstado(EstadoReserva.CONFIRMADA);
                 reserva.setDuracion(LocalTime.of(2, 0));
 
                 reservaDAO.actualizar(reserva);
