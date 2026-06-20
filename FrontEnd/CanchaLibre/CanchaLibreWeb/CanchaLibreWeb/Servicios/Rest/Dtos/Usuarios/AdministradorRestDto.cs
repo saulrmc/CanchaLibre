@@ -8,5 +8,5 @@ public sealed class AdministradorRestDto {
     public string? Telefono { get; set; } = string.Empty;
     public int IntentosFallidos { get; set; } 
     public DateTime UltimaSesion { get; set; }
-    public string Rol { get; set; } = string.Empty;
+    
 }

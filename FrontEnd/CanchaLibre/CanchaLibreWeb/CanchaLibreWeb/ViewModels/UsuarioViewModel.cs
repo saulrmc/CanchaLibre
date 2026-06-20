@@ -16,7 +16,7 @@ public class UsuarioViewModel
 
     [RegularExpression("^[0-9+\\-()\\s]{7,20}$", ErrorMessage = "El telefono debe tener entre 7 y 20 caracteres validos.")]
     public String Telefono { get; set; } = string.Empty;
-    public int IntentosFallidos {get;}
+    public int IntentosFallidos {get; set;}
     public DateTime UltimaSesion {get; set;}
 
     //public bool Activo { get; set; } = true;
