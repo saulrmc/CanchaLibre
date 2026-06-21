@@ -1,17 +1,16 @@
 package pe.edu.pucp.canchalibre.modelo.resena;
 
+import pe.edu.pucp.canchalibre.modelo.Registro;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-public class Resena{
-	private int idResena;
+public class Resena extends Registro {
 	private String descripcion;
 	private int calificacion;
-	private Date fechaPublicacion;
+	private LocalDateTime fechaPublicacion;
 	//private Cliente cliente;
 	private Reserva reserva;//Se comprueba tener una reserva para dejar resena, extraer idClliente de reserva
 	//private Cancha cancha;// Las reseñas son exclusivas de las canchas
@@ -42,21 +41,21 @@ public class Resena{
 //		this.cliente = cliente;
 //	}
 
-	public Date getFechaPublicacion() {
+	public LocalDateTime getFechaPublicacion() {
 		return fechaPublicacion;
 	}
 
-	public void setFechaPublicacion(Date fechaPublicacion) {
+	public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
-	public int getIdResena() {
-		return idResena;
-	}
-
-	public void setIdResena(int idResena) {
-		this.idResena = idResena;
-	}
+//	public int getIdResena() {
+//		return idResena;
+//	}
+//
+//	public void setIdResena(int idResena) {
+//		this.idResena = idResena;
+//	}
 
 	public String getDescripcion() {
 		return descripcion;

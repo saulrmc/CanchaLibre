@@ -1,23 +1,15 @@
 package pe.edu.pucp.canchalibre.modelo.transaccion;
 
-import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
+
+import pe.edu.pucp.canchalibre.modelo.Registro;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-public class Pago {
-    private int idPago;
+public class Pago extends Registro {
     private MetodoPago metodoPago;
     private double monto;
     private LocalDateTime fechaPago;
     private Comprobante comprobante;
-
-    public int getIdPago() {
-        return idPago;
-    }
-    public void setIdPago(int idPago) {
-        this.idPago = idPago;
-    }
 
     public MetodoPago getMetodoPago() {
         return metodoPago;

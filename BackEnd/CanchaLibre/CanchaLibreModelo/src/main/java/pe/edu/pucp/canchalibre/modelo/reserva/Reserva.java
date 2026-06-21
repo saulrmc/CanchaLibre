@@ -1,27 +1,26 @@
 package pe.edu.pucp.canchalibre.modelo.reserva;
+import pe.edu.pucp.canchalibre.modelo.Registro;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
-import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-public class Reserva {
-    private int idReserva;
+public class Reserva extends Registro {
     private EstadoReserva estado;
     private LocalDateTime fechaHora;
     private Cliente cliente;
     private Cancha cancha;
     private Pago pago;
-    private LocalTime duracion;
-
-    public LocalTime getDuracion() {
-        return duracion;
-    }
-    public void setDuracion(LocalTime duracion) {
-        this.duracion = duracion;
-    }
+    // La duracion podría sacarse de BloqueHorario que posee la Cancha
+//    private LocalDateTime duracion;
+//
+//    public LocalDateTime getDuracion() {
+//        return duracion;
+//    }
+//    public void setDuracion(LocalDateTime duracion) {
+//        this.duracion = duracion;
+//    }
 
     public Pago getPago() {
         return pago;
@@ -58,10 +57,10 @@ public class Reserva {
         this.fechaHora = fechaHora;
     }
 
-    public int getIdReserva() {
-        return idReserva;
-    }
-    public void setIdReserva(int idReserva) {
-        this.idReserva = idReserva;
-    }
+//    public int getIdReserva() {
+//        return idReserva;
+//    }
+//    public void setIdReserva(int idReserva) {
+//        this.idReserva = idReserva;
+//    }
 }

@@ -2,7 +2,6 @@ package pe.edu.pucp.canchalibre.modelo.notificacion;
 import pe.edu.pucp.canchalibre.modelo.Persona;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /*
 * Aunque lo normal es que las notificaciones se deriven al correo electrónico,
@@ -11,12 +10,12 @@ import java.util.Date;
 
 public class Notificacion {
     private Persona destinatario;
-    private Date fechaEnvio;
+    private LocalDateTime fechaEnvio;
 
-    public Date getFechaEnvio() {
+    public LocalDateTime getFechaEnvio() {
         return fechaEnvio;
     }
-    public void setFechaEnvio(Date fechaEnvio) {
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
     }
 

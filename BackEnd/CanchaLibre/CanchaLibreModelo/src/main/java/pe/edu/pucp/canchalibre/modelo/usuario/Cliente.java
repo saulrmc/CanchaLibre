@@ -32,7 +32,4 @@ public class Cliente extends Persona {
         this.calificacion = calificacion;
     }
 
-    @Override
-    public Rol getRol(){return Rol.CLIENTE;}
-
 }

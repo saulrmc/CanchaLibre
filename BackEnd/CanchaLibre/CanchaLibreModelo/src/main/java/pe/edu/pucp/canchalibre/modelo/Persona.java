@@ -37,7 +37,7 @@ public abstract class Persona extends Registro {
     public String getNombres() {
         return nombres;
     }
-    public void setNombres(String nombre) {
+    public void setNombres(String nombres) {
         this.nombres = nombres;
     }
 

@@ -1,21 +1,18 @@
 package pe.edu.pucp.canchalibre.modelo.transaccion;
 
-import pe.edu.pucp.canchalibre.modelo.cancha.Etiqueta;
+import pe.edu.pucp.canchalibre.modelo.Registro;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
-public class Comprobante{
-	private int idComprobante;
+public class Comprobante extends Registro {
 	private String serie;
 	private String numero;
 	private LocalDateTime fechaEmision;
 
 	private double montoBloques;
-	private final double comisionPlataforma = 5.00;
+	private static final double comisionPlataforma = 5.00;
 	private double valorVenta;
-	private double igv;
+	private static final double igv = 0.18;
 
 	public String getSerie() {return serie;}
 	public void setSerie(String serie) {this.serie = serie;}
@@ -46,15 +43,5 @@ public class Comprobante{
 
 	public double getIgv() {
 		return igv;
-	}
-	public void setIgv(double igv) {
-		this.igv = igv;
-	}
-
-	public int getIdComprobante() {
-		return idComprobante;
-	}
-	public void setIdComprobante(int idComprobante) {
-		this.idComprobante = idComprobante;
 	}
 }

@@ -23,6 +23,4 @@ public class Propietario  extends Persona {
         this.calificacion = calificacion;
     }
 
-    @Override
-    public Rol getRol(){return Rol.PROPIETARIO;}
 }

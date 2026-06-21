@@ -4,7 +4,8 @@ import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 public class NotificacionReserva extends Notificacion {
     private Reserva reserva;
-    private String descripcionReserva;
+    // private String descripcionReserva; La descripción de la reserva no se podría generar
+    // en tiempo de ejecución con los datos de la reserva?
 
     public Reserva getReserva() {
         return reserva;
@@ -13,11 +14,11 @@ public class NotificacionReserva extends Notificacion {
         this.reserva = reserva;
     }
 
-    public void setDescripcionReserva(String descripcionReserva) {
-        this.descripcionReserva = descripcionReserva;
-    }
-    public String getDescripcionReserva() {
-        return descripcionReserva;
-    }
+//    public void setDescripcionReserva(String descripcionReserva) {
+//        this.descripcionReserva = descripcionReserva;
+//    }
+//    public String getDescripcionReserva() {
+//        return descripcionReserva;
+//    }
 }
 
