@@ -46,7 +46,8 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
     private BloqueHorario mapearBloqueHorario(ResultSet rs) throws SQLException{
         BloqueHorario bloque = new BloqueHorario();
         bloque.setId(rs.getInt("id"));
-        bloque.setDia(DiaSemana.values()[rs.getInt("dia") - 1]);        bloque.setHoraInicio(rs.getObject("horaInicio", LocalTime.class));
+        bloque.setDia(DiaSemana.values()[rs.getInt("dia") - 1]);
+        bloque.setHoraInicio(rs.getObject("horaInicio", LocalTime.class));
         bloque.setHoraFin(rs.getObject("horaFin", LocalTime.class));
         bloque.setPrecio(rs.getDouble("precio"));
         bloque.setEstado(EstadoBloque.valueOf(rs.getString("estado")));
@@ -154,7 +155,7 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
     @Override
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   BloqueHorario modelo) throws SQLException{
-        String sql = "{call modificarBloqueHorario()}";
+        String sql = "{call modificarBloqueHorario(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_dia",modelo.getDia().ordinal()+1);
         cmd.setObject("p_horaInicio", modelo.getHoraInicio());
@@ -162,7 +163,7 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
         cmd.setDouble("p_precio",modelo.getPrecio());
         cmd.setString("p_estado",modelo.getEstado().name());
         cmd.setBoolean("p_activo",modelo.isActivo());
-        cmd.registerOutParameter("p_id", Types.INTEGER);
+        cmd.setInt("p_id", modelo.getId());
         return cmd;
     }
 
