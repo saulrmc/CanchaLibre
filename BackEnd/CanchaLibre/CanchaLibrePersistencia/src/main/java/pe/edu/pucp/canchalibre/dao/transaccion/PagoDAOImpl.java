@@ -10,25 +10,19 @@ import java.time.LocalDateTime;
 public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Pago modelo) throws SQLException {
-        String sql = "{call insertarPago(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarPago(?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
 
         cmd.setString("p_metodoPago",modelo.getMetodoPago().name());
         cmd.setDouble("p_monto",modelo.getMonto());
         cmd.setObject("p_fechaPago",modelo.getFechaPago());
-        if(modelo.getComprobante()==null){
-            cmd.setNull("p_idComprobante",Types.INTEGER);
-        }else{
-            cmd.setInt("p_idComprobante",modelo.getComprobante().getId());
-        }
-        cmd.setBoolean("p_activo", modelo.isActivo());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   Pago modelo) throws SQLException{
-        String sql = "{call modificarPago(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call modificarPago(?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
 
         cmd.setString("p_metodoPago",modelo.getMetodoPago().name());
@@ -37,10 +31,9 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
         if(modelo.getComprobante()==null){
             cmd.setNull("p_idComprobante",Types.INTEGER);
         }else{
-            cmd.setInt("p_idComprobante",modelo.getComprobante().getId());
+            cmd.setInt("p_idComprobante",modelo.getComprobante().getIdComprobante());
         }
-        cmd.setBoolean("p_activo", modelo.isActivo());
-        cmd.registerOutParameter("p_id",Types.INTEGER);
+        cmd.setInt("p_id",modelo.getIdPago());
         return cmd;
     }
 
@@ -68,7 +61,7 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
     @Override
     protected Pago mapearModelo(ResultSet rs) throws SQLException{
         Pago pago = new Pago();
-        pago.setId(rs.getInt("id"));
+        pago.setIdPago(rs.getInt("idPago"));
         pago.setMetodoPago(MetodoPago.valueOf(rs.getString("metodoPago")));
         pago.setMonto(rs.getDouble("monto"));
         pago.setFechaPago(rs.getObject("fechaPago", LocalDateTime.class));
@@ -76,7 +69,6 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
         if(!rs.wasNull()){
             pago.setComprobante(new ComprobanteDAOImpl().leer(idComprobante));
         }
-        pago.setActivo(rs.getBoolean("activo"));
         return pago;
     }
 

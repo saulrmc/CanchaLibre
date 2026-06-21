@@ -36,17 +36,9 @@ public abstract class PersonaBaseDAO<M extends Persona> extends DefaultBaseDAO<M
     }
 
     protected void mapearCamposPersona(ResultSet rs, M modelo) throws SQLException{
-        //modelo.setIdUsuario(rs.getInt("idUsuario"));
         modelo.setNombres(rs.getString("nombres"));
-        //modelo.setContrasena(rs.getString("contrasena"));
         modelo.setCorreo(rs.getString("correo"));
         modelo.setTelefono(rs.getString("telefono"));
-        //modelo.setIntentosFallidos(rs.getInt("intentosFallidos"));
-//
-//        java.sql.Timestamp ts = rs.getTimestamp("ultimaSesion");
-//        if (ts != null) {
-//            modelo.setUltimaSesion(ts.toLocalDateTime());
-//        }
     }
 
     protected Integer getIdCuentaUsuario(M modelo) {

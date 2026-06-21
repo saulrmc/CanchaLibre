@@ -100,11 +100,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }else{
             cmd.setNull("p_imagenUrl",Types.VARCHAR);
         }
-        if(modelo.getPropietario()!=null){
-            cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
-        }else {
-            throw new SQLException("No se puede registrar una cancha sin un propietario asociado");
-        }
+        cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
         cmd.setDouble("p_precioBase",modelo.getPrecioBase());
         cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.registerOutParameter("p_id", Types.INTEGER);
@@ -125,11 +121,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }else{
             cmd.setNull("p_imagenUrl",Types.VARCHAR);
         }
-        if(modelo.getPropietario()!=null){
-            cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
-        }else {
-            throw new SQLException("No se puede registrar una cancha sin un propietario asociado");
-        }
+        cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
         cmd.setDouble("p_precioBase",modelo.getPrecioBase());
         cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.setInt("p_id", modelo.getId());
