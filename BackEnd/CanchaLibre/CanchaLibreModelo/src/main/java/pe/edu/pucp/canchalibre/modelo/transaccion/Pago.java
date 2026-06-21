@@ -9,7 +9,7 @@ public class Pago extends Registro {
     private MetodoPago metodoPago;
     private double monto;
     private LocalDateTime fechaPago;
-    private Comprobante comprobante;
+    //private Comprobante comprobante;
 
     public MetodoPago getMetodoPago() {
         return metodoPago;
@@ -31,11 +31,11 @@ public class Pago extends Registro {
         this.fechaPago = fechaPago;
     }
 
-    public Comprobante getComprobante() {
-        return comprobante;
-    }
-    public void setComprobante(Comprobante comprobante) {
-        this.comprobante = comprobante;
-    }
+//    public Comprobante getComprobante() {
+//        return comprobante;
+//    }
+//    public void setComprobante(Comprobante comprobante) {
+//        this.comprobante = comprobante;
+//    }
 
 }

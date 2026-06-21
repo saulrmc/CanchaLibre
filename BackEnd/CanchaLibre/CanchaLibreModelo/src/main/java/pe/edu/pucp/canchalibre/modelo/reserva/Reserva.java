@@ -8,17 +8,37 @@ import java.time.LocalDateTime;
 
 public class Reserva extends Registro {
     private EstadoReserva estado;
-    private LocalDateTime fechaHora;
+    private LocalDateTime fechaHoraInicio; //El precio se calcula
+    //buscando los bloques de la cancha que caen en este rango
+    private LocalDateTime fechaHoraFin;
     private Cliente cliente;
     private Cancha cancha;
     private Pago pago;
     // La duracion podría sacarse de BloqueHorario que posee la Cancha
-//    private LocalDateTime duracion;
-//
-//    public LocalDateTime getDuracion() {
+    // PERO igual se necesita convertir a int
+    // No double porque no le vas a mostrar al cliente una duración de 38.99 minutos o algo así
+    // private int duracion; La durcion se calcula con Duration.between(fechaHoraInicio, fechaHoraFin).toMinutes()
+
+    public LocalDateTime getFechaHoraFin() {
+        return fechaHoraFin;
+    }
+
+    public void setFechaHoraFin(LocalDateTime fechaHoraFin) {
+        this.fechaHoraFin = fechaHoraFin;
+    }
+
+    public LocalDateTime getFechaHoraInicio() {
+        return fechaHoraInicio;
+    }
+
+    public void setFechaHoraInicio(LocalDateTime fechaHoraInicio) {
+        this.fechaHoraInicio = fechaHoraInicio;
+    }
+
+//    public int getDuracion() {
 //        return duracion;
 //    }
-//    public void setDuracion(LocalDateTime duracion) {
+//    public void setDuracion(int duracion) {
 //        this.duracion = duracion;
 //    }
 
@@ -48,13 +68,6 @@ public class Reserva extends Registro {
     }
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
-    }
-
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
-    }
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
     }
 
 //    public int getIdReserva() {

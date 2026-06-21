@@ -12,6 +12,9 @@ public class Resena extends Registro {
 	private int calificacion;
 	private LocalDateTime fechaPublicacion;
 	//private Cliente cliente;
+	// tendría más sentido que una Cancha tuviera una lista de Resenas, no que una
+	// Resena tenga una reserva. ESte atributo igual se mantiene para
+	// que se pueda navergar de una Resena a una Reserva
 	private Reserva reserva;//Se comprueba tener una reserva para dejar resena, extraer idClliente de reserva
 	//private Cancha cancha;// Las reseñas son exclusivas de las canchas
 

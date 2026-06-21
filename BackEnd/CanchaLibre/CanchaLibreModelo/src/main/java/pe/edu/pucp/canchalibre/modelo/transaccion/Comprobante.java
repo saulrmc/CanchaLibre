@@ -1,6 +1,7 @@
 package pe.edu.pucp.canchalibre.modelo.transaccion;
 
 import pe.edu.pucp.canchalibre.modelo.Registro;
+import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,24 @@ public class Comprobante extends Registro {
 	private static final double comisionPlataforma = 5.00;
 	private double valorVenta;
 	private static final double igv = 0.18;
+	private Reserva reserva; //RF14
+	private double montoTotal;
+
+	public double getMontoTotal() {//montoTotal = montoBloques + (montoBloques * igv) + comisionPlataforma
+		return montoTotal;
+	}
+
+	public void setMontoTotal(double montoTotal) {
+		this.montoTotal = montoTotal;
+	}
+
+	public Reserva getReserva() {
+		return reserva;
+	}
+
+	public void setReserva(Reserva reserva) {
+		this.reserva = reserva;
+	}
 
 	public String getSerie() {return serie;}
 	public void setSerie(String serie) {this.serie = serie;}

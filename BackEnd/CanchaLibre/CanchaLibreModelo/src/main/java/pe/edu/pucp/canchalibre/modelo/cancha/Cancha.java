@@ -19,7 +19,7 @@ public class Cancha extends Registro {
     private List<BloqueHorario> bloques;
     private double precioBase;
     //REVIEWS
-    //private List<Resena> resenas;
+    private List<Resena> resenas;
     private double promedioCalificacion;
 
     public double getPromedioCalificacion() {return promedioCalificacion;}
@@ -31,12 +31,12 @@ public class Cancha extends Registro {
     public double getPrecioBase() {return precioBase;}
     public void setPrecioBase(double precioBase) {this.precioBase = precioBase;}
 
-//    public List<Resena> getResenas() {
-//        return resenas;
-//    }
-//    public void setResenas(List<Resena> resenas) {
-//        this.resenas = resenas;
-//    }
+    public List<Resena> getResenas() {
+        return resenas;
+    }
+    public void setResenas(List<Resena> resenas) {
+        this.resenas = resenas;
+    }
 
     public List<Etiqueta> getEtiquetas() {return etiquetas; }
     public void setEtiquetas(List<Etiqueta> etiquetas) { this.etiquetas = etiquetas; }
