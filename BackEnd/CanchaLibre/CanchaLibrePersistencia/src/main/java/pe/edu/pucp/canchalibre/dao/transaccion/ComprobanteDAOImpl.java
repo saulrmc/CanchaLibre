@@ -11,11 +11,10 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
                                              Comprobante modelo) throws SQLException {
         String sql = "{call insertarComprobante(?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-
+        cmd.setInt("p_idComprobante",modelo.getIdComprobante());
         cmd.setString("p_serie",modelo.getSerie());
         cmd.setDouble("p_subtotal",modelo.getMontoBloques());
-        //numero,fechaEmision,valorVenta calculados en sql
-        cmd.registerOutParameter("p_id",Types.INTEGER);
+        //numero,fechaEmision,valorVenta, montoIgv calculados en sql
         return cmd;
     }
 
@@ -48,13 +47,13 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
     protected Comprobante mapearModelo(ResultSet rs) throws SQLException{
         Comprobante comprobante = new Comprobante();
 
-        comprobante.setId(rs.getInt("id"));
+        comprobante.setIdComprobante(rs.getInt("idComprobante"));
         comprobante.setSerie(rs.getString("serie"));
         comprobante.setNumero(rs.getString("numero"));
         comprobante.setFechaEmision(rs.getObject("fechaEmision", LocalDateTime.class));
         comprobante.setMontoBloques(rs.getDouble("montoBloques"));
         comprobante.setValorVenta(rs.getDouble("valorVenta"));
-
+        comprobante.setMontoIgv(rs.getDouble("montoIgv"));
         return comprobante;
     }
 
