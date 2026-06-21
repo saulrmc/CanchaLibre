@@ -15,24 +15,15 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
     @Override
     protected PreparedStatement comandoCrear(Connection conn, Reserva modelo) throws SQLException {
-        String sql = """
-        INSERT INTO Reserva (
-            fechaHora,
-            duracion,
-            estado,
-            idCancha,
-            idCliente
-        ) VALUES (?, ?, ?, ?, ?)
-    """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        cmd.setObject(1, modelo.getFechaHora());
-        cmd.setObject(2, modelo.getDuracion());
-        cmd.setString(3, modelo.getEstado().name());
-        cmd.setInt(4, modelo.getCancha().getIdCancha());
-        cmd.setInt(5, modelo.getCliente().getIdUsuario());
-
+        String sql = "{call insertrarReserva()}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_estado",modelo.getEstado().name());
+        cmd.setObject("p_fechaHora",modelo.getFechaHora());
+        cmd.setInt("p_idCliente",modelo.getCliente().getId());
+        cmd.setInt("p_idCancha",modelo.getCancha().getId());
+        //if(modelo.getPago())
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
