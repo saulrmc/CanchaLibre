@@ -5,33 +5,19 @@ import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.time.LocalDateTime;
 
-public class Comprobante extends Registro {
+public class Comprobante {
+	private int idComprobante;
 	private String serie;
 	private String numero;
 	private LocalDateTime fechaEmision;
 
-	private double montoBloques;
+	private double montoBloques; //subtotal canchas
 	private static final double comisionPlataforma = 5.00;
-	private double valorVenta;
-	private static final double igv = 0.18;
-	private Reserva reserva; //RF14
-	private double montoTotal;
-
-	public double getMontoTotal() {//montoTotal = montoBloques + (montoBloques * igv) + comisionPlataforma
-		return montoTotal;
-	}
-
-	public void setMontoTotal(double montoTotal) {
-		this.montoTotal = montoTotal;
-	}
-
-	public Reserva getReserva() {
-		return reserva;
-	}
-
-	public void setReserva(Reserva reserva) {
-		this.reserva = reserva;
-	}
+	private double valorVenta; //montoBloques+comision / 1.18 (precio ya incluye igv 18%)
+	private double montoIgv; //montoBloques+comision - valorVenta
+	
+	public double getMontoIgv() {return montoIgv;}
+	public void setMontoIgv(double montoIgv) {this.montoIgv = montoIgv;}
 
 	public String getSerie() {return serie;}
 	public void setSerie(String serie) {this.serie = serie;}
@@ -60,7 +46,11 @@ public class Comprobante extends Registro {
 //		this.precioHora = precioHora;
 //	}
 
-	public double getIgv() {
-		return igv;
+	public int getIdComprobante() {
+		return idComprobante;
 	}
+	public void setIdComprobante(int idComprobante) {
+		this.idComprobante = idComprobante;
+	}
+
 }

@@ -7,23 +7,20 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.time.LocalDateTime;
 
-public class Resena extends Registro {
+public class Resena {
+	private int idResena;
 	private String descripcion;
 	private int calificacion;
 	private LocalDateTime fechaPublicacion;
-	//private Cliente cliente;
-	// tendría más sentido que una Cancha tuviera una lista de Resenas, no que una
-	// Resena tenga una reserva. ESte atributo igual se mantiene para
-	// que se pueda navergar de una Resena a una Reserva
-	private Reserva reserva;//Se comprueba tener una reserva para dejar resena, extraer idClliente de reserva
-	//private Cancha cancha;// Las reseñas son exclusivas de las canchas
+	private Reserva reserva;
 
-//	public Cancha getCancha() {
-//		return cancha;
-//	}
-//	public void setCancha(Cancha cancha) {
-//		this.cancha = cancha;
-//	}
+	public int getIdResena() {
+		return idResena;
+	}
+
+	public void setIdResena(int idResena) {
+		this.idResena = idResena;
+	}
 
 	public Reserva getReserva(){ return reserva; }
 	public void setReserva(Reserva reserva){ this.reserva = reserva;}

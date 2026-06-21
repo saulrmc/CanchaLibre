@@ -5,12 +5,19 @@ import pe.edu.pucp.canchalibre.modelo.Registro;
 
 import java.time.LocalDateTime;
 
-public class Pago extends Registro {
+public class Pago {
+    private int idPago;
     private MetodoPago metodoPago;
     private double monto;
     private LocalDateTime fechaPago;
-    //private Comprobante comprobante;
+    private Comprobante comprobante;
 
+    public int getIdPago() {
+        return idPago;
+    }
+    public void setIdPago(int idPago) {
+        this.idPago = idPago;
+    }
     public MetodoPago getMetodoPago() {
         return metodoPago;
     }
@@ -31,11 +38,11 @@ public class Pago extends Registro {
         this.fechaPago = fechaPago;
     }
 
-//    public Comprobante getComprobante() {
-//        return comprobante;
-//    }
-//    public void setComprobante(Comprobante comprobante) {
-//        this.comprobante = comprobante;
-//    }
+    public Comprobante getComprobante() {
+        return comprobante;
+    }
+    public void setComprobante(Comprobante comprobante) {
+        this.comprobante = comprobante;
+    }
 
 }
