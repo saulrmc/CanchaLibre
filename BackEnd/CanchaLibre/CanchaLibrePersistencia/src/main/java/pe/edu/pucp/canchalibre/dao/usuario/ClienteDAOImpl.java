@@ -1,6 +1,7 @@
 package pe.edu.pucp.canchalibre.dao.usuario;
 
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
+import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAO;
 import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
@@ -11,118 +12,115 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
-    //on BaseDAO
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
-        String sql = """
-                INSERT INTO Cliente(
-                    idCliente,
-                    nombres,
-                    contrasena,
-                    correo,
-                    telefono,
-                    intentosFallidos,
-                    ultimaSesion,
-                    calificacion
-                ) VALUES (?,?,?,?,?,?,?,?)
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-        setCamposCliente(cmd,modelo);
+        String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn, Cliente modelo) throws SQLException {
-        String sql = """
-        UPDATE Cliente SET
-            nombres = ?,
-            contrasena = ?,
-            correo = ?,
-            telefono = ?,
-            intentosFallidos = ?,
-            ultimaSesion = ?,
-            calificacion = ?
-        WHERE idCliente = ?
-        """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposPersona(cmd,1,modelo);
-        cmd.setInt(nextIndex, modelo.getCalificacion());
-        cmd.setInt(nextIndex+1, modelo.getIdUsuario());
-
+        String sql = "{call modificarCliente(?, ?, ?, ?, ?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.setInt("p_id",modelo.getId());
         return cmd;
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM Cliente WHERE idCliente = ?";
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
-
+        String sql = "{call eliminarCliente(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
-        String sql = """
-            SELECT *
-            FROM Cliente
-            WHERE idCliente = ?
-        """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
-
+        String sql = "{call buscarClientePorId(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
-        String sql = """
-        SELECT *
-        FROM Cliente
-        """;
-
-        return conn.prepareStatement(sql);
+        String sql = "{call listarClientes()}";
+        return conn.prepareCall(sql);
     }
 
     @Override
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
                                                     String nombres) throws SQLException{
-        String sql = """
-                SELECT * FROM Cliente WHERE nombres = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setString(1,nombres);
+        String sql = "{call buscarClientePorNombre(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_nombres",nombres);
         return cmd;
     }
 
     protected Cliente mapearModelo(ResultSet rs) throws SQLException{
         Cliente modelo = new Cliente();
-        modelo.setIdUsuario(rs.getInt("idCliente"));
-        mapearCamposPersona(rs,modelo);
-        modelo.setCalificacion(rs.getInt("calificacion"));
+        modelo.setId(rs.getInt("id"));
 
-        ReservaDAO reservaDAO = new ReservaDAOImpl();
-        List<Reserva> listaReservas = reservaDAO.leerTodos();
-
-        List<Reserva> listaReservasCliente = new ArrayList<>();
-        if(listaReservas !=null) {
-            for (Reserva r : listaReservas) {
-                if (r.getCliente()!=null &&
-                    r.getCliente().getIdUsuario() == modelo.getIdUsuario())
-                    listaReservasCliente.add(r);
-            }
+        Integer idCuentaUsuario = leerIdCuentaUsuario(rs);
+        if (idCuentaUsuario != null) {
+            modelo.setCuentaUsuario(new CuentaUsuarioDAOImpl().leer(idCuentaUsuario));
         }
-        modelo.setHistorialReservas(listaReservasCliente);
 
+        mapearCamposPersona(rs,modelo);
+        modelo.setCalificacion(rs.getDouble("calificacion"));
+        modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
     }
 
-    private int setCamposCliente(PreparedStatement cmd, Cliente modelo) throws SQLException {
-        int startIndex=1;
-        cmd.setInt(startIndex,modelo.getIdUsuario());
-        int idx = setCamposPersona(cmd,startIndex+1,modelo);
-        cmd.setInt(idx, modelo.getCalificacion());
-        return idx + 1;
+    protected PreparedStatement comandoBuscarPorCuenta(
+            Connection conn, String cuenta)
+            throws SQLException {
+
+        String sql = "{call buscarClientePorCuenta(?)}";
+
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_cuenta", cuenta);
+
+        return cmd;
     }
 
+    @Override
+    public Cliente buscarPorCuenta(String cuenta) {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoBuscarPorCuenta(conn, cuenta)) {
+                ResultSet rs = cmd.executeQuery();
+
+                if (!rs.next()) {
+                    System.err.println("No se encontro el registro con "
+                            + "cuenta: " + cuenta);
+                    return null;
+                }
+
+                return this.mapearModelo(rs);
+            }
+        });
+    }
 
 }

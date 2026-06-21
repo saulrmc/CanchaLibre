@@ -7,29 +7,12 @@ import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import java.util.List;
 
 public class Cliente extends Persona {
-//    private List<Reserva> reservas; //RF09
-//    private List<Resena> resenas;
-    private int calificacion;
-//
-//    public List<Reserva> getReservas() {
-//        return reservas;
-//    }
-//    public void setReservas(List<Reserva> reservas) {
-//        this.reservas = reservas;
-//    }
-//
-//    public List<Resena> getResenas() {
-//        return resenas;
-//    }
-//    public void setResenas(List<Resena> resenas) {
-//        this.resenas = resenas;
-//    }
+    private double calificacion;
 
-    public int getCalificacion() {
+    public double getCalificacion() {
         return calificacion;
     }
-    public void setCalificacion(int calificacion) {
+    public void setCalificacion(double calificacion) {
         this.calificacion = calificacion;
     }
-
 }
