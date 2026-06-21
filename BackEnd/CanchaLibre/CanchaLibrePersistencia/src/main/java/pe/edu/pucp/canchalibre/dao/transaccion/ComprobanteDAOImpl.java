@@ -2,10 +2,9 @@ package pe.edu.pucp.canchalibre.dao.transaccion;
 
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
-import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
-import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements ComprobanteDAO {
     protected PreparedStatement comandoCrear(Connection conn,
@@ -15,7 +14,7 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
 
         cmd.setString("p_serie",modelo.getSerie());
         cmd.setDouble("p_subtotal",modelo.getMontoBloques());
-        //numero,fechaEmision,valorVenta,igv calculados en sql
+        //numero,fechaEmision,valorVenta calculados en sql
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
@@ -49,18 +48,13 @@ public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements C
     protected Comprobante mapearModelo(ResultSet rs) throws SQLException{
         Comprobante comprobante = new Comprobante();
 
-        comprobante.setIdComprobante(rs.getInt("idComprobante"));
+        comprobante.setId(rs.getInt("id"));
         comprobante.setSerie(rs.getString("serie"));
         comprobante.setNumero(rs.getString("numero"));
-        java.sql.Timestamp tsFecha = rs.getTimestamp("fechaEmision");
-        if (tsFecha != null) {
-            comprobante.setFechaEmision(tsFecha.toLocalDateTime());
-        }
-
+        comprobante.setFechaEmision(rs.getObject("fechaEmision", LocalDateTime.class));
         comprobante.setMontoBloques(rs.getDouble("montoBloques"));
         comprobante.setValorVenta(rs.getDouble("valorVenta"));
-        comprobante.setIgv(rs.getDouble("igv"));
-        
+
         return comprobante;
     }
 
