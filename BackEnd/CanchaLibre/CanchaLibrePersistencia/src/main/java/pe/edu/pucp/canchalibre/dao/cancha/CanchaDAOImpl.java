@@ -35,7 +35,6 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
 
             this.bloqueDao.eliminarBloquePorCancha(conn, modelo.getId());
-
             this.bloqueDao.crearBloquesPorCancha(conn, modelo.getId(), modelo.getBloques());
             return true;
         });

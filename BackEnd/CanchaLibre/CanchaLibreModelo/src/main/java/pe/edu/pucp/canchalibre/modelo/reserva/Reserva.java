@@ -16,6 +16,8 @@ public class Reserva {
     private Pago pago;
     private List<BloqueHorario> bloquesSeleccionados;
 
+    public List<BloqueHorario> getBloquesSeleccionados() {return bloquesSeleccionados;}
+    public void setBloquesSeleccionados(List<BloqueHorario> bloquesSeleccionados) {this.bloquesSeleccionados = bloquesSeleccionados;}
 
     public Pago getPago() {
         return pago;

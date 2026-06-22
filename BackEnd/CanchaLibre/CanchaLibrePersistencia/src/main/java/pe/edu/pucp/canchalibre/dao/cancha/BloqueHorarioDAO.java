@@ -15,4 +15,11 @@ public interface BloqueHorarioDAO extends Persistible<BloqueHorario, Integer> {
                                               Integer idCancha) throws SQLException;
     void eliminarBloquePorCancha(Connection conn,
                                   Integer idCancha) throws SQLException;
+
+
+    void crearBloquesPorReserva(Connection conn,
+                                Integer idReserva,
+                                List<BloqueHorario> bloques) throws SQLException;
+    List<BloqueHorario> leerBloquesPorReserva(Connection conn,
+                                              Integer idReserva) throws SQLException;
 }

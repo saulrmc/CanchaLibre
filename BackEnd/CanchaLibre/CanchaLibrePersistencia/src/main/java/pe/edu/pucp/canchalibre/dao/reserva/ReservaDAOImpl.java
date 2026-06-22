@@ -1,6 +1,11 @@
 package pe.edu.pucp.canchalibre.dao.reserva;
 
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
+import pe.edu.pucp.canchalibre.dao.cancha.BloqueHorarioDAO;
+import pe.edu.pucp.canchalibre.dao.cancha.BloqueHorarioDAOImpl;
+import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAOImpl;
+import pe.edu.pucp.canchalibre.dao.transaccion.PagoDAOImpl;
+import pe.edu.pucp.canchalibre.dao.usuario.ClienteDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
@@ -9,144 +14,181 @@ import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDAO {
+    private final BloqueHorarioDAO bloqueDao;
+
+    public ReservaDAOImpl(){
+        this.bloqueDao = new BloqueHorarioDAOImpl();
+    }
+
+    @Override
+    public Integer crear(Reserva modelo) {
+        return ejecutarComando(conn -> {
+            Integer idOrden = this.ejecutarComandoCrear(conn, modelo);
+            if (idOrden == null) {
+                return null;
+            }
+            modelo.setIdReserva(idOrden);
+            this.bloqueDao.crearBloquesPorReserva(conn, idOrden, modelo.getBloquesSeleccionados());
+            return idOrden;
+        });
+    }
+
+    @Override
+    public boolean actualizar(Reserva modelo) {
+        return ejecutarComando(conn -> {
+            if (!this.ejecutarComandoActualizar(conn, modelo)) {
+                return false;
+            }
+            // Si el cliente cambia de bloques
+            // se debe cancelar la reserva y crear una nueva
+            return true;
+        });
+    }
+
+    @Override
+    public boolean eliminar(Integer id) {
+        return ejecutarComando(conn -> {
+            // Se quedan intactos para saber
+            // qué horarios estuvieron ocupados o reservados.
+            return this.ejecutarComandoEliminar(conn, id);
+        });
+    }
+
+    @Override
+    public Reserva leer(Integer id) {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoLeer(conn, id);
+                 ResultSet rs = cmd.executeQuery()) {
+                if (!rs.next()) {
+                    System.err.println("No se encontro el registro con id: " + id);
+                    return null;
+                }
+
+                Reserva modelo = this.mapearModelo(rs);
+                modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva()));
+                return modelo;
+            }
+        });
+    }
+
+    @Override
+    public List<Reserva> leerTodos() {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoLeerTodos(conn);
+                 ResultSet rs = cmd.executeQuery()) {
+                List<Reserva> modelos = new ArrayList<>();
+                while (rs.next()) {
+                    Reserva modelo = this.mapearModelo(rs);
+                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva()));
+                    modelos.add(modelo);
+                }
+                return modelos;
+            }
+        });
+    }
+
 
     @Override
     protected PreparedStatement comandoCrear(Connection conn, Reserva modelo) throws SQLException {
-        String sql = "{call insertrarReserva()}";
+        String sql = "{call insertarReserva(?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_estado",modelo.getEstado().name());
-        cmd.setObject("p_fechaHora",modelo.getFechaHora());
         cmd.setInt("p_idCliente",modelo.getCliente().getId());
         cmd.setInt("p_idCancha",modelo.getCancha().getId());
-        //if(modelo.getPago())
-        cmd.setBoolean("p_activo",modelo.isActivo());
+        if(modelo.getPago()==null){
+            cmd.setNull("p_idPago",Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idPago",modelo.getPago().getIdPago());
+        }
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoActualizar(Connection conn, Reserva modelo) throws SQLException {
-        String sql = """
-        UPDATE Reserva
-        SET fechaHora = ?,
-            duracion = ?,
-            estado = ?,
-            idCancha = ?,
-            idCliente = ?
-        WHERE idReserva = ?
-    """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-
-        cmd.setObject(1, modelo.getFechaHora());
-        cmd.setObject(2, modelo.getDuracion());
-        cmd.setString(3, modelo.getEstado().name());
-        cmd.setInt(4, modelo.getCancha().getIdCancha());
-        cmd.setInt(5, modelo.getCliente().getIdUsuario());
-        cmd.setInt(6, modelo.getIdReserva());
-
+        String sql = "{call modificarReserva(?, ?, ?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_estado",modelo.getEstado().name());
+        cmd.setInt("p_idCliente",modelo.getCliente().getId());
+        cmd.setInt("p_idCancha",modelo.getCancha().getId());
+        if(modelo.getPago()==null){
+            cmd.setNull("p_idPago",Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idPago",modelo.getPago().getIdPago());
+        }
+        cmd.setInt("p_id",modelo.getIdReserva());
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer idPago) throws SQLException {
-        String sql = """
-        DELETE FROM Reserva WHERE idReserva = ?
-    """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, idPago);
+        String sql = "{call eliminarReserva(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", idPago);
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoLeer(Connection conn, Integer idPago) throws SQLException{
-        String sql = """
-        SELECT 
-            r.idReserva,
-            r.fechaHora,
-            r.duracion,
-            r.estado,
-            r.idCancha,
-            r.idCliente,
-            p.idPago AS idPago,
-            p.metodoPago,
-            p.monto,
-            p.fechaPago
-        FROM Reserva r
-        LEFT JOIN Pago p ON p.idReserva = r.idReserva
-        WHERE r.idReserva = ?
-    """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, idPago);
-
-
+        String sql = "{call buscarReservaPorId(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", idPago);
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
-        String sql = """
-        SELECT 
-            r.idReserva,
-            r.fechaHora,
-            r.duracion,
-            r.estado,
-            r.idCancha,
-            r.idCliente,
-            p.idPago AS idPago,
-            p.metodoPago,
-            p.monto,
-            p.fechaPago
-        FROM Reserva r
-        LEFT JOIN Pago p ON p.idReserva = r.idReserva
-    """;
-        return conn.prepareStatement(sql);
+        String sql = "{call listarReservas()}";
+        return conn.prepareCall(sql);
     }
 
     @Override
     protected Reserva mapearModelo(ResultSet rs) throws SQLException {
-        Reserva reserva = new Reserva();
-
-        Cliente cliente = new Cliente();
-        cliente.setIdUsuario(rs.getInt("idCliente"));
-
-        Cancha cancha = new Cancha();
-        cancha.setIdCancha(rs.getInt("idCancha"));
-
-        reserva.setIdReserva(rs.getInt("idReserva"));
-        reserva.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-        reserva.setDuracion(rs.getTime("duracion").toLocalTime());
-        reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
-        reserva.setCliente(cliente);
-        reserva.setCancha(cancha);
+        Reserva modelo = new Reserva();
+        modelo.setIdReserva(rs.getInt("idReserva"));
+        modelo.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
+        modelo.setCliente(new ClienteDAOImpl().leer(rs.getInt("idCliente")));
+        modelo.setCancha(new CanchaDAOImpl().leer(rs.getInt("idCancha")));
 
         int idPago = rs.getInt("idPago");
-
-        if (!rs.wasNull()) {
-            Pago pago = new Pago();
-            pago.setIdPago(idPago);
-            pago.setMonto(rs.getDouble("monto"));
-
-            String metodoPago = rs.getString("metodoPago");
-            if (metodoPago != null) {
-                pago.setMetodoPago(MetodoPago.valueOf(metodoPago));
-            }
-
-            Timestamp fechaPago = rs.getTimestamp("fechaPago");
-            if (fechaPago != null) {
-                pago.setFechaPago(fechaPago.toLocalDateTime());
-            }
-
-            pago.setReserva(reserva);
-            reserva.setPago(pago);
+        if(!rs.wasNull()){
+            modelo.setPago(new PagoDAOImpl().leer(idPago));
         }
 
-
-        return reserva;
+        return modelo;
     }
+
+    protected PreparedStatement comandoListarReservasPorCuenta(
+            Connection conn, String cuenta) throws SQLException {
+        String sql = "{call listarReservasPorCuenta(?)}";
+
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_cuenta", cuenta);
+        return cmd;
+    }
+
+    @Override
+    public List<Reserva> listarReservasPorCuenta(String cuenta) {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd =
+                         this.comandoListarReservasPorCuenta(conn, cuenta)) {
+                ResultSet rs = cmd.executeQuery();
+
+                List<Reserva> modelos = new ArrayList<>();
+                while (rs.next()) {
+                    modelos.add(this.mapearModelo(rs));
+                }
+
+                return modelos;
+            }
+        });
+    }
+
 }

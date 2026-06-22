@@ -190,4 +190,42 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
     protected BloqueHorario mapearModelo(ResultSet rs) throws SQLException{
         return this.mapearBloqueHorario(rs);
     }
+
+    @Override
+    public void crearBloquesPorReserva(Connection conn,
+                                      Integer idReserva,
+                                      List<BloqueHorario> bloques) throws SQLException{
+        if (bloques == null || bloques.isEmpty()){
+            return;
+        }
+
+        for(BloqueHorario bloque : bloques){
+            try(PreparedStatement cmd = this.comandoCrearBloqueHorario(conn, idReserva, bloque)){
+                if(cmd.executeUpdate()==0){
+                    throw new SQLException("No se pudo insertar un bloque en la reserva");
+                }
+                if(cmd instanceof CallableStatement callableCmd){
+                    bloque.setId(callableCmd.getInt("p_id"));
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<BloqueHorario> leerBloquesPorReserva(Connection conn,
+                                                    Integer idReserva) throws SQLException{
+        List<BloqueHorario> bloques = new ArrayList<>();
+        try(PreparedStatement cmd = this.comandoLeerBloquesPorCancha(conn, idReserva);
+            ResultSet rs = cmd.executeQuery()) {
+            while (rs.next()) {
+                try(PreparedStatement cmdLeer = this.comandoLeer(conn, rs.getInt("id"));
+                    ResultSet rsBloque = cmdLeer.executeQuery()){
+                    if(rsBloque.next()) {
+                        bloques.add(this.mapearModelo(rsBloque));
+                    }
+                }
+            }
+        }
+        return bloques;
+    }
 }
