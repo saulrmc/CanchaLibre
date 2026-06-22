@@ -54,21 +54,25 @@ public class ClientesResource {
     @POST
     public Response crearCliente(Cliente cliente) {
         if (cliente == null ||
-            cliente.getCorreo() == null ||
-            cliente.getContrasena() == null ||
-            cliente.getNombres() == null ||
-            cliente.getContrasena().isBlank() ||
-            cliente.getCorreo().isBlank() ||
-            cliente.getNombres().isBlank()) {
+                cliente.getCorreo() == null ||
+                cliente.getNombres() == null ||
+                cliente.getCuentaUsuario() == null ||
+                cliente.getCuentaUsuario().getUserName() == null ||
+                cliente.getCuentaUsuario().getPassword() == null ||
+                cliente.getCorreo().isBlank() ||
+                cliente.getNombres().isBlank() ||
+                cliente.getCuentaUsuario().getUserName().isBlank() ||
+                cliente.getCuentaUsuario().getPassword().isBlank()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear la cliente es inválido"))
+                    .entity(Map.of("error", "El payload para crear el cliente es inválido"))
                     .build();
         }
 
         clienteBO.guardar(cliente, Estado.Nuevo);
+
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(cliente.getIdUsuario()))
+                .path(String.valueOf(cliente.getId()))
                 .build();
 
         return Response.created(location)
@@ -79,7 +83,7 @@ public class ClientesResource {
     @PUT
     @Path("{id}")
     public Response actualizarCliente(Cliente cliente, @PathParam("id") int idCliente) {
-        if (idCliente < 0) {
+        if (idCliente <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
@@ -87,23 +91,28 @@ public class ClientesResource {
 
         if (clienteBO.obtener(idCliente) == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cliente con id:  "
+                    .entity(Map.of("error", "El cliente con id: "
                             + idCliente + ", no existe"))
                     .build();
         }
 
         if (cliente == null ||
-            cliente.getCorreo() == null ||
-            cliente.getContrasena() == null ||
-            cliente.getNombres() == null ||
-            cliente.getContrasena().isBlank() ||
-            cliente.getCorreo().isBlank() ||
-            cliente.getNombres().isBlank()) {
+                cliente.getCorreo() == null ||
+                cliente.getNombres() == null ||
+                cliente.getCuentaUsuario() == null ||
+                cliente.getCuentaUsuario().getUserName() == null ||
+                cliente.getCuentaUsuario().getPassword() == null ||
+                cliente.getCorreo().isBlank() ||
+                cliente.getNombres().isBlank() ||
+                cliente.getCuentaUsuario().getUserName().isBlank() ||
+                cliente.getCuentaUsuario().getPassword().isBlank()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear el cliente es inválido"))
+                    .entity(Map.of("error", "El payload para actualizar el cliente es inválido"))
                     .build();
         }
+
+        cliente.setId(idCliente);
 
         clienteBO.guardar(cliente, Estado.Modificado);
 

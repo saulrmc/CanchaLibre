@@ -26,12 +26,12 @@ public class CanchaBOImpl extends BaseBO implements CanchaBO {
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear la cancha");
             }
-            modelo.setIdCancha(id);
+            modelo.setId(id);
         }
         else if (estado == Estado.Modificado) {
-            validarIdPositivo(modelo.getIdCancha(), "id de la cancha");
+            validarIdPositivo(modelo.getId(), "id de la cancha");
             if (!this.canchaDao.actualizar(modelo)) {
-                throw new IllegalStateException("No se pudo actualizar la cancha con id: " + modelo.getIdCancha());
+                throw new IllegalStateException("No se pudo actualizar la cancha con id: " + modelo.getId());
             }
         }
         else {

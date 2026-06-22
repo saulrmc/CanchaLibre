@@ -60,10 +60,17 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
 
     private void validarResena(Resena modelo) {
         Objects.requireNonNull(modelo, "La reseña es obligatoria");
-        if (modelo.getCalificacion() < 0){
-            throw new IllegalArgumentException("La calificacion en la reseña debe ser positiva");
+
+        if (modelo.getCalificacion() < 0 || modelo.getCalificacion() > 5) {
+            throw new IllegalArgumentException("La calificación debe estar entre 0 y 5");
         }
-        Objects.requireNonNull(modelo.getCliente(), "La resena necesita un cliente que la publicó");
-        Objects.requireNonNull(modelo.getCancha(), "La resena necesita una cancha asociada");
+
+        if (modelo.getFechaPublicacion() == null) {
+            throw new IllegalArgumentException("La fecha de publicación es obligatoria");
+        }
+
+        Objects.requireNonNull(modelo.getReserva(), "La reseña necesita una reserva asociada");
+
+        validarIdPositivo(modelo.getReserva().getIdReserva(), "id de la reserva");
     }
 }

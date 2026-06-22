@@ -60,9 +60,29 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
 
     private void validarComprobante(Comprobante modelo) {
         Objects.requireNonNull(modelo, "El comprobante es obligatorio");
-        if (modelo.getFechaEmision() == null){
+
+        if (modelo.getSerie() == null || modelo.getSerie().trim().isEmpty()) {
+            throw new IllegalArgumentException("La serie del comprobante es obligatoria");
+        }
+
+        if (modelo.getNumero() == null || modelo.getNumero().trim().isEmpty()) {
+            throw new IllegalArgumentException("El número del comprobante es obligatorio");
+        }
+
+        if (modelo.getFechaEmision() == null) {
             throw new IllegalArgumentException("La fecha de emisión del comprobante es inválida");
         }
-        Objects.requireNonNull(modelo.getReserva(), "El comprobante necesita una reserva asociada");
+
+        if (modelo.getMontoBloques() <= 0) {
+            throw new IllegalArgumentException("El monto de bloques debe ser mayor que cero");
+        }
+
+        if (modelo.getValorVenta() <= 0) {
+            throw new IllegalArgumentException("El valor de venta debe ser mayor que cero");
+        }
+
+        if (modelo.getMontoIgv() < 0) {
+            throw new IllegalArgumentException("El monto de IGV no puede ser negativo");
+        }
     }
 }

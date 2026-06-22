@@ -28,12 +28,12 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");
             }
-            modelo.setIdUsuario(id);
+            modelo.setId(id);
         }
         else if (estado == Estado.Modificado) {
-            validarIdPositivo(modelo.getIdUsuario(), "id del usuario");
+            validarIdPositivo(modelo.getId(), "id del usuario");
             if (!propietarioDao.actualizar(modelo)) {
-                throw new IllegalStateException("No se pudo actualizar el usuario con id: " + modelo.getIdUsuario());
+                throw new IllegalStateException("No se pudo actualizar el usuario con id: " + modelo.getId());
             }
         }
         else {

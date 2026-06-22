@@ -55,9 +55,9 @@ public class AdministradoresResource {
     public Response crearAdministrador(Administrador administrador) {
         if (administrador == null ||
                 administrador.getCorreo() == null ||
-                administrador.getContrasena() == null ||
+                administrador.getCuentaUsuario().getPassword() == null ||
                 administrador.getNombres() == null ||
-                administrador.getContrasena().isBlank() ||
+                administrador.getCuentaUsuario().getPassword().isBlank() ||
                 administrador.getCorreo().isBlank() ||
                 administrador.getNombres().isBlank()) {
 
@@ -68,7 +68,7 @@ public class AdministradoresResource {
 
         administradorBO.guardar(administrador, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(administrador.getIdUsuario()))
+                .path(String.valueOf(administrador.getId()))
                 .build();
 
         return Response.created(location)
@@ -94,9 +94,9 @@ public class AdministradoresResource {
 
         if (administrador == null ||
                 administrador.getCorreo() == null ||
-                administrador.getContrasena() == null ||
+                administrador.getCuentaUsuario().getPassword() == null ||
                 administrador.getNombres() == null ||
-                administrador.getContrasena().isBlank() ||
+                administrador.getCuentaUsuario().getPassword().isBlank() ||
                 administrador.getCorreo().isBlank() ||
                 administrador.getNombres().isBlank()) {
 

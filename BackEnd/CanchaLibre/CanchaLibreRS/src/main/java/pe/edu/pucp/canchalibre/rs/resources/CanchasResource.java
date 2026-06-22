@@ -65,7 +65,7 @@ public class CanchasResource {
 
         canchaBO.guardar(cancha, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(cancha.getIdCancha()))
+                .path(String.valueOf(cancha.getId()))
                 .build();
 
         return Response.created(location)

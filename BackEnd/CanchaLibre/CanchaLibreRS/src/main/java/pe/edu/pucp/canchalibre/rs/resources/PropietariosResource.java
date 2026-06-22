@@ -55,9 +55,9 @@ public class PropietariosResource {
     public Response crearPropietario(Propietario propietario) {
         if (propietario == null ||
                 propietario.getCorreo() == null ||
-                propietario.getContrasena() == null ||
+                propietario.getCuentaUsuario().getPassword() == null ||
                 propietario.getNombres() == null ||
-                propietario.getContrasena().isBlank() ||
+                propietario.getCuentaUsuario().getPassword().isBlank() ||
                 propietario.getCorreo().isBlank() ||
                 propietario.getNombres().isBlank()) {
 
@@ -68,7 +68,7 @@ public class PropietariosResource {
 
         propietarioBO.guardar(propietario, Estado.Nuevo);
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(propietario.getIdUsuario()))
+                .path(String.valueOf(propietario.getId()))
                 .build();
 
         return Response.created(location)
@@ -94,9 +94,9 @@ public class PropietariosResource {
 
         if (propietario == null ||
                 propietario.getCorreo() == null ||
-                propietario.getContrasena() == null ||
+                propietario.getCuentaUsuario().getPassword() == null ||
                 propietario.getNombres() == null ||
-                propietario.getContrasena().isBlank() ||
+                propietario.getCuentaUsuario().getPassword().isBlank() ||
                 propietario.getCorreo().isBlank() ||
                 propietario.getNombres().isBlank()) {
 

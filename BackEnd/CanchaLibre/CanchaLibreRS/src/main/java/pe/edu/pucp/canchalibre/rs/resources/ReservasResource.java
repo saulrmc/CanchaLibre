@@ -16,7 +16,6 @@ import java.util.Map;
 @Path("/v1/reservas")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-
 public class ReservasResource {
     private final ReservaBO reservaBO;
 
@@ -35,16 +34,17 @@ public class ReservasResource {
     @GET
     @Path("{id}")
     public Response obtenerReservaPorId(@PathParam("id") int idReserva) {
-        if (idReserva < 0) {
+        if (idReserva <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Reserva reserva = reservaBO.obtener(idReserva);
+
         if (reserva == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "La reserva con id:  "
+                    .entity(Map.of("error", "La reserva con id: "
                             + idReserva + ", no existe"))
                     .build();
         }
@@ -55,8 +55,11 @@ public class ReservasResource {
     @POST
     public Response crearReserva(Reserva reserva) {
         if (reserva == null ||
-                reserva.getDuracion() == null ||
-                reserva.getFechaHora() == null) {
+                reserva.getCliente() == null ||
+                reserva.getCancha() == null ||
+                reserva.getEstado() == null ||
+                reserva.getBloquesSeleccionados() == null ||
+                reserva.getBloquesSeleccionados().isEmpty()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El payload para crear la reserva es inválido"))
@@ -64,6 +67,7 @@ public class ReservasResource {
         }
 
         reservaBO.guardar(reserva, Estado.Nuevo);
+
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(reserva.getIdReserva()))
                 .build();
@@ -76,7 +80,7 @@ public class ReservasResource {
     @PUT
     @Path("{id}")
     public Response actualizarReserva(Reserva reserva, @PathParam("id") int idReserva) {
-        if (idReserva < 0) {
+        if (idReserva <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
@@ -84,19 +88,24 @@ public class ReservasResource {
 
         if (reservaBO.obtener(idReserva) == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El reserva con id:  "
+                    .entity(Map.of("error", "La reserva con id: "
                             + idReserva + ", no existe"))
                     .build();
         }
 
         if (reserva == null ||
-            reserva.getDuracion() == null ||
-            reserva.getFechaHora() == null) {
+                reserva.getCliente() == null ||
+                reserva.getCancha() == null ||
+                reserva.getEstado() == null ||
+                reserva.getBloquesSeleccionados() == null ||
+                reserva.getBloquesSeleccionados().isEmpty()) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear la reserva es inválido"))
+                    .entity(Map.of("error", "El payload para actualizar la reserva es inválido"))
                     .build();
         }
+
+        reserva.setIdReserva(idReserva);
 
         reservaBO.guardar(reserva, Estado.Modificado);
 
@@ -106,16 +115,17 @@ public class ReservasResource {
     @DELETE
     @Path("{id}")
     public Response eliminarReserva(@PathParam("id") int idReserva) {
-        if (idReserva < 0) {
+        if (idReserva <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Reserva reserva = reservaBO.obtener(idReserva);
+
         if (reserva == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "La reserva con id:  "
+                    .entity(Map.of("error", "La reserva con id: "
                             + idReserva + ", no existe"))
                     .build();
         }
