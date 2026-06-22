@@ -13,6 +13,17 @@ import java.sql.Types;
 
 
 public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implements CuentaUsuarioDAO {
+    protected PreparedStatement comandoLogin(Connection conn,
+                                             String username,
+                                             String password) throws SQLException {
+        String sql = "{call loginUsuario(?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_username", username);
+        cmd.setString("p_password", password);
+        cmd.registerOutParameter("p_valido", Types.BOOLEAN);
+        return cmd;
+    }
+
     @Override
     public boolean login(String username, String password) {
         return ejecutarComando(conn -> {
@@ -24,6 +35,35 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
                 return false;
             }
         });
+    }
+
+    @Override
+    public void actualizarDatosSeguridad(CuentaUsuario cuenta) {
+        ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoActualizarSeguridad(conn, cuenta)) {
+                cmd.executeUpdate();
+            }
+            return null;
+        });
+    }
+
+    protected PreparedStatement comandoActualizarSeguridad(Connection conn, CuentaUsuario cuenta) throws SQLException {
+        String sql = "{call actualizarSeguridadCuenta(?, ?, ?, ?)}"; // 4 parámetros en total
+        CallableStatement cmd = conn.prepareCall(sql);
+
+        cmd.setInt("p_intentosFallidos", cuenta.getIntentosFallidos());
+        if (cuenta.getUltimaSesion() != null) {
+            cmd.setTimestamp("p_ultimaSesion", java.sql.Timestamp.valueOf(cuenta.getUltimaSesion()));
+        } else {
+            cmd.setNull("p_ultimaSesion", Types.TIMESTAMP);
+        }
+        if (cuenta.getFechaBloqueo() != null) {
+            cmd.setTimestamp("p_fechaBloqueo", java.sql.Timestamp.valueOf(cuenta.getFechaBloqueo()));
+        } else {
+            cmd.setNull("p_fechaBloqueo", Types.TIMESTAMP);
+        }
+        cmd.setInt("p_id", cuenta.getId());
+        return cmd;
     }
 
     protected PreparedStatement comandoCrear(Connection conn,
@@ -46,6 +86,7 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
         cmd.registerOutParameter("p_id", Types.INTEGER);
         return cmd;
     }
+
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   CuentaUsuario modelo) throws SQLException {
         String sql = "{call modificarCuentaUsuario(?, ?, ?, ?, ?, ?, ?, ?)}";
@@ -93,17 +134,6 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = "{call listarCuentaUsuarios()}";
         return conn.prepareCall(sql);
-    }
-
-    protected PreparedStatement comandoLogin(Connection conn,
-                                             String username,
-                                             String password) throws SQLException {
-        String sql = "{call loginUsuario(?, ?, ?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setString("p_username", username);
-        cmd.setString("p_password", password);
-        cmd.registerOutParameter("p_valido", Types.BOOLEAN);
-        return cmd;
     }
 
     protected CuentaUsuario mapearModelo(ResultSet rs) throws SQLException {
