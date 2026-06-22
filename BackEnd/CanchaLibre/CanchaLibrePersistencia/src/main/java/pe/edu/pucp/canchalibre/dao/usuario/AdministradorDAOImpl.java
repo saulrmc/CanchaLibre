@@ -1,105 +1,90 @@
 package pe.edu.pucp.canchalibre.dao.usuario;
 
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
+import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.usuario.Administrador;
+import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
 
 public class AdministradorDAOImpl extends PersonaBaseDAO<Administrador> implements AdministradorDAO {
-    //on BaseDAO
     protected PreparedStatement comandoCrear(Connection conn,
                                              Administrador modelo) throws SQLException{
-        String sql = """
-                INSERT INTO Administrador(
-                    idAdministrador,
-                    nombres,
-                    contrasena,
-                    correo,
-                    telefono,
-                    intentosFallidos,
-                    ultimaSesion,
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-        setCamposAdministrador(cmd,modelo);
+        String sql = "{call insertarAdministrador(?, ?, ?, ?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn, Administrador modelo) throws SQLException {
-        String sql = """
-        UPDATE Administrador SET
-            nombres = ?,
-            contrasena = ?,
-            correo = ?,
-            telefono = ?,
-            intentosFallidos = ?,
-            ultimaSesion = ?,
-        WHERE idAdministrador = ?
-        """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        int nextIndex = setCamposAdministrador(cmd, modelo);
-        cmd.setInt(nextIndex, modelo.getIdUsuario());
-
+        String sql = "{call modificarAdministrador(?, ?, ?, ?, ?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.setInt("p_id",modelo.getId());
         return cmd;
     }
 
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = "DELETE FROM Administrador WHERE idAdministrador = ?";
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
-
+        String sql = "{call eliminarAdministrador(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
-        String sql = """
-            SELECT *
-            FROM Administrador
-            WHERE idAdministrador = ?
-        """;
-
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1, id);
-
+        String sql = "{call buscarAdministradorPorId(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", id);
         return cmd;
     }
 
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
-        String sql = """
-        SELECT *
-        FROM Administrador
-        """;
-
-        return conn.prepareStatement(sql);
+        String sql = "{call listarAdministradores()}";
+        return conn.prepareCall(sql);
     }
 
     @Override
     protected PreparedStatement comandoBuscarPorNombre(Connection conn,
-                                                    String nombres) throws SQLException{
-        String sql = """
-                SELECT * FROM Administrador WHERE nombres = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setString(1,nombres);
+                                                       String nombres) throws SQLException{
+        String sql = "{call buscarAdministradorPorNombre(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_nombres",nombres);
         return cmd;
     }
 
     protected Administrador mapearModelo(ResultSet rs) throws SQLException{
         Administrador modelo = new Administrador();
-        modelo.setIdUsuario(rs.getInt("idAdministrador"));
+        modelo.setId(rs.getInt("id"));
+
+        Integer idCuentaUsuario = leerIdCuentaUsuario(rs);
+        if (idCuentaUsuario != null) {
+            modelo.setCuentaUsuario(new CuentaUsuarioDAOImpl().leer(idCuentaUsuario));
+        }
 
         mapearCamposPersona(rs,modelo);
+        modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
-    }
-
-    private int setCamposAdministrador(PreparedStatement cmd, Administrador modelo) throws SQLException {
-        int startIndex=1;
-        cmd.setInt(startIndex,modelo.getIdUsuario());
-        int idx = setCamposPersona(cmd,startIndex+1,modelo);
-        //admin sin calificacion
-        return idx;
     }
 
 }

@@ -19,19 +19,9 @@ public abstract class PersonaBaseDAO<M extends Persona> extends DefaultBaseDAO<M
 
     protected int setCamposPersona(PreparedStatement cmd, int startIndex,
                                    M modelo) throws SQLException{
-        //cmd.setInt(startIndex,modelo.getIdUsuario());
         cmd.setString(startIndex,modelo.getNombres());
         cmd.setString(startIndex+1,modelo.getCorreo());
         cmd.setString(startIndex+2,modelo.getTelefono());
-        //cmd.setInt(startIndex+4,modelo.getIntentosFallidos());
-//
-//        if(modelo.getUltimaSesion() != null){
-//            cmd.setTimestamp(startIndex+5,java.sql.Timestamp.valueOf(modelo.getUltimaSesion()));
-//        }else{
-//            cmd.setNull(startIndex+5, Types.TIMESTAMP);
-//        }
-        //cmd.setString(startIndex+7,modelo.getRol().name());
-
         return startIndex+3;
     }
 
