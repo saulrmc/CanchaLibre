@@ -1,17 +1,11 @@
 package pe.edu.pucp.canchalibre.dao.usuario;
 
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
-import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAO;
-import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAOImpl;
 import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
-import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 
-import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
 import java.sql.*;
-
-import java.util.*;
 
 public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements PropietarioDAO {
     protected PreparedStatement comandoCrear(Connection conn,
@@ -29,7 +23,7 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
         cmd.setDouble("p_calificacion",modelo.getCalificacion());
-        cmd.setString("p_telefonoOperaciones",modelo.getTelefonoOperaciones());
+        cmd.setString("p_RUC",modelo.getRUC());
         cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
@@ -49,7 +43,7 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
         cmd.setDouble("p_calificacion",modelo.getCalificacion());
-        cmd.setString("p_telefonoOperaciones",modelo.getTelefonoOperaciones());
+        cmd.setString("P_RUC",modelo.getRUC());
         cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.setInt("p_id",modelo.getId());
         return cmd;
@@ -94,9 +88,35 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
 
         mapearCamposPersona(rs,modelo);
         modelo.setCalificacion(rs.getDouble("calificacion"));
-        modelo.setTelefonoOperaciones(rs.getString("telefonoOperaciones"));
+        modelo.setRUC(rs.getString("RUC"));
+        modelo.setSaldo(rs.getDouble("saldo"));
         modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
+    }
+
+    protected PreparedStatement comandoActualizarSaldo(
+            Connection conn,
+            Integer id, Double monto)
+            throws SQLException {
+
+        String sql = "{call actualizarSaldoPropietario(?, ?, ?)}";
+
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idPropietario", id);
+        cmd.setDouble("p_monto", monto);
+        cmd.registerOutParameter("p_saldo",Types.DECIMAL);
+
+        return cmd;
+    }
+
+    @Override
+    public double actualizarSaldo(Connection conn, Integer idPropietario, double monto)
+            throws SQLException {
+
+        try (PreparedStatement cmd = this.comandoActualizarSaldo(conn, idPropietario, monto)) {
+            cmd.executeUpdate();
+            return ((CallableStatement) cmd).getDouble("p_saldo");
+        }
     }
 
     protected PreparedStatement comandoBuscarPorCuenta(
