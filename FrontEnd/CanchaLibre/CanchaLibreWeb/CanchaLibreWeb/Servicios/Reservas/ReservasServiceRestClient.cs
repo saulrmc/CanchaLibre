@@ -1,4 +1,5 @@
 using CanchaLibreWeb.Servicios.Base;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Canchas;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Reservas;
 using CanchaLibreWeb.ViewModels;
 
@@ -21,7 +22,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
         // 4. Mapeamos y combinamos los datos para construir el ViewModel que la vista necesita
         return reservasDelCliente.Select(reserva => {
-            var canchaAsociada = todasLasCanchas.FirstOrDefault(c => c.Id == reserva.IdCancha);
+            var canchaAsociada = todasLasCanchas.FirstOrDefault(c => c.idCancha == reserva.IdCancha);
 
             return new ReservaViewModel
             {
@@ -31,10 +32,10 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 duracion = reserva.duracion,
                 cancha = canchaAsociada == null ? new CanchaViewModel { nombre = "Cancha no disponible" } : new CanchaViewModel
                 {
-                    idCancha = canchaAsociada.Id,
-                    nombre = canchaAsociada.Nombre,
-                    direccion = canchaAsociada.Direccion,
-                    imagenUrl = canchaAsociada.ImagenUrl
+                    idCancha = canchaAsociada.idCancha,
+                    nombre = canchaAsociada.nombre,
+                    direccion = canchaAsociada.direccion,
+                    imagenUrl = canchaAsociada.imagenUrl
                 },
                 pago = reserva.Pago == null ? null : new PagoViewModel
                 {

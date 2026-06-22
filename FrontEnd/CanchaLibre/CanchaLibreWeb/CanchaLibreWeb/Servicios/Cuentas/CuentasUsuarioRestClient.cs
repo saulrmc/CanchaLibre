@@ -6,12 +6,11 @@ using CanchaLibreWeb.ViewModels;
 
 namespace CanchaLibreWeb.Servicios.Cuentas;
 
-public class CuentasUsuarioRestClient : RestServiceClient<UsuarioViewModel, CuentasUsuarioRestClient.CuentaUsuarioRestDto>,
-    ICuentasUsuarioServiceClient
+public class CuentasUsuarioRestClient
+    : BaseRestServiceClient<UsuarioViewModel, CuentasUsuarioRestClient.CuentaUsuarioRestDto>,
+      ICuentasUsuarioServiceClient
 {
-    private const string ResourceConfig = "RestResources:CuentasUsuario";
-
-    protected override string ResourceSetting => ResourceConfig;
+    private const string ResourcePath = "api/v1/cuentas";
 
     public CuentasUsuarioRestClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         : base(configuration, httpClientFactory)
@@ -20,50 +19,51 @@ public class CuentasUsuarioRestClient : RestServiceClient<UsuarioViewModel, Cuen
 
     public bool Login(string username, string password)
     {
-        using var client = CreateClient(ResourceSetting);
-        using var response = client.PostAsJsonAsync("login",
-            new CuentaUsuarioRestDto
+        try
+        {
+            Api.Post($"{ResourcePath}/login", new CuentaUsuarioRestDto
             {
                 UserName = username.Trim(),
                 Password = password
-            }).GetAwaiter().GetResult();
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
+            });
+
+            return true;
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
             return false;
         }
-
-        EnsureSuccess(response, "Login de cuenta");
-        return true;
     }
 
     public List<UsuarioViewModel> Listar()
     {
-        var payload = ListarPayload();
-        var respuesta = new List<UsuarioViewModel>();
-        foreach (var item in payload)
-        {
-            respuesta.Add(ToViewModel(item, includePassword: false));
-        }
-
-        return respuesta;
+        var payload = Api.Get<List<CuentaUsuarioRestDto>>(ResourcePath);
+        return payload.Select(item => ToViewModel(item, includePassword: false)).ToList();
     }
 
     public UsuarioViewModel? Obtener(int id)
     {
-        var payload = ObtenerPayload(id.ToString(), "Obtener cuenta");
-        return payload is null ? null : ToViewModel(payload, includePassword: true);
+        try
+        {
+            var payload = Api.Get<CuentaUsuarioRestDto>($"{ResourcePath}/{id}");
+            return ToViewModel(payload, includePassword: true);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
     }
 
     public UsuarioViewModel? ObtenerPorUsername(string username)
     {
-        var cuentas = Listar();
-        return cuentas.FirstOrDefault(actual =>
+        return Listar().FirstOrDefault(actual =>
             string.Equals(actual.Nombres, username, StringComparison.OrdinalIgnoreCase));
     }
 
     public void Guardar(UsuarioViewModel modelo, Estado estado)
     {
         var fallback = string.Empty;
+
         if (modelo.Id > 0)
         {
             var actual = Obtener(modelo.Id);
@@ -71,12 +71,29 @@ public class CuentasUsuarioRestClient : RestServiceClient<UsuarioViewModel, Cuen
         }
 
         var payload = ToRest(modelo, fallback);
-        GuardarPayload(payload, estado, modelo.Id.ToString());
+
+        switch (estado)
+        {
+            case Estado.Nuevo:
+                Api.Post(ResourcePath, payload);
+                break;
+
+            case Estado.Modificado:
+                Api.Put($"{ResourcePath}/{modelo.Id}", payload);
+                break;
+
+            case Estado.Eliminado:
+                Api.Delete($"{ResourcePath}/{modelo.Id}");
+                break;
+
+            default:
+                throw new InvalidOperationException($"Estado no soportado: {estado}");
+        }
     }
 
     public void Eliminar(int id)
     {
-        EliminarPayload(id.ToString());
+        Api.Delete($"{ResourcePath}/{id}");
     }
 
     protected override UsuarioViewModel ToViewModel(CuentaUsuarioRestDto source)
@@ -89,68 +106,25 @@ public class CuentasUsuarioRestClient : RestServiceClient<UsuarioViewModel, Cuen
         return ToRest(source, string.Empty);
     }
 
-    private List<CuentaUsuarioRestDto> ListarPayload()
-    {
-        using var client = CreateClient(ResourceSetting);
-        using var response = client.GetAsync(string.Empty).GetAwaiter().GetResult();
-        EnsureSuccess(response, "Listar cuentas");
-        return response.Content.ReadFromJsonAsync<List<CuentaUsuarioRestDto>>().GetAwaiter().GetResult() ?? [];
-    }
-
-    private CuentaUsuarioRestDto? ObtenerPayload(string path, string operation)
-    {
-        using var client = CreateClient(ResourceSetting);
-        using var response = client.GetAsync(path).GetAwaiter().GetResult();
-        if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return null;
-        }
-
-        EnsureSuccess(response, operation);
-        return response.Content.ReadFromJsonAsync<CuentaUsuarioRestDto>().GetAwaiter().GetResult();
-    }
-
-    private void GuardarPayload(CuentaUsuarioRestDto payload, Estado estado, string idPath)
-    {
-        using var client = CreateClient(ResourceSetting);
-        using var response = estado switch
-        {
-            Estado.Nuevo => client.PostAsJsonAsync(string.Empty, payload).GetAwaiter().GetResult(),
-            Estado.Modificado => client.PutAsJsonAsync(idPath, payload).GetAwaiter().GetResult(),
-            Estado.Eliminado => client.DeleteAsync(idPath).GetAwaiter().GetResult(),
-            _ => throw new InvalidOperationException($"Estado no soportado: {estado}")
-        };
-
-        EnsureSuccess(response, "Guardar cuenta");
-    }
-
-    private void EliminarPayload(string path)
-    {
-        using var client = CreateClient(ResourceSetting);
-        using var response = client.DeleteAsync(path).GetAwaiter().GetResult();
-        EnsureSuccess(response, "Eliminar cuenta");
-    }
-
     private static UsuarioViewModel ToViewModel(CuentaUsuarioRestDto source, bool includePassword)
     {
         return new UsuarioViewModel
         {
             Id = source.Id,
-            //Activo = source.Activo,
             Nombres = source.UserName ?? string.Empty,
-            Contrasena = includePassword ? source.Password ?? string.Empty : string.Empty,
-            //ConfirmarContrasena = string.Empty
+            Contrasena = includePassword ? source.Password ?? string.Empty : string.Empty
         };
     }
 
     private static CuentaUsuarioRestDto ToRest(UsuarioViewModel source, string passwordFallback)
     {
-        var password = string.IsNullOrWhiteSpace(source.Contrasena) ? passwordFallback : source.Contrasena;
+        var password = string.IsNullOrWhiteSpace(source.Contrasena)
+            ? passwordFallback
+            : source.Contrasena;
 
         return new CuentaUsuarioRestDto
         {
             Id = source.Id,
-            //Activo = source.Activo,
             UserName = source.Nombres.Trim(),
             Password = password
         };
@@ -159,7 +133,6 @@ public class CuentasUsuarioRestClient : RestServiceClient<UsuarioViewModel, Cuen
     public sealed class CuentaUsuarioRestDto
     {
         public int Id { get; set; }
-        //public bool Activo { get; set; }
         public string? UserName { get; set; }
         public string? Password { get; set; }
     }
