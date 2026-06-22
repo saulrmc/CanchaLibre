@@ -145,6 +145,7 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
         if (rolStr != null) {
             modelo.setRol(Rol.valueOf(rolStr));
         }
+        modelo.setIntentosFallidos(rs.getInt("intentosFallidos"));
         java.sql.Timestamp tsUltimaSesion = rs.getTimestamp("ultimaSesion");
         if (tsUltimaSesion != null) {
             modelo.setUltimaSesion(tsUltimaSesion.toLocalDateTime());

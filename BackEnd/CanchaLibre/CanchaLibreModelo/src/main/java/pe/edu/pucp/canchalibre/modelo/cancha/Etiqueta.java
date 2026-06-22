@@ -1,7 +1,7 @@
 package pe.edu.pucp.canchalibre.modelo.cancha;
 
 public enum Etiqueta {
-    ILUMINACIÓN,
+    ILUMINACION,
     PARKING,
     WIFI,
     VESTIDORES,

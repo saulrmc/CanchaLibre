@@ -9,7 +9,7 @@ public class Comprobante {
 	private LocalDateTime fechaEmision;
 
 	private double montoBloques; //subtotal canchas
-	private static final double comisionPlataforma = 5.00;
+	private static final double COMISION_PLATAFORMA = 5.00;
 	private double valorVenta; //montoBloques+comision / 1.18 (precio ya incluye igv 18%)
 	private double montoIgv; //montoBloques+comision - valorVenta
 
@@ -31,17 +31,7 @@ public class Comprobante {
 	public LocalDateTime getFechaEmision() {return fechaEmision;}
 	public void setFechaEmision(LocalDateTime fechaEmision) {this.fechaEmision = fechaEmision;}
 
-	public double getComisionPlataforma(){return comisionPlataforma;};
-
-	//private double precioHora; el precio de la Hora está contenido en un EsquemaPrecio
-	//que tiene una Cancha, que asu vez tiene una Reserva
-//	public double getPrecioHora() {
-//		return precioHora;
-//	}
-//
-//	public void setPrecioHora(double precioHora) {
-//		this.precioHora = precioHora;
-//	}
+	public double getComisionPlataforma(){return COMISION_PLATAFORMA;}
 
 	public int getIdComprobante() {
 		return idComprobante;
