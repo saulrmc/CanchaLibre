@@ -3,7 +3,6 @@ package pe.edu.pucp.canchalibre.dao.usuario;
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
 import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.usuario.Administrador;
-import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
 

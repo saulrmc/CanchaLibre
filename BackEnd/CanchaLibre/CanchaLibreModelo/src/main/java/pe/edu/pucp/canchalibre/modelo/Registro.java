@@ -1,4 +1,5 @@
 package pe.edu.pucp.canchalibre.modelo;
+
 public abstract class Registro {
     private int id;
     private boolean activo;

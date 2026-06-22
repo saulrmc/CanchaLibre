@@ -1,8 +1,7 @@
 package pe.edu.pucp.canchalibre.modelo.cancha;
-import pe.edu.pucp.canchalibre.modelo.Registro;
-import pe.edu.pucp.canchalibre.modelo.resena.Resena;
-import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
+import pe.edu.pucp.canchalibre.modelo.Registro;
+import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 import java.util.List;
 
 public class Cancha extends Registro {

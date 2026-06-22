@@ -1,11 +1,9 @@
 package pe.edu.pucp.canchalibre.modelo.reserva;
-import pe.edu.pucp.canchalibre.modelo.Registro;
+
 import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class Reserva {

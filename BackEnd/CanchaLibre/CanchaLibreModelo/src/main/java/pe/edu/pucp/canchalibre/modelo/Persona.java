@@ -1,7 +1,6 @@
 package pe.edu.pucp.canchalibre.modelo;
 
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
-import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 
 public abstract class Persona extends Registro {
     private String nombres;

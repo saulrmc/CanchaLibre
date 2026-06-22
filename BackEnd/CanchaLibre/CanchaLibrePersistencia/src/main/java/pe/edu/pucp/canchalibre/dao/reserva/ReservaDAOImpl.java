@@ -6,12 +6,8 @@ import pe.edu.pucp.canchalibre.dao.cancha.BloqueHorarioDAOImpl;
 import pe.edu.pucp.canchalibre.dao.cancha.CanchaDAOImpl;
 import pe.edu.pucp.canchalibre.dao.transaccion.PagoDAOImpl;
 import pe.edu.pucp.canchalibre.dao.usuario.ClienteDAOImpl;
-import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
-import pe.edu.pucp.canchalibre.modelo.transaccion.MetodoPago;
-import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
-import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
 import java.util.ArrayList;

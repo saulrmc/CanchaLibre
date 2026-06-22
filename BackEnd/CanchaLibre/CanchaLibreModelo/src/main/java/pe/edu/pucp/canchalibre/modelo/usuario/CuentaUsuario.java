@@ -1,6 +1,6 @@
 package pe.edu.pucp.canchalibre.modelo.usuario;
-import pe.edu.pucp.canchalibre.modelo.Registro;
 
+import pe.edu.pucp.canchalibre.modelo.Registro;
 import java.time.LocalDateTime;
 
 public class CuentaUsuario extends Registro {

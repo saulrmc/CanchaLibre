@@ -1,8 +1,5 @@
 package pe.edu.pucp.canchalibre.modelo.transaccion;
 
-import pe.edu.pucp.canchalibre.modelo.Registro;
-import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
-
 import java.time.LocalDateTime;
 
 public class Comprobante {
@@ -15,7 +12,7 @@ public class Comprobante {
 	private static final double comisionPlataforma = 5.00;
 	private double valorVenta; //montoBloques+comision / 1.18 (precio ya incluye igv 18%)
 	private double montoIgv; //montoBloques+comision - valorVenta
-	
+
 	public double getMontoIgv() {return montoIgv;}
 	public void setMontoIgv(double montoIgv) {this.montoIgv = montoIgv;}
 

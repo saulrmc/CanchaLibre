@@ -3,7 +3,6 @@ package pe.edu.pucp.canchalibre.dao.resena;
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.resena.Resena;
-import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.sql.*;
 import java.time.LocalDateTime;

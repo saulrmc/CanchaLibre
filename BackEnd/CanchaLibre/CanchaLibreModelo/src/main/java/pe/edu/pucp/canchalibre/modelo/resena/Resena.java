@@ -1,10 +1,6 @@
 package pe.edu.pucp.canchalibre.modelo.resena;
 
-import pe.edu.pucp.canchalibre.modelo.Registro;
-import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
-import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
-
 import java.time.LocalDateTime;
 
 public class Resena {

@@ -2,14 +2,9 @@ package pe.edu.pucp.canchalibre.dao.usuario;
 
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
 import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
-import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAO;
-import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAOImpl;
-import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
     protected PreparedStatement comandoCrear(Connection conn,
