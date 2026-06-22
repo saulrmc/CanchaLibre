@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class Resena {
 	private int idResena;
 	private String descripcion;
-	private int calificacion;
+	private double calificacion;
 	private LocalDateTime fechaPublicacion;
 	private Reserva reserva;
 
@@ -25,42 +25,23 @@ public class Resena {
 	public Reserva getReserva(){ return reserva; }
 	public void setReserva(Reserva reserva){ this.reserva = reserva;}
 
-	public int getCalificacion() {
+	public double getCalificacion() {
 		return calificacion;
 	}
-
-	public void setCalificacion(int calificacion) {
+	public void setCalificacion(double calificacion) {
 		this.calificacion = calificacion;
 	}
-
-//	public Cliente getCliente() {
-//		return cliente;
-//	}
-//
-//	public void setCliente(Cliente cliente) {
-//		this.cliente = cliente;
-//	}
 
 	public LocalDateTime getFechaPublicacion() {
 		return fechaPublicacion;
 	}
-
 	public void setFechaPublicacion(LocalDateTime fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
 
-//	public int getIdResena() {
-//		return idResena;
-//	}
-//
-//	public void setIdResena(int idResena) {
-//		this.idResena = idResena;
-//	}
-
 	public String getDescripcion() {
 		return descripcion;
 	}
-
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}

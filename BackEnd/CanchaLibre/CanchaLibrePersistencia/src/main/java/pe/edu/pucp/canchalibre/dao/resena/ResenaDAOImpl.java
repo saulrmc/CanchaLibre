@@ -1,96 +1,116 @@
 package pe.edu.pucp.canchalibre.dao.resena;
 
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.dao.reserva.ReservaDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.resena.Resena;
-import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
+import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResenaDAOImpl extends DefaultBaseDAO<Resena> implements ResenaDAO {
-    @Override
     protected PreparedStatement comandoCrear(Connection conn,
                                              Resena modelo) throws SQLException{
-        String sql = "{call insertarResena(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarResena(?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
 
         cmd.setString("p_descripcion",modelo.getDescripcion());
-        cmd.setInt("p_calificacion",modelo.getCalificacion());
-        cmd.setDate("p_fechaPublicacion",new java.sql.Date(modelo.getFechaPublicacion().getTime()));
-        cmd.setInt("p_idCancha",modelo.getCliente().getIdUsuario());
-        cmd.setInt("p_idCliente",modelo.getCancha().getIdCancha());
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setObject("p_fechaPublicacion",modelo.getFechaPublicacion());
+        cmd.setInt("p_idReserva",modelo.getReserva().getIdReserva());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoActualizar(Connection conn, Resena modelo) throws SQLException {
-        String sql = "{call modificarResena(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call modificarResena(?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-        String sql = """
-            UPDATE RESENA
-            SET descripcion = ?,
-                calificacion = ?,
-                fechaPublicacion = ?,
-                idCliente = ?,
-                idCancha = ?
-            WHERE idResena = ?
-            """;
 
         cmd.setString("p_descripcion",modelo.getDescripcion());
-        cmd.setInt("p_calificacion",modelo.getCalificacion());
-        cmd.setDate("p_fechaPublicacion",new java.sql.Date(modelo.getFechaPublicacion().getTime()));
-        cmd.setInt("p_idCliente",modelo.getCliente().getIdUsuario());
-        cmd.setInt("p_idCancha",modelo.getCancha().getIdCancha());
-        cmd.setInt(6,modelo.getIdResena());
-
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setObject("p_fechaPublicacion",modelo.getFechaPublicacion());
+        cmd.setInt("p_id",modelo.getIdResena());
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
-        String sql = """
-                DELETE FROM RESENA WHERE idResena = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
-
+        String sql = "{call eliminarResena(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id",id);
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
-        String sql = """
-                SELECT * FROM RESENA WHERE idResena = ?
-                """;
-        PreparedStatement cmd = conn.prepareStatement(sql);
-        cmd.setInt(1,id);
+        String sql = "{call buscarResenaPorId(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id",id);
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
-        String sql = """
-                SELECT * FROM RESENA
-                """;
+        String sql = "{call listarResenas()}";
         return conn.prepareStatement(sql);
     }
 
-    @Override
     protected Resena mapearModelo(ResultSet rs) throws SQLException {
         Resena resena = new Resena();
-        Cliente cliente = new Cliente();
-        cliente.setIdUsuario(rs.getInt("idUsuario"));
-        Cancha cancha = new Cancha();
-        cancha.setIdCancha(rs.getInt("idCancha"));
-
         resena.setIdResena(rs.getInt("idResena"));
         resena.setDescripcion(rs.getString("descripcion"));
-        resena.setCalificacion(rs.getInt("calificacion"));
-        resena.setFechaPublicacion((LocalDateTime) rs.getObject("fechaPublicacion"));
-        resena.setCliente(cliente);
-        resena.setCancha(cancha);
+        resena.setCalificacion(rs.getDouble("calificacion"));
+        resena.setFechaPublicacion(rs.getObject("fechaPublicacion", LocalDateTime.class));
+        resena.setReserva(new ReservaDAOImpl().leer(rs.getInt("idReserva")));
         return resena;
+    }
+
+    protected PreparedStatement comandoListarResenasPorCancha(
+            Connection conn, Integer idCancha) throws SQLException{
+        String sql = "{call listarResenasPorCancha(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha",idCancha);
+        return cmd;
+    }
+
+    @Override
+    public List<Resena> listarResenasPorCancha(Integer idCancha){
+        return ejecutarComando(conn ->{
+            try (PreparedStatement cmd =
+                         this.comandoListarResenasPorCancha(conn, idCancha)) {
+                ResultSet rs = cmd.executeQuery();
+
+                List<Resena> modelos = new ArrayList<>();
+                while (rs.next()) {
+                    modelos.add(this.mapearModelo(rs));
+                }
+
+                return modelos;
+            }
+        });
+    }
+
+    protected PreparedStatement comandoListarResenasPorCliente(
+            Connection conn, Integer idCliente) throws SQLException{
+        String sql = "{call listarResenasPorCliente(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha",idCliente);
+        return cmd;
+    }
+
+    @Override
+    public List<Resena> listarResenasPorCliente(Integer idCliente){
+        return ejecutarComando(conn ->{
+            try (PreparedStatement cmd =
+                         this.comandoListarResenasPorCancha(conn, idCliente)) {
+                ResultSet rs = cmd.executeQuery();
+
+                List<Resena> modelos = new ArrayList<>();
+                while (rs.next()) {
+                    modelos.add(this.mapearModelo(rs));
+                }
+
+                return modelos;
+            }
+        });
     }
 }

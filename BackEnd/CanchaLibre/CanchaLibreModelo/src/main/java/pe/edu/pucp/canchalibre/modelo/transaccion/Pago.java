@@ -1,8 +1,5 @@
 package pe.edu.pucp.canchalibre.modelo.transaccion;
 
-
-import pe.edu.pucp.canchalibre.modelo.Registro;
-
 import java.time.LocalDateTime;
 
 public class Pago {

@@ -58,7 +58,6 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
         return conn.prepareStatement(sql);
     }
 
-    @Override
     protected Pago mapearModelo(ResultSet rs) throws SQLException{
         Pago pago = new Pago();
         pago.setIdPago(rs.getInt("idPago"));
