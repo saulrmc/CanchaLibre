@@ -66,7 +66,7 @@ public class BloquesHorariosResource {
                     .build();
         }
 
-        bloqueHorarioBO.guardar(bloqueHorario, Estado.Nuevo);
+        bloqueHorarioBO.guardar(bloqueHorario, Estado.NUEVO);
 
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(bloqueHorario.getId()))
@@ -107,7 +107,7 @@ public class BloquesHorariosResource {
 
         bloqueHorario.setId(idBloqueHorario);
 
-        bloqueHorarioBO.guardar(bloqueHorario, Estado.Modificado);
+        bloqueHorarioBO.guardar(bloqueHorario, Estado.MODIFICADO);
 
         return Response.ok(bloqueHorario).build();
     }

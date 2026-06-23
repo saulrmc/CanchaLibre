@@ -149,7 +149,7 @@ public class Program {
                 cancha.setNombre("Estadio Central - Remodelado");
                 cancha.setPrecioBase(135.00); // Subió el precio por la mejora
                 canchaDAO.actualizar(cancha);
-                System.out.println("Cancha actualizada en BD. Nuevo precio base: S/." + canchaDAO.leer(idCancha).getPrecioBase());
+                System.out.println("Cancha actualizada en BD. NUEVO precio base: S/." + canchaDAO.leer(idCancha).getPrecioBase());
 
                 List<Cancha> canchasDelDueno = canchaDAO.listarCanchasPorCuenta("roberto_canchas");
                 System.out.println("listarCanchasPorCuenta funciona. Total canchas de Roberto: " + canchasDelDueno.size());

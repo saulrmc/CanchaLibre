@@ -59,7 +59,7 @@ public class ClientesResource {
                     .build();
         }
 
-        clienteBO.guardar(cliente, Estado.Nuevo);
+        clienteBO.guardar(cliente, Estado.NUEVO);
 
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(cliente.getId()))
@@ -92,7 +92,7 @@ public class ClientesResource {
         }
 
         cliente.setId(idCliente);
-        clienteBO.guardar(cliente, Estado.Modificado);
+        clienteBO.guardar(cliente, Estado.MODIFICADO);
 
         return Response.ok(cliente).build();
     }

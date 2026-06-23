@@ -8,6 +8,7 @@ import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,5 +101,18 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
             }
         }
 
+    }
+
+    @Override
+    public List<Reserva> listarPorCliente(int idCliente) {
+        //esto es ineficiente pero es una solución temporal
+        List<Reserva> reservas = reservaDao.leerTodos();
+        List<Reserva> reservasPorCliente = new ArrayList<>();
+        for (Reserva reserva : reservas) {
+            if (reserva.getCliente().getId() == idCliente) {
+                reservasPorCliente.add(reserva);
+            }
+        }
+        return reservasPorCliente;
     }
 }

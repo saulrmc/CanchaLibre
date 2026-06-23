@@ -66,7 +66,7 @@ public class AdministradoresResource {
                     .build();
         }
 
-        administradorBO.guardar(administrador, Estado.Nuevo);
+        administradorBO.guardar(administrador, Estado.NUEVO);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(administrador.getId()))
                 .build();
@@ -105,7 +105,7 @@ public class AdministradoresResource {
                     .build();
         }
 
-        administradorBO.guardar(administrador, Estado.Modificado);
+        administradorBO.guardar(administrador, Estado.MODIFICADO);
 
         return Response.ok(administrador).build();
     }
