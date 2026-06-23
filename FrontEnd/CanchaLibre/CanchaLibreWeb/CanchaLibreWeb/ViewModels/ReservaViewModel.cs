@@ -4,7 +4,6 @@ namespace CanchaLibreWeb.ViewModels;
 public class ReservaViewModel
 {
     public int idReserva {get; set;}
-    public DateTime fechaHora {get; set;}
     public EstadoReservaEnum estado {get; set;}
 
     [Required(ErrorMessage = "Debe tener un cliente")]
@@ -15,9 +14,7 @@ public class ReservaViewModel
 
     [Required(ErrorMessage = "Debe tener un metodo de pago")]
     public PagoViewModel? pago {get; set;}
-
-    [Required(ErrorMessage = "Debe tener una duracion")]
-    public DateTime duracion {get; set;}
+    public List<BloqueHorarioViewModel>? bloques {get; set;}
 
 /*
     public String getResumenBloquesTexto(Reserva reserva) {

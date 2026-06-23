@@ -48,13 +48,13 @@
     left: 50%;
     bottom: -32px;
     transform: translateX(-50%);
-    width: 58%;
+    width: 50%;
     background: white;
     color: #111;
     border-radius: 8px;
     padding: 14px;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    grid-template-columns: 2fr auto;
     gap: 10px;
     box-shadow: 0 12px 30px rgba(0,0,0,.12);
 }
@@ -88,6 +88,7 @@
 
 .contenido-home {
     padding: 90px 90px 70px;
+    min-height: calc(100vh - 450px);
 }
 
 .titulo-home {

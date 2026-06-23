@@ -6,11 +6,10 @@ public class ComprobanteViewModel
 {
 
     public int idComprobante {get; set;}
-	public double Igv {get; set;}	
+	public String serie {get; set;} = String.Empty;
+    public String numero {get; set;} = String.Empty;
 
-    [Required(ErrorMessage = "Debe tener una fecha")]
+    //[Required(ErrorMessage = "Debe tener una fecha")] //no se genera automaticamente????
 	public DateTime FechaEmision {get; set;}
 
-    [Required(ErrorMessage = "Debe tener una reserva asignada")]
-	public ReservaViewModel? Reserva {get; set;}
 }

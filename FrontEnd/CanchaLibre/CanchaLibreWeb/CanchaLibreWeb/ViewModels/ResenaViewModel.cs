@@ -11,6 +11,5 @@ public class ResenaViewModel
 	public int calificacion { get; set; }
 
 	public DateTime fechaPublicacion { get; set; }
-	public ClienteViewModel? cliente { get; set; }
-	public CanchaViewModel? cancha { get; set; }
+	public ReservaViewModel? reserva { get; set; }
 }

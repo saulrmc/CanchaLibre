@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace CanchaLibreWeb.ViewModels;
-
-public class AdministradorViewModel : PersonaViewModel
+public class NotificacionBLoqViewModel : NotificacionViewModel
 {
+    
 }

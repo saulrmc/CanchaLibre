@@ -4,7 +4,7 @@ namespace CanchaLibreWeb.ViewModels;
 
 public class PagoViewModel
 {
-    public int id {get; set;}
+    public int idPago {get; set;}
 
     [Required(ErrorMessage = "Debe elegir un método de pago")]
     public MetodoPagoEnum metodoPago {get; set;}
@@ -14,7 +14,5 @@ public class PagoViewModel
 
     [Required(ErrorMessage = "Debe ingresar una fecha")]
     public DateTime fechaPago {get; set;}
-
-    [Required(ErrorMessage = "Debe tener una reserva asignada")]
-    public ReservaViewModel? reserva {get; set;}
+    public ComprobanteViewModel? comprobante {get; set;}
 }

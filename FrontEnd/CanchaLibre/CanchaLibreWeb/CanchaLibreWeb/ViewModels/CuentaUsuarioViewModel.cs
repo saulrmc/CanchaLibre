@@ -14,6 +14,12 @@ public class CuentaUsuarioViewModel : IValidatableObject {
 
     public bool Activo { get; set; } = true;
 
+    [Required(ErrorMessage = "Debe escoger un rol")]
+    public RolEnum Rol {get; set;}
+    public int IntentosFallidos {get; set;}
+    public DateTime UltimaSesion {get; set;}
+    public DateTime fechaBloqueo {get; set;}
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
         if (Id <= 0 && string.IsNullOrWhiteSpace(Password)) {
             yield return new ValidationResult("La contrasena es obligatoria para registrar una cuenta.", [nameof(Password)]);

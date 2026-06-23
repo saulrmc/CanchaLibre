@@ -20,4 +20,12 @@ public class CanchaViewModel
     public String direccion {get; set;} = string.Empty;
     public PropietarioViewModel? propietario {get; set;} 
     public List<EtiquetaEnum>? etiquetas {get; set;} 
+
+    [Required(ErrorMessage = "Debe agregar al menos un bloque de horario")]
+    public List<BloqueHorarioViewModel>? bloques {get; set;}
+
+    [Required(ErrorMessage = "Debe agregar un precio base")]
+    public double precioBase {get; set;}
+    public double promedioCalificacion{get; set;}
+
 }
