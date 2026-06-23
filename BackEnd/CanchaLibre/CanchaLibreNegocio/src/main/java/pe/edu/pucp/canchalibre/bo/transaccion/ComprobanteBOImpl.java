@@ -22,6 +22,8 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
+            modelo.setFechaEmision(java.time.LocalDateTime.now());
+
             int id = this.comprobanteDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el comprobante");
@@ -29,9 +31,11 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
             modelo.setIdComprobante(id);
 
             Comprobante comprobanteCalculado = this.comprobanteDao.leer(id);
-            modelo.setNumero(comprobanteCalculado.getNumero());
-            modelo.setValorVenta(comprobanteCalculado.getValorVenta());
-            modelo.setMontoIgv(comprobanteCalculado.getMontoIgv());
+            if (comprobanteCalculado != null) {
+                modelo.setNumero(comprobanteCalculado.getNumero());
+                modelo.setValorVenta(comprobanteCalculado.getValorVenta());
+                modelo.setMontoIgv(comprobanteCalculado.getMontoIgv());
+            }
         }
         else {
             throw new IllegalArgumentException("Operación denegada: Los comprobantes son inmutables por regulación fiscal y no soportan el estado: " + estado);        }

@@ -21,17 +21,40 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
         validarPago(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
+            modelo.setFechaPago(java.time.LocalDateTime.now());
+            modelo.setComprobante(null);
+
             int id = this.pagoDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el pago");
             }
             modelo.setIdPago(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getIdPago(), "id del pago");
+
+            Pago pagoOriginal = this.pagoDao.leer(modelo.getIdPago());
+            if (pagoOriginal == null) {
+                throw new IllegalArgumentException("El pago que intenta modificar no existe");
+            }
+            if (pagoOriginal.getMonto() != modelo.getMonto()) {
+                throw new IllegalArgumentException("Operación denegada: El monto de un pago asentado no puede ser alterado");
+            }
+
+            if (modelo.getComprobante() != null) {
+                if (modelo.getComprobante().getIdComprobante() <= 0) {
+                    throw new IllegalArgumentException("El comprobante que intenta asociar al pago debe tener un ID válido");
+                }
+            }
+
             if (!this.pagoDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar el pago con id: " + modelo.getIdPago());
+            }
+
+            Pago pagoActualizado = this.pagoDao.leer(modelo.getIdPago());
+            if(pagoActualizado!=null){
+                modelo.setComprobante(pagoActualizado.getComprobante());
             }
         }
         else {
@@ -60,12 +83,9 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
 
     private void validarPago(Pago modelo) {
         Objects.requireNonNull(modelo, "El pago es obligatorio");
-        if (modelo.getFechaPago() == null){
-            throw new IllegalArgumentException("La fecha de pago es inválida");
-        }
         if (modelo.getMonto() <= 0){
             throw new IllegalArgumentException("El monto de pago nebe ser no nulo");
         }
-        Objects.requireNonNull(modelo.getMetodoPago(), "El método de pago es inválido");
+        Objects.requireNonNull(modelo.getMetodoPago(), "El método de pago es obligatorio");
     }
 }
