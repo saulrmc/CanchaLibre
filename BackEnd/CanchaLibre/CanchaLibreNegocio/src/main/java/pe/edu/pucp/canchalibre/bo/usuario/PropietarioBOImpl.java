@@ -14,7 +14,7 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
     public PropietarioBOImpl() {this.propietarioDao = new PropietarioDAOImpl();}
 
     @Override
-    public Propietario buscarPorNombre(String nombres){
+    public List<Propietario> buscarPorNombre(String nombres){
         return propietarioDao.buscarPorNombre(nombres);
     }
 
@@ -23,14 +23,14 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = propietarioDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");
             }
             modelo.setId(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getId(), "id del usuario");
             if (!propietarioDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar el usuario con id: " + modelo.getId());
