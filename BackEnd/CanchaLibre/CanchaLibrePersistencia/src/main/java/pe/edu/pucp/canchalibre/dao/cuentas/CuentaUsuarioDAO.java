@@ -6,6 +6,6 @@ import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 import java.util.Map;
 
 public interface CuentaUsuarioDAO extends Persistible<CuentaUsuario, Integer> {
-    public boolean login(String username, String password);
+    boolean login(String username, String password);
     void actualizarDatosSeguridad(CuentaUsuario cuenta);
 }

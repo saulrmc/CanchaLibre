@@ -1,7 +1,6 @@
 package pe.edu.pucp.canchalibre.dao.usuario;
 
 import pe.edu.pucp.canchalibre.dao.PersonaBaseDAO;
-import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
@@ -9,70 +8,62 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 import java.sql.*;
 
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
-
-    @Override
-    protected PreparedStatement comandoCrear(Connection conn, Cliente modelo) throws SQLException {
-        String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?)}";
+    protected PreparedStatement comandoCrear(Connection conn,
+                                             Cliente modelo) throws SQLException{
+        String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-
-        cmd.setString(1, modelo.getNombres());
-        cmd.setString(2, modelo.getCorreo());
-        cmd.setString(3, modelo.getTelefono());
-        cmd.setString(4, modelo.getCuentaUsuario().getPassword());
-        cmd.setString(5, modelo.getCuentaUsuario().getUserName());
-        cmd.registerOutParameter(6, Types.INTEGER);
-
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoActualizar(Connection conn, Cliente modelo) throws SQLException {
-        String sql = "{call modificarCliente(?, ?, ?, ?, ?)}";
+        String sql = "{call modificarCliente(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-
-        cmd.setInt(1, modelo.getId());
-        cmd.setString(2, modelo.getNombres());
-        cmd.setString(3, modelo.getCorreo());
-        cmd.setString(4, modelo.getTelefono());
-        cmd.setString(5, modelo.getCuentaUsuario().getPassword());
-
+        Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
+        cmd.setString("p_nombres",modelo.getNombres());
+        cmd.setString("p_correo",modelo.getCorreo());
+        cmd.setString("p_telefono",modelo.getTelefono());
+        cmd.setDouble("p_calificacion",modelo.getCalificacion());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.setInt("p_id",modelo.getId());
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoEliminar(Connection conn, Integer id) throws SQLException {
         String sql = "{call eliminarCliente(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-
-        cmd.setInt(1, id);
-
+        cmd.setInt("p_id", id);
         return cmd;
     }
 
-    @Override
     protected PreparedStatement comandoLeer(Connection conn, Integer id) throws SQLException {
-        String sql = "{call obtenerClientePorId(?)}";
+        String sql = "{call buscarClientePorId(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-
-        cmd.setInt(1, id);
-
+        cmd.setInt("p_id", id);
         return cmd;
     }
-
     @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException {
         String sql = "{call listarClientes()}";
         return conn.prepareCall(sql);
-    }
-
-    @Override
-    protected PreparedStatement comandoBuscarPorNombre(Connection conn, String nombres) throws SQLException {
-        String sql = "{call buscarClientePorNombre(?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-
-        cmd.setString(1, nombres);
-
-        return cmd;
     }
 
     @Override
@@ -112,27 +103,25 @@ public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDA
         return modelo;
     }
 
-    protected PreparedStatement comandoBuscarPorCuenta(Connection conn, String cuenta) throws SQLException {
-        String sql = "{call buscarClientePorCuenta(?)}";
+
+    @Override
+    protected PreparedStatement comandoBuscarPorNombre(Connection conn, String nombres) throws SQLException {
+        String sql = "{call buscarClientePorNombre(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
 
-        cmd.setString(1, cuenta);
+        cmd.setString("p_nombres", nombres);
 
         return cmd;
     }
 
     @Override
-    public Cliente buscarPorCuenta(String cuenta) {
-        return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoBuscarPorCuenta(conn, cuenta)) {
-                ResultSet rs = cmd.executeQuery();
+    protected PreparedStatement comandoBuscarPorCuenta(Connection conn, String cuenta) throws SQLException {
+        String sql = "{call buscarClientePorCuenta(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
 
-                if (!rs.next()) {
-                    return null;
-                }
+        cmd.setString("p_userName", cuenta);
 
-                return this.mapearModelo(rs);
-            }
-        });
+        return cmd;
     }
+
 }

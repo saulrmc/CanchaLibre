@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface PropietarioDAO extends PersonaDAO<Propietario> {
-    Propietario buscarPorCuenta(String cuenta); //userName
     double actualizarSaldo(Connection conn,
                          Integer idPropietario,
                          double monto) throws SQLException;

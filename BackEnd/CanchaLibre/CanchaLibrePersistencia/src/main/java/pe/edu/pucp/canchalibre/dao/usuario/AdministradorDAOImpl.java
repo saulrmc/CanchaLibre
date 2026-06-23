@@ -63,15 +63,6 @@ public class AdministradorDAOImpl extends PersonaBaseDAO<Administrador> implemen
         return conn.prepareCall(sql);
     }
 
-    @Override
-    protected PreparedStatement comandoBuscarPorNombre(Connection conn,
-                                                       String nombres) throws SQLException{
-        String sql = "{call buscarAdministradorPorNombre(?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setString("p_nombres",nombres);
-        return cmd;
-    }
-
     protected Administrador mapearModelo(ResultSet rs) throws SQLException{
         Administrador modelo = new Administrador();
         modelo.setId(rs.getInt("id"));
@@ -84,6 +75,26 @@ public class AdministradorDAOImpl extends PersonaBaseDAO<Administrador> implemen
         mapearCamposPersona(rs,modelo);
         modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
+    }
+
+    @Override
+    protected PreparedStatement comandoBuscarPorNombre(Connection conn, String nombres) throws SQLException {
+        String sql = "{call buscarAdministradorPorNombre(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+
+        cmd.setString("p_nombres", nombres);
+
+        return cmd;
+    }
+
+    @Override
+    protected PreparedStatement comandoBuscarPorCuenta(Connection conn, String cuenta) throws SQLException {
+        String sql = "{call buscarAdministradorPorCuenta(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+
+        cmd.setString("p_userName", cuenta);
+
+        return cmd;
     }
 
 }

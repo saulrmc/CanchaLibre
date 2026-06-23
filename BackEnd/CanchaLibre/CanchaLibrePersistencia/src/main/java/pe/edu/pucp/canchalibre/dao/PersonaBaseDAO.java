@@ -3,17 +3,40 @@ package pe.edu.pucp.canchalibre.dao;
 import pe.edu.pucp.canchalibre.modelo.Persona;
 
 import java.sql.*;
+import java.util.List;
 
 public abstract class PersonaBaseDAO<M extends Persona> extends DefaultBaseDAO<M> {
     protected abstract PreparedStatement comandoBuscarPorNombre(Connection conn,
-                                                                String nombres) throws SQLException;
+                                                                String nombre) throws SQLException;
 
-    public M buscarPorNombre(String nombre){
+    public List<M> buscarPorNombre(String nombres){
         return ejecutarComando(conn -> {
-           try (PreparedStatement cmd = comandoBuscarPorNombre(conn, nombre);
+           try (PreparedStatement cmd = comandoBuscarPorNombre(conn, nombres);
                 ResultSet rs = cmd.executeQuery()) {
-               return rs.next() ? mapearModelo(rs) : null;
-           }
+
+               List<M> resultados = new java.util.ArrayList<>();
+               while (rs.next()) {
+                   resultados.add(mapearModelo(rs)); // Va acumulando todas las coincidencias
+               }
+               return resultados;           }
+        });
+    }
+    protected abstract PreparedStatement comandoBuscarPorCuenta(Connection conn,
+                                                                String cuenta) throws SQLException;
+
+    public M buscarPorCuenta(String cuenta) {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoBuscarPorCuenta(conn, cuenta)) {
+                ResultSet rs = cmd.executeQuery();
+
+                if (!rs.next()) {
+                    System.err.println("No se encontro el registro con "
+                            + "cuenta: " + cuenta);
+                    return null;
+                }
+
+                return this.mapearModelo(rs);
+            }
         });
     }
 

@@ -68,15 +68,6 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
         return conn.prepareCall(sql);
     }
 
-    @Override
-    protected PreparedStatement comandoBuscarPorNombre(Connection conn,
-                                                       String nombres) throws SQLException{
-        String sql = "{call buscarPropietarioPorNombre(?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setString("p_nombres",nombres);
-        return cmd;
-    }
-
     protected Propietario mapearModelo(ResultSet rs) throws SQLException{
         Propietario modelo = new Propietario();
         modelo.setId(rs.getInt("id"));
@@ -119,34 +110,26 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
         }
     }
 
-    protected PreparedStatement comandoBuscarPorCuenta(
-            Connection conn, String cuenta)
-            throws SQLException {
-
-        String sql = "{call buscarPropietarioPorCuenta(?)}";
-
+    @Override
+    protected PreparedStatement comandoBuscarPorNombre(Connection conn, String nombres) throws SQLException {
+        String sql = "{call buscarPropietarioPorNombre(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setString("p_cuenta", cuenta);
+
+        cmd.setString("p_nombres", nombres);
 
         return cmd;
     }
 
     @Override
-    public Propietario buscarPorCuenta(String cuenta) {
-        return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoBuscarPorCuenta(conn, cuenta)) {
-                ResultSet rs = cmd.executeQuery();
+    protected PreparedStatement comandoBuscarPorCuenta(Connection conn, String cuenta) throws SQLException {
+        String sql = "{call buscarPropietarioPorCuenta(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
 
-                if (!rs.next()) {
-                    System.err.println("No se encontro el registro con "
-                            + "cuenta: " + cuenta);
-                    return null;
-                }
+        cmd.setString("p_userName", cuenta);
 
-                return this.mapearModelo(rs);
-            }
-        });
+        return cmd;
     }
+
 
 }
 
