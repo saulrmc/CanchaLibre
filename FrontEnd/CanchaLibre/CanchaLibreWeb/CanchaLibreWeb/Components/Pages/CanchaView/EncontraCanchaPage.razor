@@ -1,14 +1,15 @@
 ﻿@page "/EncuentraCancha"
-@using CanchaLibreWeb.ViewModels
+@rendermode InteractiveServer
 @attribute [AllowAnonymous]
+@using CanchaLibreWeb.ViewModels
 
 <div class="encuentra-shell">
-    
     <div class="encuentra-header">
         <div>
             <h1>Encuentra cancha</h1>
             <p>Seleccione la cancha que desea reservar:</p>
         </div>
+
         <div class="filtro-orden">
             <label>Filtrar por:</label>
             <select @bind="ordenSeleccionado" @bind:after="Ordenar">
@@ -20,24 +21,21 @@
     </div>
 
     <div class="encuentra-body">
-
-        <!-- SIDEBAR FILTROS -->
         <aside class="sidebar-filtros">
-
             <div class="filtro-grupo">
                 <h4><i class="ti ti-filter"></i> Tipo de Deporte</h4>
                 @foreach (var d in deportesDisponibles)
                 {
                     <label class="check-label">
-                        <input type="checkbox" @onchange="e => ToggleDeporte(d, e)" />
-                        @d
+                        <input type="checkbox" checked="@deportesSeleccionados.Contains(d)" @onchange="e => ToggleDeporte(d, e)" />
+                        @d.ToString()
                     </label>
                 }
             </div>
 
             <div class="filtro-grupo">
                 <h4>Rango de Precio (por hora)</h4>
-                <input type="range" min="0" max="1400" step="10"
+                <input type="range" min="0" max="150" step="10"
                        @bind="precioMax" @bind:after="AplicarFiltros" />
                 <div class="precio-range-labels">
                     <span>S/0</span><span>S/@precioMax</span>
@@ -49,8 +47,8 @@
                 @foreach (var c in caracteristicasDisponibles)
                 {
                     <label class="check-label">
-                        <input type="checkbox" @onchange="e => ToggleCaracteristica(c, e)" />
-                        @c
+                        <input type="checkbox" checked="@caracteristicasSeleccionadas.Contains(c)" @onchange="e => ToggleCaracteristica(c, e)" />
+                        @c.ToString()
                     </label>
                 }
             </div>
@@ -58,42 +56,57 @@
             <button class="btn-limpiar" @onclick="LimpiarFiltros">Limpiar filtros</button>
         </aside>
 
-        <!-- GRID CANCHAS -->
         <div class="grid-canchas">
-            @foreach (var cancha in canchasFiltradas)
+            @if (canchasFiltradas == null)
             {
-                <div class="card-cancha">
-                    @if (cancha.EsOferta)
-                    {
-                        <div class="badge-oferta">-20%</div>
-                    }
-                    <img src="@cancha.ImagenUrl" alt="@cancha.Nombre" />
-                    <div class="card-body">
-                        <h3>@cancha.Nombre</h3>
-                        <p class="card-ubicacion">📍 @cancha.Distrito</p>
-                        <p class="card-precio">
-                            <strong>S/@cancha.PrecioHora</strong>
-                            <span>por hora</span>
-                        </p>
-                        <div class="card-etiquetas">
-                            @foreach (var e in cancha.Etiquetas)
-                            {
-                                <span class="etiqueta-chip">@e</span>
-                            }
+                <p>Cargando canchas del servidor...</p>
+            }
+            else if (!canchasFiltradas.Any())
+            {
+                <p>No se encontraron canchas con los filtros seleccionados.</p>
+            }
+            else
+            {
+                @foreach (var cancha in canchasFiltradas)
+                {
+                    <div class="card-cancha">
+                        <img src="@cancha.ImagenUrl" alt="@cancha.Nombre" />
+
+                        <div class="card-body">
+                            <h3>@cancha.Nombre</h3>
+                            <p class="card-ubicacion">📍 @cancha.Distrito</p>
+
+                            <p class="card-precio">
+                                <strong>S/80</strong> <span>por hora</span>
+                            </p>
+
+                            <div class="card-etiquetas">
+                                @if (cancha.Etiquetas != null)
+                                {
+                                    @foreach (var e in cancha.Etiquetas)
+                                    {
+                                        <span class="etiqueta-chip">@e.ToString()</span>
+                                    }
+                                }
+                            </div>
+
+                            <div class="card-deportes">
+                                @if (cancha.Deportes != null)
+                                {
+                                    @foreach (var d in cancha.Deportes)
+                                    {
+                                        <span class="deporte-chip @ObtenerColorDeporte(d)">@d.ToString()</span>
+                                    }
+                                }
+                            </div>
+
+                            <a class="btn-reservar" href="/cancha/@cancha.Id">
+                                Reservar
+                            </a>
                         </div>
-                        <div class="card-deportes">
-                            @foreach (var d in cancha.Deportes)
-                            {
-                                <span class="deporte-chip @ObtenerColorDeporte(d)">@d</span>
-                            }
-                        </div>
-                        <a class="btn-reservar" href="/cancha/@cancha.Id">
-                            Reservar
-                        </a>
                     </div>
-                </div>
+                }
             }
         </div>
     </div>
 </div>
-
