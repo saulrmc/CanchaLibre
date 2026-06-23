@@ -60,7 +60,7 @@ public class PropietariosResource {
                     .build();
         }
 
-        propietarioBO.guardar(propietario, Estado.Nuevo);
+        propietarioBO.guardar(propietario, Estado.NUEVO);
 
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(propietario.getId()))
@@ -94,7 +94,7 @@ public class PropietariosResource {
         }
 
         propietario.setId(idPropietario);
-        propietarioBO.guardar(propietario, Estado.Modificado);
+        propietarioBO.guardar(propietario, Estado.MODIFICADO);
 
         return Response.ok(propietario).build();
     }

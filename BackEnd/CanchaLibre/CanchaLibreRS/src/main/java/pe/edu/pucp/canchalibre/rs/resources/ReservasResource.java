@@ -10,6 +10,7 @@ import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class ReservasResource {
                     .build();
         }
 
-        reservaBO.guardar(reserva, Estado.Nuevo);
+        reservaBO.guardar(reserva, Estado.NUEVO);
 
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(reserva.getIdReserva()))
@@ -107,7 +108,7 @@ public class ReservasResource {
 
         reserva.setIdReserva(idReserva);
 
-        reservaBO.guardar(reserva, Estado.Modificado);
+        reservaBO.guardar(reserva, Estado.MODIFICADO);
 
         return Response.ok(reserva).build();
     }
@@ -133,5 +134,13 @@ public class ReservasResource {
         reservaBO.eliminar(idReserva);
 
         return Response.noContent().build();
+    }
+    @GET
+    @Path("cliente/{id}")
+    public List<Reserva> ListarPorCliente(@PathParam("id") int idCliente){
+        if(idCliente <= 0){
+            return Collections.emptyList();
+        }
+        return reservaBO.listarPorCliente(idCliente);
     }
 }

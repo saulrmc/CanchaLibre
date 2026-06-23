@@ -1,55 +1,50 @@
 using CanchaLibreWeb.Servicios.Base;
 using CanchaLibreWeb.Servicios.Cuentas;
-using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
 using CanchaLibreWeb.ViewModels;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace CanchaLibreWeb.Servicios.Cuentas;
 
-public class CuentasUsuarioRestClient
-    : BaseRestServiceClient<UsuarioViewModel, CuentasUsuarioRestClient.CuentaUsuarioRestDto>,
-      ICuentasUsuarioServiceClient
+public class  CuentasUsuarioRestClient : BaseRestServiceClient<CuentaUsuarioViewModel, CuentaUsuarioRestDto>, 
+    ICuentasUsuarioServiceClient 
 {
-    private const string ResourcePath = "api/v1/cuentas";
+    private const string ResourcePath = "cuentas";
 
     public CuentasUsuarioRestClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         : base(configuration, httpClientFactory)
     {
     }
 
-    public UsuarioRespuestaRestDto? Login(string username, string password)
+    public bool? Login(string username, string password)
     {
-        try
-        {
-            return Api.Post<CuentaUsuarioRestDto, UsuarioRespuestaRestDto>(
-                $"{ResourcePath}/login",
-                new CuentaUsuarioRestDto
-                {
-                    UserName = username.Trim(),
-                    Password = password
-                });
-        }
-        catch (HttpRequestException ex) when (
-            ex.StatusCode == HttpStatusCode.Unauthorized ||
-            ex.StatusCode == HttpStatusCode.NotFound ||
-            ex.StatusCode == HttpStatusCode.BadRequest ||
-            ex.StatusCode == HttpStatusCode.InternalServerError)
-        {
-            return null;
-        }
-        {
-            return null;
+        var payload = new CuentaUsuarioRestDto {
+            UserName = username.Trim(),
+            Password = password
+        };
+
+        try {
+            Api.Post($"{ResourcePath}/login", payload);
+            return true;
+        } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized) {
+            return false;
         }
     }
 
-    public List<UsuarioViewModel> Listar()
+    public List<CuentaUsuarioViewModel> Listar()
     {
-        var payload = Api.Get<List<CuentaUsuarioRestDto>>(ResourcePath);
-        return payload.Select(item => ToViewModel(item, includePassword: false)).ToList();
+         var payload = Api.Get<List<CuentaUsuarioRestDto>>(ResourcePath);
+
+        var respuesta = new List<CuentaUsuarioViewModel>();
+        foreach (var item in payload) {
+            respuesta.Add(ToViewModel(item, includePassword: false));
+        }
+
+        return respuesta;
     }
 
-    public UsuarioViewModel? Obtener(int id)
+    public CuentaUsuarioViewModel? Obtener(int id)
     {
         try
         {
@@ -62,20 +57,20 @@ public class CuentasUsuarioRestClient
         }
     }
 
-    public UsuarioViewModel? ObtenerPorUsername(string username)
+    public CuentaUsuarioViewModel? ObtenerPorUsername(string username)
     {
         return Listar().FirstOrDefault(actual =>
-            string.Equals(actual.Nombres, username, StringComparison.OrdinalIgnoreCase));
+            string.Equals(actual.UserName, username, StringComparison.OrdinalIgnoreCase));
     }
 
-    public void Guardar(UsuarioViewModel modelo, Estado estado)
+    public void Guardar(CuentaUsuarioViewModel modelo, Estado estado)
     {
         var fallback = string.Empty;
 
         if (modelo.Id > 0)
         {
             var actual = Obtener(modelo.Id);
-            fallback = actual?.Contrasena ?? string.Empty;
+            fallback = actual?.Password ?? string.Empty;
         }
 
         var payload = ToRest(modelo, fallback);
@@ -104,44 +99,39 @@ public class CuentasUsuarioRestClient
         Api.Delete($"{ResourcePath}/{id}");
     }
 
-    protected override UsuarioViewModel ToViewModel(CuentaUsuarioRestDto source)
+    protected override CuentaUsuarioViewModel ToViewModel(CuentaUsuarioRestDto source)
     {
         return ToViewModel(source, includePassword: false);
     }
 
-    protected override CuentaUsuarioRestDto ToRest(UsuarioViewModel source)
+    protected override CuentaUsuarioRestDto ToRest(CuentaUsuarioViewModel source)
     {
         return ToRest(source, string.Empty);
     }
 
-    private static UsuarioViewModel ToViewModel(CuentaUsuarioRestDto source, bool includePassword)
+    private static CuentaUsuarioViewModel ToViewModel(CuentaUsuarioRestDto source, bool includePassword)
     {
-        return new UsuarioViewModel
-        {
+          return new CuentaUsuarioViewModel {
             Id = source.Id,
-            Nombres = source.UserName ?? string.Empty,
-            Contrasena = includePassword ? source.Password ?? string.Empty : string.Empty
+            Activo = source.Activo,
+            UserName = source.UserName,
+            Password = includePassword ? source.Password : string.Empty,
         };
     }
 
-    private static CuentaUsuarioRestDto ToRest(UsuarioViewModel source, string passwordFallback)
+    private static CuentaUsuarioRestDto ToRest(CuentaUsuarioViewModel source, string passwordFallback)
     {
-        var password = string.IsNullOrWhiteSpace(source.Contrasena)
+        var password = string.IsNullOrWhiteSpace(source.Password)
             ? passwordFallback
-            : source.Contrasena;
+            : source.Password;
 
         return new CuentaUsuarioRestDto
         {
             Id = source.Id,
-            UserName = source.Nombres.Trim(),
+            UserName = source.UserName.Trim(),
             Password = password
         };
     }
 
-    public sealed class CuentaUsuarioRestDto
-    {
-        public int Id { get; set; }
-        public string? UserName { get; set; }
-        public string? Password { get; set; }
-    }
+   
 }

@@ -61,7 +61,7 @@ public class ComprobantesResource {
                     .build();
         }
 
-        comprobanteBO.guardar(comprobante, Estado.Nuevo);
+        comprobanteBO.guardar(comprobante, Estado.NUEVO);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(comprobante.getIdComprobante()))
                 .build();
@@ -95,7 +95,7 @@ public class ComprobantesResource {
                     .build();
         }
 
-        comprobanteBO.guardar(comprobante, Estado.Modificado);
+        comprobanteBO.guardar(comprobante, Estado.MODIFICADO);
 
         return Response.ok(comprobante).build();
     }

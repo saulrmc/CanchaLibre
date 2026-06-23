@@ -12,10 +12,12 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     {
         // IConfiguration e IHttpClientFactory son inyectados por el contenedor de DI.
     }
+    private const string ResourcePath = "canchas";
+
 
     public List<CanchaViewModel> Listar()
     {
-        var payload = Api.Get<List<CanchaRestDto>>("api/v1/canchas");
+        var payload = Api.Get<List<CanchaRestDto>>(ResourcePath);
 
         var response = new List<CanchaViewModel>(payload.Count);
         foreach (var item in payload)
@@ -30,7 +32,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     {
         try
         {
-            var payload = Api.Get<CanchaRestDto>($"api/v1/canchas/{id}");
+            var payload = Api.Get<CanchaRestDto>($"{ResourcePath}/{id}");
             return ToViewModel(payload);
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -45,10 +47,10 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         switch (estado)
         {
             case Estado.Nuevo:
-                Api.Post("api/v1/canchas", payload);
+                Api.Post(ResourcePath, payload);
                 break;
             case Estado.Modificado:
-                Api.Put($"api/v1/canchas/{modelo.idCancha}", payload);
+                Api.Put($"{ResourcePath}/{modelo.idCancha}", payload);
                 break;
             default:
                 throw new InvalidOperationException($"Estado no soportado: {estado}");
@@ -57,7 +59,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
 
     public void Eliminar(int id)
     {
-        Api.Delete($"api/v1/canchas/{id}");
+        Api.Delete($"{ResourcePath}/{id}");
     }
 
     protected override CanchaViewModel ToViewModel(CanchaRestDto source)
@@ -65,17 +67,63 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         return new CanchaViewModel
         {
             idCancha = source.idCancha,
+            activo = source.activo,
             nombre = source.nombre,
             descripcion = source.descripcion,
             direccion = source.direccion,
             imagenUrl = source.imagenUrl,
             disponible = source.disponible,
             deportes = ParseEnumDeportes(source.deportes),
+            bloques = ParseBloques(source.bloques)
         };
     }
 
-    private List<DeporteEnum> ParseEnumDeportes(List<string> deportes)
+    private List<BloqueHorarioViewModel> ParseBloques(List<BloqueHorarioRestDto>? bloques)
     {
+        if(bloques == null || !bloques.Any())  return new List<BloqueHorarioViewModel>();
+        List<BloqueHorarioViewModel> bloquesView = new List<BloqueHorarioViewModel>();
+        foreach(var bloque in bloques)
+        {
+            bloquesView.Add(
+                new BloqueHorarioViewModel{
+                    diaSemana = toDiaSemana(bloque.diaSemana),
+                    estadoBloque = toEstadoBloque(bloque.estadoBloque),
+                    horaFin = bloque.horaFin,
+                    horaInicio = bloque.horaInicio,
+                    precio = bloque.precio
+                }
+            );
+        }
+        return bloquesView;
+    }
+
+    private EstadoBloqueEnum toEstadoBloque(string estadoBloque)
+    {
+        if (Enum.TryParse<EstadoBloqueEnum>(estadoBloque, true, out EstadoBloqueEnum estadoConvertido))
+        {
+            return estadoConvertido;
+        }
+        else
+        {
+            return EstadoBloqueEnum.NO_VALIDO;
+        }
+    }
+
+    private DiaSemanaEnum toDiaSemana(string diaSemana)
+    {
+        if (Enum.TryParse<DiaSemanaEnum>(diaSemana, true, out DiaSemanaEnum diaConvertido))
+        {
+            return diaConvertido;
+        }
+        else
+        {
+            return DiaSemanaEnum.NO_VALIDO;
+        }
+    }
+
+    private List<DeporteEnum> ParseEnumDeportes(List<string>? deportes)
+    {
+        if(deportes == null || !deportes.Any()) return new List<DeporteEnum>();
         var result = new List<DeporteEnum>();
         foreach (var deporte in deportes)
         {

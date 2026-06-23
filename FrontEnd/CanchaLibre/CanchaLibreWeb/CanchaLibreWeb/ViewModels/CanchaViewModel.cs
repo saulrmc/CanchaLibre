@@ -27,5 +27,6 @@ public class CanchaViewModel
     [Required(ErrorMessage = "Debe agregar un precio base")]
     public double precioBase {get; set;}
     public double promedioCalificacion{get; set;}
+    public bool activo {get; set;}
 
 }
