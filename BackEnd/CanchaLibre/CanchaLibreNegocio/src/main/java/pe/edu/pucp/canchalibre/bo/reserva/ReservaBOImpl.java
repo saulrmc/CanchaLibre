@@ -23,7 +23,7 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
         validarReserva(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = this.reservaDao.crear(modelo);
 
             if (id <= 0) {
@@ -32,7 +32,7 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
 
             modelo.setIdReserva(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getIdReserva(), "id de la reserva");
 
             if (!this.reservaDao.actualizar(modelo)) {

@@ -21,14 +21,14 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
         validarPago(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = this.pagoDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el pago");
             }
             modelo.setIdPago(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getIdPago(), "id del pago");
             if (!this.pagoDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar el pago con id: " + modelo.getIdPago());
