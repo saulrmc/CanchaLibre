@@ -1,5 +1,8 @@
 using CanchaLibreWeb.Components;
+using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.Servicios.Cuentas;
+using CanchaLibreWeb.Servicios.Reservas;
+using CanchaLibreWeb.Servicios.Usuarios;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,12 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ICuentasUsuarioServiceClient, CuentasUsuarioRestClient>();
+builder.Services.AddScoped<IPropietariosServiceClient, PropietariosServiceRestClient>();
+builder.Services.AddScoped<IClientesServiceClient, ClientesServiceRestClient>();
+builder.Services.AddScoped<IReservasServiceClient, ReservasServiceRestClient>();
+builder.Services.AddScoped<ICanchasServiceClient, CanchasServiceRestClient>();
+builder.Services.AddScoped<IAuthServiceClient, AuthServiceRestClient>();
+
 //add more RestClient
 
 var app = builder.Build();
