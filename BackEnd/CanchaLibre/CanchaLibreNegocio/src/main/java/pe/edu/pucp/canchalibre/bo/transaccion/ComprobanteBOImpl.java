@@ -21,22 +21,20 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
         validarComprobante(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = this.comprobanteDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el comprobante");
             }
             modelo.setIdComprobante(id);
-        }
-        else if (estado == Estado.Modificado) {
-            validarIdPositivo(modelo.getIdComprobante(), "id del comprobante");
-            if (!this.comprobanteDao.actualizar(modelo)) {
-                throw new IllegalStateException("No se pudo actualizar el comprobante con id: " + modelo.getIdComprobante());
-            }
+
+            Comprobante comprobanteCalculado = this.comprobanteDao.leer(id);
+            modelo.setNumero(comprobanteCalculado.getNumero());
+            modelo.setValorVenta(comprobanteCalculado.getValorVenta());
+            modelo.setMontoIgv(comprobanteCalculado.getMontoIgv());
         }
         else {
-            throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
-        }
+            throw new IllegalArgumentException("Operación denegada: Los comprobantes son inmutables por regulación fiscal y no soportan el estado: " + estado);        }
     }
 
     @Override
@@ -60,29 +58,10 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
 
     private void validarComprobante(Comprobante modelo) {
         Objects.requireNonNull(modelo, "El comprobante es obligatorio");
-
-        if (modelo.getSerie() == null || modelo.getSerie().trim().isEmpty()) {
-            throw new IllegalArgumentException("La serie del comprobante es obligatoria");
-        }
-
-        if (modelo.getNumero() == null || modelo.getNumero().trim().isEmpty()) {
-            throw new IllegalArgumentException("El número del comprobante es obligatorio");
-        }
-
-        if (modelo.getFechaEmision() == null) {
-            throw new IllegalArgumentException("La fecha de emisión del comprobante es inválida");
-        }
-
+        validarTextoObligatorio(modelo.getSerie(),"serie del comprobante");
         if (modelo.getMontoBloques() <= 0) {
             throw new IllegalArgumentException("El monto de bloques debe ser mayor que cero");
         }
-
-        if (modelo.getValorVenta() <= 0) {
-            throw new IllegalArgumentException("El valor de venta debe ser mayor que cero");
-        }
-
-        if (modelo.getMontoIgv() < 0) {
-            throw new IllegalArgumentException("El monto de IGV no puede ser negativo");
-        }
+        // No se valida fechaEmision, numero, valorVenta ni montoIgv.
     }
 }

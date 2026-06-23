@@ -1,7 +1,5 @@
 package pe.edu.pucp.canchalibre.bo;
 
-import pe.edu.pucp.canchalibre.modelo.Estado;
-
 import java.util.Objects;
 
 public abstract class BaseBO {
@@ -10,7 +8,8 @@ public abstract class BaseBO {
             throw new IllegalArgumentException("El " + nombreCampo + " debe ser mayor a 0");
         }
     }
-    protected void validarEstado(Estado estado) {
+
+    protected <E> void validarEstado(E estado) {
         Objects.requireNonNull(estado, "El estado es obligatorio");
     }
 

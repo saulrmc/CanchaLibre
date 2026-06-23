@@ -9,9 +9,8 @@ import java.time.LocalDateTime;
 public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements ComprobanteDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Comprobante modelo) throws SQLException {
-        String sql = "{call insertarComprobante(?, ?, ?)}";
+        String sql = "{call insertarComprobante(?,?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setInt("p_idComprobante",modelo.getIdComprobante());
         cmd.setString("p_serie",modelo.getSerie());
         cmd.setDouble("p_subtotal",modelo.getMontoBloques());
         //numero,fechaEmision,valorVenta, montoIgv calculados en sql
