@@ -4,8 +4,8 @@ using CanchaLibreWeb.ViewModels;
 
 namespace CanchaLibreWeb.Servicios.Cuentas;
 
-public interface ICuentasUsuarioServiceClient : IServiceClient<UsuarioViewModel>
+public interface ICuentasUsuarioServiceClient : IServiceClient<CuentaUsuarioViewModel>
 {
-    UsuarioRespuestaRestDto? Login(string username, string password);
-    UsuarioViewModel? ObtenerPorUsername(string username);
+    bool? Login(string username, string password);
+    CuentaUsuarioViewModel? ObtenerPorUsername(string username);
 }

@@ -1,13 +1,15 @@
+using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
+
 namespace CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 public sealed class PropietarioRestDto
 {
-    public int IdUsuario { get; set; }
-    public string? Nombres { get; set; } = string.Empty;
-    public string? Contrasena { get; set; } = string.Empty;
-    public string? Correo { get; set; } = string.Empty;
-    public string? Telefono { get; set; } = string.Empty;
-    public int IntentosFallidos { get; set; } 
-    public DateTime UltimaSesion { get; set; }
-    public List<CanchaRestDto>? canchas { get; set; }
-    public int Calificacion { get; set; }
+    public int Id {get; set;}
+    public String Nombres { get; set; } = string.Empty;
+    public CuentaUsuarioRestDto? cuenta {get; set;} 
+    public String Correo { get; set; } = string.Empty;
+    public String Telefono { get; set; } = string.Empty;
+    public bool Activo { get; set; }
+    public int Calificacion {get; set;}
+    public string Ruc { get; set; } = string.Empty;
+
 }

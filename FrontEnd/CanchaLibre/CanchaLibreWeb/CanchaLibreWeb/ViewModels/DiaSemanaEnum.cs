@@ -8,5 +8,6 @@ public enum DiaSemanaEnum {
     JUEVES = 4, 
     VIERNES = 5, 
     SABADO = 6, 
-    DOMINGO = 7
+    DOMINGO = 7,
+    NO_VALIDO = 8
 }
