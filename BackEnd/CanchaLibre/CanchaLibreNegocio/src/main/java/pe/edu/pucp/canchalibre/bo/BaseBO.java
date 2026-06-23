@@ -14,12 +14,9 @@ public abstract class BaseBO {
         Objects.requireNonNull(estado, "El estado es obligatorio");
     }
 
-
     protected void validarTextoObligatorio(String valor, String nombreCampo) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalArgumentException("El " + nombreCampo + " es obligatorio");
         }
     }
-
-    //public abstract <M> void crear(M modelo, Estado estado);
 }
