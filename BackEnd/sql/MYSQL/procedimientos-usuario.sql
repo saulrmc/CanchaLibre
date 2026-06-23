@@ -19,16 +19,21 @@ CREATE PROCEDURE obtenerCuentaPorUsername(
 )
 BEGIN
     SELECT 
-        id,
-        activo,
-        userName,
-        password,
-        rol,
-        intentosFallidos,
-        ultimaSesion,
-        fechaBloqueo
-    FROM CuentaUsuario
-    WHERE userName = p_username;
+        cu.id,
+        cu.activo,
+        cu.userName,
+        cu.password,
+        cu.rol,
+        cu.intentosFallidos,
+        cu.ultimaSesion,
+        cu.fechaBloqueo,
+        p.id AS idPersona,
+        p.nombres,
+        p.correo
+    FROM CuentaUsuario cu
+    INNER JOIN Persona p ON p.idCuentaUsuario = cu.id
+    WHERE cu.userName = p_username
+       OR p.correo = p_username;
 END //
 
 CREATE PROCEDURE actualizarIntentosFallidos(
