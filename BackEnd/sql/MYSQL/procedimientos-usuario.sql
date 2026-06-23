@@ -11,7 +11,28 @@ DROP PROCEDURE IF EXISTS modificarCliente;
 DROP PROCEDURE IF EXISTS modificarPropietario;
 DROP PROCEDURE IF EXISTS actualizarIntentosFallidos;
 DROP PROCEDURE IF EXISTS bloquearCuenta;
+DROP PROCEDURE IF EXISTS loginUsuario;
 
+DELIMITER //
+
+CREATE PROCEDURE loginUsuario(
+    IN p_username VARCHAR(100),
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    SELECT
+        p.id AS idUsuario,
+        p.nombres,
+        p.correo,
+        cu.rol
+    FROM CuentaUsuario cu
+    INNER JOIN Persona p ON p.idCuentaUsuario = cu.id
+    WHERE (cu.userName = p_username OR p.correo = p_username)
+      AND cu.password = p_password
+      AND cu.activo = TRUE;
+END //
+
+DELIMITER ;
 DELIMITER //
 
 CREATE PROCEDURE obtenerCuentaPorUsername(
