@@ -32,21 +32,24 @@ public static class AuthExtensions
 			? tipo
 			: RolEnum.CLIENTE;
 
-		if (!cuentaUsuarioServiceClient.Login(usuario, contrasena))
-		{
-			return Results.LocalRedirect("/Login?error=1");
-		}
+        var usuarioLogueado = cuentaUsuarioServiceClient.Login(usuario, contrasena);
 
-		var cuenta = cuentaUsuarioServiceClient.ObtenerPorUsername(usuario);
+        if (usuarioLogueado == null)
+        {
+            return Results.LocalRedirect("/Login?error=1");
+        }
 
-		var claims = new List<Claim>
-		{
-			new(ClaimTypes.NameIdentifier, (cuenta?.Id ?? 0).ToString()),
-			new(ClaimTypes.Name, usuario),
-			new(ClaimTypes.Role, tipoUsuario.ToString())
-		};
+        var cuenta = cuentaUsuarioServiceClient.ObtenerPorUsername(usuario);
 
-		var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var claims = new List<Claim>
+{
+    new(ClaimTypes.NameIdentifier, usuarioLogueado.IdUsuario.ToString()),
+    new(ClaimTypes.Name, usuarioLogueado.Nombres),
+    new(ClaimTypes.Email, usuarioLogueado.Correo),
+    new(ClaimTypes.Role, usuarioLogueado.Rol)
+};
+
+        var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identidad);
 
 		await context.SignInAsync(

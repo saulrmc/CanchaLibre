@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBOImpl;
+import pe.edu.pucp.canchalibre.dao.cuentas.CuentaUsuarioDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 
 import java.util.Map;
@@ -37,14 +38,19 @@ public class CuentasUsuarioResource {
                     .build();
         }
 
-        boolean ok = cuentaUsuarioBO.login(cuenta.getUserName(), cuenta.getPassword());
+        CuentaUsuarioDAOImpl dao = new CuentaUsuarioDAOImpl();
 
-        if (!ok) {
+        Map<String, Object> usuario = dao.loginConDatos(
+                cuenta.getUserName(),
+                cuenta.getPassword()
+        );
+
+        if (usuario == null) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(Map.of("error", "Usuario o contraseña incorrectos"))
                     .build();
         }
 
-        return Response.ok(Map.of("mensaje", "Login correcto")).build();
+        return Response.ok(usuario).build();
     }
 }

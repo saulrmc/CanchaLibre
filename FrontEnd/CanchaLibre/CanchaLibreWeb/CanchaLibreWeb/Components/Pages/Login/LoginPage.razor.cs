@@ -1,10 +1,15 @@
+using CanchaLibreWeb.Servicios.Cuentas;
+using CanchaLibreWeb.Servicios.Usuarios;
 using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace CanchaLibreWeb.Components.Pages.Login;
 
 public partial class LoginPage : ComponentBase {
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private ICuentasUsuarioServiceClient CuentasClient { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
 
     [SupplyParameterFromQuery(Name = "returnUrl")]
     public string? ReturnUrl { get; set; }
@@ -38,30 +43,21 @@ public partial class LoginPage : ComponentBase {
 
     private void ProcesarLogin()
     {
-        // 1. Aquí harías la llamada HTTP a tu API de Java pasando usuario y contraseña.
-        // string rolUsuario = await AuthService.Login(usuario, contrasena);
-        
-        // Simulemos que el backend nos responde con el rol del usuario:
-        string rolUsuario = "Propietario"; // Puede ser "Cliente", "Admin", "Empleado"
+        MensajeError = string.Empty;
 
-        // 2. Redirección condicional dinámica
-        // Por ahora todos van a Home, pero podrías tener rutas específicas para cada rol si lo deseas
+        var usuario = CuentasClient.Login(Modelo.Usuario, Modelo.Contrasena);
 
-        switch (rolUsuario)
+        if (usuario == null)
         {
-            case "Admin":
-                NavigationManager.NavigateTo("/");
-                break;
-                
-            case "Propietario":
-                NavigationManager.NavigateTo("/"); 
-                break;
-                
-            case "Cliente":
-            default:
-                NavigationManager.NavigateTo("/"); 
-                break;
+            MensajeError = "Usuario o contraseña incorrectos.";
+            return;
         }
-        
+
+        if (AuthProvider is CustomAuthStateProvider customAuth)
+        {
+            customAuth.MarcarComoAutenticado(usuario, usuario.Rol);
+        }
+
+        NavigationManager.NavigateTo(ReturnUrl ?? "/", forceLoad: true);
     }
 }

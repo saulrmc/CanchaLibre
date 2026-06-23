@@ -1,17 +1,17 @@
-using Microsoft.AspNetCore.Components;
+using CanchaLibreWeb.Servicios.Usuarios;
 using CanchaLibreWeb.ViewModels;
+using Microsoft.AspNetCore.Components;
 
 namespace CanchaLibreWeb.Components.Pages.Registrar;
 
 public partial class RegistrarClientePage : ComponentBase
 {
     [Inject] public NavigationManager Nav { get; set; } = default!;
-    
-    public ClienteViewModel Modelo { get; set; } = default!;
+    [Inject] public IClientesServiceClient ClientesClient { get; set; } = default!;
+
+    public ClienteViewModel Modelo { get; set; } = new();
 
     public string ConfirmarContrasena { get; set; } = string.Empty;
-
-    protected override void OnInitialized() => Modelo ??= new();
 
     private string MensajeError { get; set; } = string.Empty;
 
@@ -22,20 +22,23 @@ public partial class RegistrarClientePage : ComponentBase
             MensajeError = "Las contraseñas no coinciden.";
             return;
         }
+        if (string.IsNullOrWhiteSpace(Modelo.Telefono))
+        {
+            MensajeError = "El teléfono es obligatorio.";
+            return;
+        }
+        try
+        {
+            MensajeError = string.Empty;
 
-        MensajeError = string.Empty;
-        // Aquí llamas a tu HttpClient hacia Java enviando 'Modelo'
-        Console.WriteLine($"Enviando cliente a Java: {Modelo.Nombres}");
-        FinalizarRegistroCliente();
-        
-    }
-    private void FinalizarRegistroCliente()
-    {
-        // 1. Envías los datos a Java...
-        // var resultado = await Http.PostAsJsonAsync("api/clientes", Modelo);
+            ClientesClient.Guardar(Modelo, Estado.Nuevo);
 
-        // 2. Si Java responde OK, lo mandamos al Login
-        // Podemos pasar un parámetro por URL para avisarle a la pantalla de Login que muestre un mensaje bonito
-        Nav.NavigateTo("/Login?registroExitoso=true");
+            Nav.NavigateTo("/Login?registroExitoso=true");
+        }
+        catch (Exception ex)
+        {
+            MensajeError = ex.Message;
+            Console.WriteLine(ex.ToString());
+        }
     }
 }

@@ -22,7 +22,15 @@
         <InputText type="email" class="form-input-custom" @bind-Value="Modelo.Correo" placeholder="correo@gmail.com" />
         <ValidationMessage For="@(() => Modelo.Correo)" class="text-danger small mt-1" />
     </div>
+    <div class="form-group mb-4">
+        <label class="form-label-custom">Teléfono</label>
 
+        <InputText class="form-input-custom"
+                   @bind-Value="Modelo.Telefono"
+                   placeholder="999999999" />
+
+        <ValidationMessage For="@(() => Modelo.Telefono)" class="text-danger small mt-1" />
+    </div>
     <div class="mb-3">
         <label class="form-label-custom">Contraseña</label>
         <InputText type="password" class="form-input-custom" @bind-Value="Modelo.Contrasena" placeholder="**********" />

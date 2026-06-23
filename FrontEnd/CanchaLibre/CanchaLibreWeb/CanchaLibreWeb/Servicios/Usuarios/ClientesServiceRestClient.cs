@@ -12,7 +12,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
     }
 
     public List<ClienteViewModel> Listar() {
-        var payload = Api.Get<List<ClienteRestDto>>("v1/clientes");
+        var payload = Api.Get<List<ClienteRestDto>>("api/v1/clientes");
 
         var response = new List<ClienteViewModel>(payload.Count);
         foreach (var item in payload) {
@@ -24,7 +24,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
 
     public ClienteViewModel? Obtener(int id) {
         try {
-            var payload = Api.Get<ClienteRestDto>($"v1/clientes/{id}");
+            var payload = Api.Get<ClienteRestDto>($"api/v1/clientes/{id}");
             return ToViewModel(payload);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
             return null;
@@ -32,7 +32,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
     }
     public ClienteViewModel? BuscarPorNombre(string nombre) {
         try {
-            var path = $"v1/clientes/nombre/{Uri.EscapeDataString(nombre)}";
+            var path = $"api/v1/clientes/nombre/{Uri.EscapeDataString(nombre)}";
             var payload = Api.Get<ClienteRestDto>(path);
             return ToViewModel(payload);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
@@ -44,10 +44,10 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
         var payload = ToRest(modelo);
         switch (estado) {
             case Estado.Nuevo:
-                Api.Post("v1/clientes", payload);
+                Api.Post("api/v1/clientes", payload);
                 break;
             case Estado.Modificado:
-                Api.Put($"v1/clientes/{modelo.Id}", payload);
+                Api.Put($"api/v1/clientes/{modelo.Id}", payload);
                 break;
             default:
                 throw new InvalidOperationException($"Estado no soportado: {estado}");
@@ -75,20 +75,20 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
         };
     }
 
-    protected override ClienteRestDto ToRest(ClienteViewModel source) {
-        return new ClienteRestDto {
+    protected override ClienteRestDto ToRest(ClienteViewModel source)
+    {
+        return new ClienteRestDto
+        {
             IdUsuario = source.Id,
             Nombres = source.Nombres.Trim(),
-            Contrasena = source.Contrasena, // Se asume que el ViewModel ya tiene la contraseña en texto plano (nueva o sin cambios).
             Correo = source.Correo.Trim(),
             Telefono = source.Telefono.Trim(),
-            IntentosFallidos = source.IntentosFallidos,
-            UltimaSesion = source.UltimaSesion,
-            historialReservas = source.HistorialReservas?.Select(r => new ReservaRestDto {
-                idReserva = r.idReserva,
-                fechaHora = r.fechaHora
-            }).ToList() ?? new List<ReservaRestDto>(),
-        };  
+            CuentaUsuario = new ClienteRestDto.CuentaUsuarioRestDto
+            {
+                UserName = source.Correo.Trim(),
+                Password = source.Contrasena
+            }
+        };
     }
 
     private static RolEnum ParseClienteRol(string? source) {
@@ -99,5 +99,12 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
             return RolEnum.CLIENTE;
         }
         return RolEnum.NO_ADMITIDO; // Valor por defecto si no se reconoce el rol.
+    }
+    public CuentaUsuarioRestDto CuentaUsuario { get; set; } = new();
+
+    public sealed class CuentaUsuarioRestDto
+    {
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
     }
 }

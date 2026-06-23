@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
 
 
 public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implements CuentaUsuarioDAO {
@@ -24,15 +25,43 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
         return cmd;
     }
 
+    public Map<String, Object> loginConDatos(String username, String password) {
+        return ejecutarComando(conn -> {
+            String sql = "{call loginUsuario(?, ?)}";
+
+            try (CallableStatement cmd = conn.prepareCall(sql)) {
+                cmd.setString(1, username);
+                cmd.setString(2, password);
+
+                try (ResultSet rs = cmd.executeQuery()) {
+                    if (!rs.next()) {
+                        return null;
+                    }
+
+                    return Map.of(
+                            "idUsuario", rs.getInt("idUsuario"),
+                            "nombres", rs.getString("nombres"),
+                            "correo", rs.getString("correo"),
+                            "rol", rs.getString("rol")
+                    );
+                }
+            }
+        });
+    }
+
     @Override
     public boolean login(String username, String password) {
         return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoLogin(conn, username, password)) {
-                if (cmd instanceof CallableStatement callableCmd) {
-                    callableCmd.execute();
-                    return callableCmd.getBoolean("p_valido");
-                }
-                return false;
+            String sql = "{call loginUsuarioBoolean(?, ?, ?)}";
+
+            try (CallableStatement cmd = conn.prepareCall(sql)) {
+                cmd.setString(1, username);
+                cmd.setString(2, password);
+                cmd.registerOutParameter(3, Types.BOOLEAN);
+
+                cmd.execute();
+
+                return cmd.getBoolean(3);
             }
         });
     }

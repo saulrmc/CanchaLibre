@@ -1,8 +1,9 @@
-using System.Net;
-using System.Net.Http.Json;
 using CanchaLibreWeb.Servicios.Base;
 using CanchaLibreWeb.Servicios.Cuentas;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 using CanchaLibreWeb.ViewModels;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace CanchaLibreWeb.Servicios.Cuentas;
 
@@ -17,21 +18,28 @@ public class CuentasUsuarioRestClient
     {
     }
 
-    public bool Login(string username, string password)
+    public UsuarioRespuestaRestDto? Login(string username, string password)
     {
         try
         {
-            Api.Post($"{ResourcePath}/login", new CuentaUsuarioRestDto
-            {
-                UserName = username.Trim(),
-                Password = password
-            });
-
-            return true;
+            return Api.Post<CuentaUsuarioRestDto, UsuarioRespuestaRestDto>(
+                $"{ResourcePath}/login",
+                new CuentaUsuarioRestDto
+                {
+                    UserName = username.Trim(),
+                    Password = password
+                });
         }
-        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        catch (HttpRequestException ex) when (
+            ex.StatusCode == HttpStatusCode.Unauthorized ||
+            ex.StatusCode == HttpStatusCode.NotFound ||
+            ex.StatusCode == HttpStatusCode.BadRequest ||
+            ex.StatusCode == HttpStatusCode.InternalServerError)
         {
-            return false;
+            return null;
+        }
+        {
+            return null;
         }
     }
 
