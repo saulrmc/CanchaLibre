@@ -34,16 +34,17 @@ public class PropietariosResource {
     @GET
     @Path("{id}")
     public Response obtenerPropietarioPorId(@PathParam("id") int idPropietario) {
-        if (idPropietario < 0) {
+        if (idPropietario <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Propietario propietario = propietarioBO.obtener(idPropietario);
+
         if (propietario == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El propietario con id:  "
+                    .entity(Map.of("error", "El propietario con id: "
                             + idPropietario + ", no existe"))
                     .build();
         }
@@ -53,20 +54,14 @@ public class PropietariosResource {
 
     @POST
     public Response crearPropietario(Propietario propietario) {
-        if (propietario == null ||
-                propietario.getCorreo() == null ||
-                propietario.getCuentaUsuario().getPassword() == null ||
-                propietario.getNombres() == null ||
-                propietario.getCuentaUsuario().getPassword().isBlank() ||
-                propietario.getCorreo().isBlank() ||
-                propietario.getNombres().isBlank()) {
-
+        if (payloadInvalido(propietario)) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear la propietario es inválido"))
+                    .entity(Map.of("error", "El payload para crear el propietario es inválido"))
                     .build();
         }
 
         propietarioBO.guardar(propietario, Estado.Nuevo);
+
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(propietario.getId()))
                 .build();
@@ -79,7 +74,7 @@ public class PropietariosResource {
     @PUT
     @Path("{id}")
     public Response actualizarPropietario(Propietario propietario, @PathParam("id") int idPropietario) {
-        if (idPropietario < 0) {
+        if (idPropietario <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
@@ -87,24 +82,18 @@ public class PropietariosResource {
 
         if (propietarioBO.obtener(idPropietario) == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El propietario con id:  "
+                    .entity(Map.of("error", "El propietario con id: "
                             + idPropietario + ", no existe"))
                     .build();
         }
 
-        if (propietario == null ||
-                propietario.getCorreo() == null ||
-                propietario.getCuentaUsuario().getPassword() == null ||
-                propietario.getNombres() == null ||
-                propietario.getCuentaUsuario().getPassword().isBlank() ||
-                propietario.getCorreo().isBlank() ||
-                propietario.getNombres().isBlank()) {
-
+        if (payloadInvalido(propietario)) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear el propietario es inválido"))
+                    .entity(Map.of("error", "El payload para actualizar el propietario es inválido"))
                     .build();
         }
 
+        propietario.setId(idPropietario);
         propietarioBO.guardar(propietario, Estado.Modificado);
 
         return Response.ok(propietario).build();
@@ -113,16 +102,17 @@ public class PropietariosResource {
     @DELETE
     @Path("{id}")
     public Response eliminarPropietario(@PathParam("id") int idPropietario) {
-        if (idPropietario < 0) {
+        if (idPropietario <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Propietario propietario = propietarioBO.obtener(idPropietario);
+
         if (propietario == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El propietario con id:  "
+                    .entity(Map.of("error", "El propietario con id: "
                             + idPropietario + ", no existe"))
                     .build();
         }
@@ -130,5 +120,18 @@ public class PropietariosResource {
         propietarioBO.eliminar(idPropietario);
 
         return Response.noContent().build();
+    }
+
+    private boolean payloadInvalido(Propietario propietario) {
+        return propietario == null ||
+                propietario.getCorreo() == null ||
+                propietario.getNombres() == null ||
+                propietario.getCuentaUsuario() == null ||
+                propietario.getCuentaUsuario().getUserName() == null ||
+                propietario.getCuentaUsuario().getPassword() == null ||
+                propietario.getCorreo().isBlank() ||
+                propietario.getNombres().isBlank() ||
+                propietario.getCuentaUsuario().getUserName().isBlank() ||
+                propietario.getCuentaUsuario().getPassword().isBlank();
     }
 }

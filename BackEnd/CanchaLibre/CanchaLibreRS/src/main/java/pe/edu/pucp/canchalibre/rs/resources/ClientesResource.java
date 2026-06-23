@@ -34,17 +34,17 @@ public class ClientesResource {
     @GET
     @Path("{id}")
     public Response obtenerClientePorId(@PathParam("id") int idCliente) {
-        if (idCliente < 0) {
+        if (idCliente <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Cliente cliente = clienteBO.obtener(idCliente);
+
         if (cliente == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cliente con id:  "
-                            + idCliente + ", no existe"))
+                    .entity(Map.of("error", "El cliente con id: " + idCliente + ", no existe"))
                     .build();
         }
 
@@ -53,17 +53,7 @@ public class ClientesResource {
 
     @POST
     public Response crearCliente(Cliente cliente) {
-        if (cliente == null ||
-                cliente.getCorreo() == null ||
-                cliente.getNombres() == null ||
-                cliente.getCuentaUsuario() == null ||
-                cliente.getCuentaUsuario().getUserName() == null ||
-                cliente.getCuentaUsuario().getPassword() == null ||
-                cliente.getCorreo().isBlank() ||
-                cliente.getNombres().isBlank() ||
-                cliente.getCuentaUsuario().getUserName().isBlank() ||
-                cliente.getCuentaUsuario().getPassword().isBlank()) {
-
+        if (payloadInvalido(cliente)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El payload para crear el cliente es inválido"))
                     .build();
@@ -91,29 +81,17 @@ public class ClientesResource {
 
         if (clienteBO.obtener(idCliente) == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cliente con id: "
-                            + idCliente + ", no existe"))
+                    .entity(Map.of("error", "El cliente con id: " + idCliente + ", no existe"))
                     .build();
         }
 
-        if (cliente == null ||
-                cliente.getCorreo() == null ||
-                cliente.getNombres() == null ||
-                cliente.getCuentaUsuario() == null ||
-                cliente.getCuentaUsuario().getUserName() == null ||
-                cliente.getCuentaUsuario().getPassword() == null ||
-                cliente.getCorreo().isBlank() ||
-                cliente.getNombres().isBlank() ||
-                cliente.getCuentaUsuario().getUserName().isBlank() ||
-                cliente.getCuentaUsuario().getPassword().isBlank()) {
-
+        if (payloadInvalido(cliente)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El payload para actualizar el cliente es inválido"))
                     .build();
         }
 
         cliente.setId(idCliente);
-
         clienteBO.guardar(cliente, Estado.Modificado);
 
         return Response.ok(cliente).build();
@@ -122,22 +100,35 @@ public class ClientesResource {
     @DELETE
     @Path("{id}")
     public Response eliminarCliente(@PathParam("id") int idCliente) {
-        if (idCliente < 0) {
+        if (idCliente <= 0) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El ID es inválido"))
                     .build();
         }
 
         Cliente cliente = clienteBO.obtener(idCliente);
+
         if (cliente == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "El cliente con id:  "
-                            + idCliente + ", no existe"))
+                    .entity(Map.of("error", "El cliente con id: " + idCliente + ", no existe"))
                     .build();
         }
 
         clienteBO.eliminar(idCliente);
 
         return Response.noContent().build();
+    }
+
+    private boolean payloadInvalido(Cliente cliente) {
+        return cliente == null ||
+                cliente.getCorreo() == null ||
+                cliente.getNombres() == null ||
+                cliente.getCuentaUsuario() == null ||
+                cliente.getCuentaUsuario().getUserName() == null ||
+                cliente.getCuentaUsuario().getPassword() == null ||
+                cliente.getCorreo().isBlank() ||
+                cliente.getNombres().isBlank() ||
+                cliente.getCuentaUsuario().getUserName().isBlank() ||
+                cliente.getCuentaUsuario().getPassword().isBlank();
     }
 }
