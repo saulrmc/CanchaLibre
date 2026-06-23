@@ -14,8 +14,9 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
     public AdministradorBOImpl() {this.administradorDao = new AdministradorDAOImpl();}
 
     @Override
-    public Administrador buscarPorNombre(String nombres){
-        return this.administradorDao.buscarPorNombre(nombres);
+    public List<Administrador> buscarPorNombre(String nombres){
+        return null;
+        //return this.administradorDao.buscarPorNombre(nombres);
     }
 
     @Override

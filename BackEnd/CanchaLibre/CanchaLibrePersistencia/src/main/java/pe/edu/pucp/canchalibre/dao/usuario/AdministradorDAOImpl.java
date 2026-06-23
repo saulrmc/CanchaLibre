@@ -7,6 +7,8 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Administrador;
 import java.sql.*;
 
 public class AdministradorDAOImpl extends PersonaBaseDAO<Administrador> implements AdministradorDAO {
+
+
     protected PreparedStatement comandoCrear(Connection conn,
                                              Administrador modelo) throws SQLException{
         String sql = "{call insertarAdministrador(?, ?, ?, ?, ?, ?)}";

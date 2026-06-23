@@ -21,14 +21,14 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
         validarResena(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = this.resenaDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear la reseña");
             }
             modelo.setIdResena(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getIdResena(), "id de la reseña");
             if (!this.resenaDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar la reseña con id: " + modelo.getIdResena());

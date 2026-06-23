@@ -2,6 +2,8 @@ package pe.edu.pucp.canchalibre.bo;
 
 import pe.edu.pucp.canchalibre.modelo.Persona;
 
+import java.util.List;
+
 public interface PersonaBO<M extends Persona> extends Gestionable<M> {
-	M buscarPorNombre(String nombres);
+	List<M> buscarPorNombre(String nombres);
 }

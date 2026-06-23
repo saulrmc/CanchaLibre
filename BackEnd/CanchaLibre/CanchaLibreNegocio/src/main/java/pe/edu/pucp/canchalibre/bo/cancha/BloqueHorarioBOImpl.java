@@ -19,14 +19,14 @@ public class BloqueHorarioBOImpl extends BaseBO implements BloqueHorarioBO {
         validarBloqueHorario(modelo);
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = this.bloqueHorarioDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el bloque de horario");
             }
             modelo.setId(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getId(), "id del bloque de horario");
             if (!this.bloqueHorarioDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar el bloque de horario con id: " + modelo.getId());
