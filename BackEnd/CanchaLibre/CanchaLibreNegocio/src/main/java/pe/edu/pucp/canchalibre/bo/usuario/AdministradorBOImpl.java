@@ -23,14 +23,14 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
         validarEstado(estado);
 
-        if (estado == Estado.Nuevo) {
+        if (estado == Estado.NUEVO) {
             int id = administradorDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");
             }
             modelo.setId(id);
         }
-        else if (estado == Estado.Modificado) {
+        else if (estado == Estado.MODIFICADO) {
             validarIdPositivo(modelo.getId(), "id del usuario");
             if (!administradorDao.actualizar(modelo)) {
                 throw new IllegalStateException("No se pudo actualizar el usuario con id: " + modelo.getId());
