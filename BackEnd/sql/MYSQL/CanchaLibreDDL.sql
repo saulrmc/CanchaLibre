@@ -101,7 +101,7 @@ CREATE TABLE BloqueHorario (
     horaInicio TIME NOT NULL,
     horaFin TIME NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
-    estado ENUM('DISPONIBLE', 'RESERVADO', 'BLOQUEADO') NOT NULL,
+    estado ENUM('DISPONIBLE', 'RESERVADO', 'BLOQUEADO', 'MANTENIMIENTO') NOT NULL,
     idCancha INT NOT NULL,
     CONSTRAINT FK_BloqueHorario_Cancha
         FOREIGN KEY (idCancha) REFERENCES Cancha(id)
