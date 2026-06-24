@@ -89,17 +89,20 @@ CREATE PROCEDURE listarReservasCliente(
 )
 BEGIN
     SELECT
-        r.id AS idReserva,
-        r.estado,
-        r.fechaReserva,
-        c.nombre AS nombreCancha,
-        c.direccion,
-        bh.dia,
-        bh.horaInicio,
-        bh.horaFin,
-        bh.precio,
-        p.monto,
-        p.metodoPago
+    r.id AS idReserva,
+    r.estado,
+    r.idCliente,
+    r.idCancha,
+    p.idPago,
+    r.fechaReserva,
+    c.nombre AS nombreCancha,
+    c.direccion,
+    bh.dia,
+    bh.horaInicio,
+    bh.horaFin,
+    bh.precio,
+    p.monto,
+    p.metodoPago
     FROM Reserva r
     INNER JOIN Cancha c ON c.id = r.idCancha
     INNER JOIN BloqueHorario bh ON bh.id = r.idBloqueHorario
