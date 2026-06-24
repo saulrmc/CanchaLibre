@@ -42,12 +42,12 @@ public static class AuthExtensions
         var cuenta = cuentaUsuarioServiceClient.ObtenerPorUsername(usuario);
 
         var claims = new List<Claim>
-{
-    new(ClaimTypes.NameIdentifier, usuarioLogueado.IdUsuario.ToString()),
-    new(ClaimTypes.Name, usuarioLogueado.Nombres),
-    new(ClaimTypes.Email, usuarioLogueado.Correo),
-    new(ClaimTypes.Role, usuarioLogueado.Rol)
-};
+		{
+			new(ClaimTypes.NameIdentifier, usuarioLogueado.IdUsuario.ToString()),
+			new(ClaimTypes.Name, usuarioLogueado.Nombres),
+			new(ClaimTypes.Email, usuarioLogueado.Correo),
+			new(ClaimTypes.Role, usuarioLogueado.Rol)
+		};
 
         var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 		var principal = new ClaimsPrincipal(identidad);

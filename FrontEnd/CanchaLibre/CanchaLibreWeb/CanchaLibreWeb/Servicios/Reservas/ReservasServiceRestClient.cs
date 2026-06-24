@@ -112,7 +112,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
             Activo = cliente.Activo,
             Calificacion = cliente.Calificacion,
             Correo = cliente.Correo,
-            cuenta = ParseCuenta(cliente.cuenta),
+            Cuenta = ParseCuenta(cliente.cuenta),
             Id = cliente.Id,
             Nombres = cliente.Nombres,
             Telefono = cliente.Telefono
@@ -262,16 +262,16 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 Correo = source.cliente.Correo,
                 Calificacion = source.cliente.Calificacion,
                 Activo = source.cliente.Activo,
-                cuenta = source.cliente.cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
+                cuenta = source.cliente.Cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
                 {
-                    Id = source.cliente.cuenta.Id,
-                    UserName = source.cliente.cuenta.UserName,
-                    Password = source.cliente.cuenta.Password,
-                    Rol = source.cliente.cuenta.Rol.ToString(),
-                    Activo = source.cliente.cuenta.Activo,
-                    IntentosFallidos = source.cliente.cuenta.IntentosFallidos,
-                    UltimaSesion = source.cliente.cuenta.UltimaSesion,
-                    fechaBloqueo = source.cliente.cuenta.fechaBloqueo
+                    Id = source.cliente.Cuenta.Id,
+                    UserName = source.cliente.Cuenta.UserName,
+                    Password = source.cliente.Cuenta.Password,
+                    Rol = source.cliente.Cuenta.Rol.ToString(),
+                    Activo = source.cliente.Cuenta.Activo,
+                    IntentosFallidos = source.cliente.Cuenta.IntentosFallidos,
+                    UltimaSesion = source.cliente.Cuenta.UltimaSesion,
+                    fechaBloqueo = source.cliente.Cuenta.fechaBloqueo
                 }
             },
             pago = source.pago == null ? null : new PagoRestDto

@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>pe.edu.pucp.canchalibre</groupId>
-            <artifactId>CanchaLibrePersistencia</artifactId>
+            <artifactId>CanchaLibreNegocio</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

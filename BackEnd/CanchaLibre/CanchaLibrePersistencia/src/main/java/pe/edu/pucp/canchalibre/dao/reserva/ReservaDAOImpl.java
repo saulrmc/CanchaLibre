@@ -91,11 +91,12 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
     @Override
     protected PreparedStatement comandoCrear(Connection conn, Reserva modelo) throws SQLException {
-        String sql = "{call insertarReserva(?, ?, ?, ?, ?)}";
+        String sql = "{call insertarReserva(?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_estado",modelo.getEstado().name());
         cmd.setInt("p_idCliente",modelo.getCliente().getId());
         cmd.setInt("p_idCancha",modelo.getCancha().getId());
+        cmd.setObject("p_fechaCreacion",modelo.getFechaCreacion());
         if(modelo.getPago()==null){
             cmd.setNull("p_idPago",Types.INTEGER);
         }
@@ -108,11 +109,9 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
     @Override
     protected PreparedStatement comandoActualizar(Connection conn, Reserva modelo) throws SQLException {
-        String sql = "{call modificarReserva(?, ?, ?, ?, ?)}";
+        String sql = "{call modificarReserva(?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_estado",modelo.getEstado().name());
-        cmd.setInt("p_idCliente",modelo.getCliente().getId());
-        cmd.setInt("p_idCancha",modelo.getCancha().getId());
         if(modelo.getPago()==null){
             cmd.setNull("p_idPago",Types.INTEGER);
         }
@@ -187,31 +186,25 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         });
     }
 
-    protected PreparedStatement comandoListarPorClienteId(
+    protected PreparedStatement comandoListarReservasPorId(
             Connection conn, int idCliente) throws SQLException {
+        String sql = "{call listarReservasPorId(?)}";
 
-        String sql = "{call listarReservasCliente(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setInt(1, idCliente);
+        cmd.setInt("p_idCliente", idCliente);
         return cmd;
     }
 
     @Override
-    public List<Reserva> listarPorClienteId(int idCliente) {
+    public List<Reserva> listarReservasPorId(int idCliente) {
         return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoListarPorClienteId(conn, idCliente);
-                 ResultSet rs = cmd.executeQuery()) {
+            try (PreparedStatement cmd =
+                         this.comandoListarReservasPorId(conn, idCliente)) {
+                ResultSet rs = cmd.executeQuery();
 
                 List<Reserva> modelos = new ArrayList<>();
-
                 while (rs.next()) {
-                    Reserva modelo = this.mapearModelo(rs);
-
-                    modelo.setBloquesSeleccionados(
-                            this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva())
-                    );
-
-                    modelos.add(modelo);
+                    modelos.add(this.mapearModelo(rs));
                 }
 
                 return modelos;

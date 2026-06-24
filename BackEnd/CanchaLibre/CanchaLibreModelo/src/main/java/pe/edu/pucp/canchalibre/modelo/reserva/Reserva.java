@@ -4,6 +4,8 @@ import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Reserva {
@@ -11,11 +13,19 @@ public class Reserva {
     private EstadoReserva estado;
     private Cliente cliente;
     private Cancha cancha;
+    private LocalDateTime fechaCreacion;
     private Pago pago;
     private List<BloqueHorario> bloquesSeleccionados;
 
     public List<BloqueHorario> getBloquesSeleccionados() {return bloquesSeleccionados;}
     public void setBloquesSeleccionados(List<BloqueHorario> bloquesSeleccionados) {this.bloquesSeleccionados = bloquesSeleccionados;}
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
 
     public Pago getPago() {
         return pago;

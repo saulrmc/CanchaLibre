@@ -64,7 +64,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Id = source.Id,
             Activo = source.Activo,
             Correo = source.Correo,
-            cuenta = ParseCuenta(source.cuenta),
+            Cuenta = ParseCuenta(source.cuenta),
             Nombres = source.Nombres,
             Ruc = source.Ruc,
             Telefono = source.Telefono,
@@ -104,7 +104,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Activo = source.Activo,
             Calificacion = source.Calificacion,
             Correo = source.Correo,
-            cuenta = ParseCuenta(source.cuenta),
+            cuenta = ParseCuenta(source.Cuenta),
             Nombres = source.Nombres,
             Ruc = source.Ruc,
             Telefono = source.Telefono

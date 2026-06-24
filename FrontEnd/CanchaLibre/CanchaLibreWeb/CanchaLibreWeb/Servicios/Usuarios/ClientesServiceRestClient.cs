@@ -63,7 +63,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
         return new ClienteViewModel {
             Id = source.Id,
             Activo = source.Activo,
-            cuenta = ParseCuenta(source.cuenta),
+            Cuenta = ParseCuenta(source.cuenta),
             Nombres = source.Nombres ?? string.Empty,
             Correo = source.Correo ?? string.Empty,
             Telefono = source.Telefono ?? string.Empty,
@@ -93,7 +93,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
             Nombres = source.Nombres.Trim(),
             Correo = source.Correo.Trim(),
             Telefono = source.Telefono.Trim(),
-            cuenta = ParseCuenta(source.cuenta)
+            cuenta = ParseCuenta(source.Cuenta)
         };
     }
 

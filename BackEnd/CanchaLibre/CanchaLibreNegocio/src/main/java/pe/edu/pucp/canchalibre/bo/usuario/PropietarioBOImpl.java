@@ -19,11 +19,19 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
     }
 
     @Override
+    public Propietario buscarPorCuenta(String cuenta){
+        return this.propietarioDao.buscarPorCuenta(cuenta);
+    }
+
+    @Override
     public void guardar(Propietario modelo, Estado estado) {
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
+            modelo.setCalificacion(0.0);
+            modelo.setSaldo(0.0);
+
             int id = propietarioDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");
@@ -60,5 +68,22 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
         }
     }
 
+    private void validarPropietario(Propietario modelo){
+        validarPersonaBasica(modelo,"cliente");
+        if (modelo.getCalificacion() < 0) {
+            throw new IllegalArgumentException("La calificacion no puede ser negativa");
+        }
+        validarTextoObligatorio(modelo.getRUC(),"RUC");
+//        if (modelo.getSaldo() < 0) {
+//            throw new IllegalArgumentException("El saldo no puede ser negativo");
+//        }
+        //considera cancelaciones de reservas
+    }
+
+    @Override
+    public void actualizarSaldo(Integer idPropietario, double monto){
+        validarIdPositivo(idPropietario,"id propietario");
+        this.propietarioDao.actualizarSaldo(idPropietario,monto);
+    }
 
 }
