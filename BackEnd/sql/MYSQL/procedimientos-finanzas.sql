@@ -5,23 +5,26 @@ DROP PROCEDURE IF EXISTS generarComprobante;
 
 DELIMITER //
 
--- RF11: Registrar pago vinculado a una reserva (Yape o Plin).
--- Tras registrar el pago actualiza el estado de la reserva a CONFIRMADA.
+-- RF11: Registrar pago vinculado a un comprobante (Yape o Plin).
+-- Tras registrar el pago actualiza el estado de la reserva a PAGADO.
 -- El monto debe calcularse en Java sumando los precios de los bloques
 -- del rango reservado antes de llamar a este procedimiento.
 CREATE PROCEDURE registrarPago(
-    IN  p_metodoPago  ENUM('YAPE','PLIN','EFECTIVO'),
-    IN  p_monto       DECIMAL(10,2),
-    IN  p_idReserva   INT,
-    OUT p_id          INT)
+    IN  p_metodoPago     ENUM('YAPE','PLIN'),
+    IN  p_monto          DECIMAL(10,2),
+    IN  p_idComprobante  INT,
+    OUT p_id             INT
+)
 BEGIN
-    INSERT INTO PAGO (metodoPago, monto, fechaPago, idReserva)
-    VALUES (p_metodoPago, p_monto, NOW(), p_idReserva);
+    INSERT INTO Pago (metodoPago, monto, fechaPago, idComprobante)
+    VALUES (p_metodoPago, p_monto, NOW(), p_idComprobante);
+
     SET p_id = LAST_INSERT_ID();
 
-    UPDATE RESERVA
-    SET estado = 'CONFIRMADA'
-    WHERE id = p_idReserva;
+    UPDATE Reserva r
+    INNER JOIN Comprobante c ON c.idReserva = r.id
+    SET r.estado = 'PAGADO'
+    WHERE c.idComprobante = p_idComprobante;
 END //
 
 -- RF14: Generar comprobante digital tras confirmar el pago.
@@ -32,17 +35,18 @@ END //
 --   valorVenta   : montoBloques + comisionPlataforma
 --   montoTotal   : valorVenta + (valorVenta * igv)
 -- serie y numero los genera Java antes de llamar al procedimiento.
+-- En el DDL actual, Comprobante solo guarda serie, numero,
+-- fechaEmision e idReserva. El monto final se guarda en Pago.
 CREATE PROCEDURE generarComprobante(
-    IN  p_serie        VARCHAR(10),
+    IN  p_serie        VARCHAR(20),
     IN  p_numero       VARCHAR(20),
-    IN  p_montoBloques DECIMAL(10,2),
-    IN  p_valorVenta   DECIMAL(10,2),
-    IN  p_montoTotal   DECIMAL(10,2),
     IN  p_idReserva    INT,
-    OUT p_id           INT)
+    OUT p_id           INT
+)
 BEGIN
-    INSERT INTO COMPROBANTE (serie, numero, fechaEmision, montoBloques, valorVenta, montoTotal, idReserva)
-    VALUES (p_serie, p_numero, NOW(), p_montoBloques, p_valorVenta, p_montoTotal, p_idReserva);
+    INSERT INTO Comprobante (serie, numero, fechaEmision, idReserva)
+    VALUES (p_serie, p_numero, NOW(), p_idReserva);
+
     SET p_id = LAST_INSERT_ID();
 END //
 
