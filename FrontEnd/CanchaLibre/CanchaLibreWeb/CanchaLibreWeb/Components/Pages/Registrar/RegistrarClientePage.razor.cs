@@ -17,7 +17,7 @@ public partial class RegistrarClientePage : ComponentBase
 
     private void ProcesarRegistro()
     {
-        if (!string.Equals(Modelo.Contrasena, ConfirmarContrasena, StringComparison.Ordinal))
+        if (!string.Equals(Modelo.cuenta.Password, ConfirmarContrasena, StringComparison.Ordinal))
         {
             MensajeError = "Las contraseñas no coinciden.";
             return;
