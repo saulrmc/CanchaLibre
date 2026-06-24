@@ -187,9 +187,36 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         });
     }
 
+    protected PreparedStatement comandoListarPorClienteId(
+            Connection conn, int idCliente) throws SQLException {
+
+        String sql = "{call listarReservasCliente(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt(1, idCliente);
+        return cmd;
+    }
+
     @Override
     public List<Reserva> listarPorClienteId(int idCliente) {
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoListarPorClienteId(conn, idCliente);
+                 ResultSet rs = cmd.executeQuery()) {
 
+                List<Reserva> modelos = new ArrayList<>();
+
+                while (rs.next()) {
+                    Reserva modelo = this.mapearModelo(rs);
+
+                    modelo.setBloquesSeleccionados(
+                            this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva())
+                    );
+
+                    modelos.add(modelo);
+                }
+
+                return modelos;
+            }
+        });
     }
 
 }
