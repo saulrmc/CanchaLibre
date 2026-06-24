@@ -31,7 +31,7 @@ public partial class RegistrarPropietario2Page : ComponentBase
         // REconstrucción del objeto completo con los datos que venían de la URL y los del formulario
         Modelo.Nombres = Nombre ?? string.Empty;
         Modelo.Correo = Correo ?? string.Empty;
-        Modelo.Contrasena = Pass ?? string.Empty;
+        Modelo.Cuenta.Password = Pass ?? string.Empty;
         // Modelo.Ruc = RucInput;  Descomentar cuando se actualice el ViewModel
 
         Nav.NavigateTo($"/");

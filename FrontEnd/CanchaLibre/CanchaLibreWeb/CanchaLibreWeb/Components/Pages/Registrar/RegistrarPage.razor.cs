@@ -60,7 +60,7 @@ public partial class RegistrarPage : ComponentBase
         {
             Password = ContrasenaInput
         };
-        nuevoCliente.cuenta = nuevaCuenta;
+        nuevoCliente.Cuenta = nuevaCuenta;
 
         // Aquí envías 'nuevoCliente' a tu servicio HTTP que conecta con Java
         Console.WriteLine($"Cliente registrado: {nuevoCliente.Nombres} - {nuevoCliente.Correo}");
@@ -82,7 +82,7 @@ public partial class RegistrarPage : ComponentBase
         {
             Password = ContrasenaInput
         };
-        nuevoPropietario.cuenta = nuevaCuenta;
+        nuevoPropietario.Cuenta = nuevaCuenta;
 
         // Aquí envías 'nuevoPropietario' a tu backend en Java
         Console.WriteLine($"Propietario registrado: {nuevoPropietario.Nombres} - Tel: {nuevoPropietario.Telefono}");

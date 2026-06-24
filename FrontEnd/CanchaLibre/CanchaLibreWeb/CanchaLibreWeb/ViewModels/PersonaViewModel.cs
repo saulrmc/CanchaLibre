@@ -10,7 +10,7 @@ public class PersonaViewModel
     public String Nombres { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Debe ingresar una cuenta")]
-    public CuentaUsuarioViewModel? cuenta {get; set;} 
+    public CuentaUsuarioViewModel? Cuenta {get; set;} 
 
     [Required(ErrorMessage = "Debe ingresar un correo")]
     public String Correo { get; set; } = string.Empty;

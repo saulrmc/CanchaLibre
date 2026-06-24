@@ -15,14 +15,14 @@ public partial class RegistrarPropietarioPage : ComponentBase
 
     private void AvanzarPaso()
     {
-        if (!string.Equals(Modelo.Contrasena, ConfirmarContrasena, StringComparison.Ordinal))
+        if (!string.Equals(Modelo.Cuenta.Password, ConfirmarContrasena, StringComparison.Ordinal))
         {
             MensajeError = "Las contraseñas no coinciden.";
             return;
         }
 
         // Pasamos los datos recolectados por QueryString a la pantalla final de Propietario
-        var query = $"?nombre={HttpUtility.UrlEncode(Modelo.Nombres)}&correo={HttpUtility.UrlEncode(Modelo.Correo)}&pass={HttpUtility.UrlEncode(Modelo.Contrasena)}";
+        var query = $"?nombre={HttpUtility.UrlEncode(Modelo.Nombres)}&correo={HttpUtility.UrlEncode(Modelo.Correo)}&pass={HttpUtility.UrlEncode(Modelo.Cuenta.Password)}";
         Nav.NavigateTo($"/Registrar/Propietario/Detalles");
     }
 }
