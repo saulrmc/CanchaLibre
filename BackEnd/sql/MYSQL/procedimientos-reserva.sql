@@ -8,72 +8,72 @@ DROP PROCEDURE IF EXISTS insertarResena;
 DELIMITER //
 
 -- RF03: Realizar reserva por parte de un Cliente.
--- Valida que los bloques de la cancha en el rango solicitado
--- estén DISPONIBLES antes de insertar.
--- Si algún bloque no está disponible retorna p_id = 0.
--- Tras insertar, actualiza los bloques afectados a RESERVADO.
+-- Valida que el bloque horario seleccionado esté DISPONIBLE
+-- antes de insertar la reserva.
+-- Si el bloque no está disponible retorna p_id = 0.
+-- Tras insertar, actualiza el bloque seleccionado a RESERVADO.
 CREATE PROCEDURE insertarReserva(
-    IN  p_fechaHoraInicio DATETIME,
-    IN  p_fechaHoraFin    DATETIME,
+    IN  p_fechaReserva    DATETIME,
     IN  p_idCancha        INT,
     IN  p_idCliente       INT,
-    OUT p_id              INT)
+    IN  p_idBloqueHorario INT,
+    OUT p_id              INT
+)
 BEGIN
-    DECLARE v_bloqueNoDisponible INT DEFAULT 0;
+    DECLARE v_disponible INT DEFAULT 0;
 
-    -- Verificar que todos los bloques del rango estén disponibles
-    SELECT COUNT(*) INTO v_bloqueNoDisponible
-    FROM BLOQUE_HORARIO
-    WHERE idCancha    = p_idCancha
-      AND dia         = UPPER(DAYNAME(p_fechaHoraInicio))
-      AND horaInicio  >= TIME(p_fechaHoraInicio)
-      AND horaFin     <= TIME(p_fechaHoraFin)
-      AND estado     != 'DISPONIBLE';
+    SELECT COUNT(*)
+    INTO v_disponible
+    FROM BloqueHorario
+    WHERE id = p_idBloqueHorario
+      AND idCancha = p_idCancha
+      AND activo = TRUE
+      AND estado = 'DISPONIBLE';
 
-    IF v_bloqueNoDisponible > 0 THEN
+    IF v_disponible = 0 THEN
         SET p_id = 0;
     ELSE
-        INSERT INTO RESERVA (estado, fechaHoraInicio, fechaHoraFin, idCliente, idCancha)
-        VALUES ('PENDIENTE_PAGO', p_fechaHoraInicio, p_fechaHoraFin, p_idCliente, p_idCancha);
+        INSERT INTO Reserva (
+            activo, fechaReserva, estado, idCliente, idCancha, idBloqueHorario
+        )
+        VALUES (
+            TRUE, p_fechaReserva, 'ESPERA', p_idCliente, p_idCancha, p_idBloqueHorario
+        );
+
         SET p_id = LAST_INSERT_ID();
 
-        -- Marcar bloques como RESERVADO
-        UPDATE BLOQUE_HORARIO
+        UPDATE BloqueHorario
         SET estado = 'RESERVADO'
-        WHERE idCancha   = p_idCancha
-          AND dia        = UPPER(DAYNAME(p_fechaHoraInicio))
-          AND horaInicio >= TIME(p_fechaHoraInicio)
-          AND horaFin    <= TIME(p_fechaHoraFin);
+        WHERE id = p_idBloqueHorario;
     END IF;
 END //
 
 -- RF10: Cancelar reserva con validación de 2 horas antes.
--- Si la cancelación es válida, libera los bloques a DISPONIBLE.
+-- Si la cancelación es válida, libera el bloque horario a DISPONIBLE.
 -- Retorna p_exito = FALSE si ya no está dentro del plazo.
 CREATE PROCEDURE cancelarReserva(
     IN  p_idReserva INT,
-    OUT p_exito     BOOLEAN)
+    OUT p_exito     BOOLEAN
+)
 BEGIN
-    DECLARE v_fechaHoraInicio DATETIME;
-    DECLARE v_idCancha        INT;
+    DECLARE v_fechaReserva DATETIME;
+    DECLARE v_idBloqueHorario INT;
 
-    SELECT fechaHoraInicio, idCancha
-    INTO   v_fechaHoraInicio, v_idCancha
-    FROM   RESERVA
-    WHERE  id = p_idReserva;
+    SELECT fechaReserva, idBloqueHorario
+    INTO v_fechaReserva, v_idBloqueHorario
+    FROM Reserva
+    WHERE id = p_idReserva;
 
-    IF TIMESTAMPDIFF(HOUR, NOW(), v_fechaHoraInicio) >= 2 THEN
-        UPDATE RESERVA
-        SET estado = 'CANCELADA'
+    IF v_fechaReserva IS NULL THEN
+        SET p_exito = FALSE;
+    ELSEIF TIMESTAMPDIFF(HOUR, NOW(), v_fechaReserva) >= 2 THEN
+        UPDATE Reserva
+        SET estado = 'CANCELADO'
         WHERE id = p_idReserva;
 
-        -- Liberar los bloques afectados
-        UPDATE BLOQUE_HORARIO
+        UPDATE BloqueHorario
         SET estado = 'DISPONIBLE'
-        WHERE idCancha   = v_idCancha
-          AND dia        = UPPER(DAYNAME(v_fechaHoraInicio))
-          AND horaInicio >= TIME(v_fechaHoraInicio)
-          AND horaFin    <= TIME((SELECT fechaHoraFin FROM RESERVA WHERE id = p_idReserva));
+        WHERE id = v_idBloqueHorario;
 
         SET p_exito = TRUE;
     ELSE
@@ -82,67 +82,77 @@ BEGIN
 END //
 
 -- RF09: Listar historial de reservas de un Cliente.
--- Incluye estado, fechas, nombre de cancha y dirección
--- para que el frontend pueda mostrar el detalle de cada una.
+-- Incluye estado, fecha, nombre de cancha, dirección,
+-- datos del bloque horario y pago si existe.
 CREATE PROCEDURE listarReservasCliente(
-    IN p_idCliente INT)
+    IN p_idCliente INT
+)
 BEGIN
     SELECT
-        r.id              AS idReserva,
+        r.id AS idReserva,
         r.estado,
-        r.fechaHoraInicio,
-        r.fechaHoraFin,
-        c.nombre          AS nombreCancha,
+        r.fechaReserva,
+        c.nombre AS nombreCancha,
         c.direccion,
+        bh.dia,
+        bh.horaInicio,
+        bh.horaFin,
+        bh.precio,
         p.monto,
         p.metodoPago
-    FROM RESERVA r
-    INNER JOIN CANCHA c ON c.id = r.idCancha
-    LEFT  JOIN PAGO   p ON p.idReserva = r.id
+    FROM Reserva r
+    INNER JOIN Cancha c ON c.id = r.idCancha
+    INNER JOIN BloqueHorario bh ON bh.id = r.idBloqueHorario
+    LEFT JOIN Comprobante comp ON comp.idReserva = r.id
+    LEFT JOIN Pago p ON p.idComprobante = comp.idComprobante
     WHERE r.idCliente = p_idCliente
-    ORDER BY r.fechaHoraInicio DESC;
+    ORDER BY r.fechaReserva DESC;
 END //
 
 -- RF08: Insertar reseña para una cancha.
--- Valida que el cliente tenga una reserva COMPLETADA para esa cancha
--- y que no haya dejado ya una reseña para esa reserva.
--- Tras insertar recalcula promedioCalificacion en CANCHA.
+-- Valida que el cliente tenga una reserva COMPLETADA para esa cancha.
+-- Tras insertar recalcula promedioCalificacion en Cancha.
 CREATE PROCEDURE insertarResena(
-    IN  p_descripcion  VARCHAR(500),
+    IN  p_descripcion  VARCHAR(120),
     IN  p_calificacion INT,
     IN  p_idReserva    INT,
-    OUT p_id           INT)
+    OUT p_id           INT
+)
 BEGIN
-    DECLARE v_idCancha     INT;
-    DECLARE v_idCliente    INT;
-    DECLARE v_estadoRes    VARCHAR(20);
-    DECLARE v_yaReseno     INT DEFAULT 0;
+    DECLARE v_idCancha INT;
+    DECLARE v_idCliente INT;
+    DECLARE v_estadoRes VARCHAR(20);
+    DECLARE v_yaReseno INT DEFAULT 0;
 
     SELECT idCancha, idCliente, estado
-    INTO   v_idCancha, v_idCliente, v_estadoRes
-    FROM   RESERVA
-    WHERE  id = p_idReserva;
+    INTO v_idCancha, v_idCliente, v_estadoRes
+    FROM Reserva
+    WHERE id = p_idReserva;
 
-    -- Verificar que la reserva esté COMPLETADA
-    -- y que no exista ya una reseña para esa reserva
-    SELECT COUNT(*) INTO v_yaReseno
-    FROM RESENA WHERE idReserva = p_idReserva;
+    SELECT COUNT(*)
+    INTO v_yaReseno
+    FROM Resena
+    WHERE idCancha = v_idCancha
+      AND idCliente = v_idCliente;
 
-    IF v_estadoRes != 'COMPLETADA' OR v_yaReseno > 0 THEN
+    IF v_estadoRes != 'COMPLETADO' OR v_yaReseno > 0 THEN
         SET p_id = 0;
     ELSE
-        INSERT INTO RESENA (descripcion, calificacion, fechaPublicacion, idReserva)
-        VALUES (p_descripcion, p_calificacion, NOW(), p_idReserva);
+        INSERT INTO Resena (
+            activo, descripcion, calificacion, fechaPublicacion, idCancha, idCliente
+        )
+        VALUES (
+            TRUE, p_descripcion, p_calificacion, NOW(), v_idCancha, v_idCliente
+        );
+
         SET p_id = LAST_INSERT_ID();
 
-        -- Recalcular promedioCalificacion en CANCHA
-        UPDATE CANCHA
+        UPDATE Cancha
         SET promedioCalificacion = (
             SELECT AVG(rs.calificacion)
-            FROM RESENA rs
-            INNER JOIN RESERVA rv ON rv.id = rs.idReserva
-            WHERE rv.idCancha = v_idCancha
-              AND rs.activo   = TRUE
+            FROM Resena rs
+            WHERE rs.idCancha = v_idCancha
+              AND rs.activo = TRUE
         )
         WHERE id = v_idCancha;
     END IF;
