@@ -1,9 +1,6 @@
 using System.Net;
 using CanchaLibreWeb.Servicios.Base;
-using CanchaLibreWeb.Servicios.Rest.Dtos.Canchas;
-using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Reservas;
-using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 using CanchaLibreWeb.ViewModels;
 
 namespace CanchaLibreWeb.Servicios.Reservas;
@@ -14,37 +11,14 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
     private const string ResourcePath = "reservas";
     public List<ReservaViewModel> ListarPorCliente(int idCliente)
     {
-        // 1. Traemos todas las reservas desde el endpoint de Java (ej. v1/reservas)
-        var todasLasReservas = Api.Get<List<ReservaRestDto>>(ResourcePath) ?? new();
+        var payload = Api.Get<List<ReservaRestDto>>($"{ResourcePath}/cliente/{idCliente}");
 
-        // 2. Filtramos en memoria de C# por el id del cliente logueado
-        var reservasDelCliente = todasLasReservas.Where(r => r.cliente.Id == idCliente).ToList();
-
-        // 4. Mapeamos y combinamos los datos para construir el ViewModel que la vista necesita
-        return reservasDelCliente.Select(reserva => {
-            var canchaAsociada = todasLasCanchas.FirstOrDefault(c => c.idCancha == reserva.cancha.idCancha);
-
-            return new ReservaViewModel
-            {
-                idReserva = reserva.idReserva,
-                fechaHora = reserva.fechaHora,
-                estado = Enum.TryParse<EstadoReservaEnum>(reserva.estado, true, out var est) ? est : EstadoReservaEnum.ESPERA,
-                duracion = reserva.duracion,
-                cancha = canchaAsociada == null ? new CanchaViewModel { nombre = "Cancha no disponible" } : new CanchaViewModel
-                {
-                    idCancha = canchaAsociada.idCancha,
-                    nombre = canchaAsociada.nombre,
-                    direccion = canchaAsociada.direccion,
-                    imagenUrl = canchaAsociada.imagenUrl
-                },
-                pago = reserva.Pago == null ? null : new PagoViewModel
-                {
-                    id = reserva.Pago.id,
-                    metodoPago = toMetodoPagoEnum(reserva.Pago.metodoPago),
-                    monto = reserva.Pago.monto
-                }
-            };
-        }).ToList();
+        var response = new List<ReservaViewModel>(payload.Count);
+        foreach (var item in payload)
+        {
+            response.Add(ToViewModel(item));
+        }
+        return response;
     }
 
     private MetodoPagoEnum toMetodoPagoEnum(string metodoPago)
@@ -131,7 +105,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         };
     }
 
-    private ClienteViewModel ParseCliente(ClienteRestDto? cliente)
+    private ClienteViewModel ParseCliente(Rest.Dtos.Usuarios.ClienteRestDto? cliente)
     {
         return new ClienteViewModel
         {
@@ -145,7 +119,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         };
     }
 
-    private CuentaUsuarioViewModel ParseCuenta(CuentaUsuarioRestDto? cuenta)
+    private CuentaUsuarioViewModel ParseCuenta(Rest.Dtos.Cuentas.CuentaUsuarioRestDto? cuenta)
     {
         return new CuentaUsuarioViewModel
         {
@@ -160,7 +134,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         };
     }
 
-    private CanchaViewModel ParseCancha(CanchaRestDto? cancha)
+    private CanchaViewModel ParseCancha(Rest.Dtos.Canchas.CanchaRestDto? cancha)
     {
         return new CanchaViewModel
         {
@@ -180,11 +154,11 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         };
     }
 
-    private ViewModels.PropietarioViewModel ParsePropietario(Servicios.Rest.Dtos.Usuarios.PropietarioRestDto? propietario)
+    private PropietarioViewModel ParsePropietario(Rest.Dtos.Usuarios.PropietarioRestDto? propietario)
     {
         if (propietario == null) return null;
 
-        return new ViewModels.PropietarioViewModel
+        return new PropietarioViewModel
         {
             Id = propietario.Id,
             Nombres = propietario.Nombres,
@@ -215,7 +189,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         return list;
     }
 
-    private List<BloqueHorarioViewModel> ParseBloques(List<BloqueHorarioRestDto>? bloques)
+    private List<BloqueHorarioViewModel> ParseBloques(List<Rest.Dtos.Canchas.BloqueHorarioRestDto>? bloques)
     {
         List<BloqueHorarioViewModel> list = new List<BloqueHorarioViewModel>();
         foreach(var bloque in bloques)
@@ -241,9 +215,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         {
             idReserva = source.idReserva,
             estado = source.estado.ToString(),
-            duracion = source.duracion,
-            fechaHora = source.fechaHora,
-            bloques = source.bloques?.Select(b => new BloqueHorarioRestDto
+            bloques = source.bloques?.Select(b => new Rest.Dtos.Canchas.BloqueHorarioRestDto
             {
                 diaSemana = b.diaSemana.ToString(),
                 estadoBloque = b.estadoBloque.ToString(),
@@ -251,7 +223,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 horaFin = b.horaFin,
                 precio = b.precio
             }).ToList(),
-            cancha = source.cancha == null ? null : new CanchaRestDto
+            cancha = source.cancha == null ? null : new Rest.Dtos.Canchas.CanchaRestDto
             {
                 idCancha = source.cancha.idCancha,
                 nombre = source.cancha.nombre,
@@ -264,7 +236,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 promedioCalificacion = source.cancha.promedioCalificacion,
                 etiquetas = source.cancha.etiquetas?.Select(e => e.ToString()).ToList(),
                 deportes = source.cancha.deportes?.Select(d => d.ToString()).ToList(),
-                bloques = source.cancha.bloques?.Select(b => new BloqueHorarioRestDto
+                bloques = source.cancha.bloques?.Select(b => new Rest.Dtos.Canchas.BloqueHorarioRestDto
                 {
                     diaSemana = b.diaSemana.ToString(),
                     estadoBloque = b.estadoBloque.ToString(),
@@ -282,7 +254,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                     Activo = source.cancha.propietario.Activo
                 }
             },
-            cliente = source.cliente == null ? null : new ClienteRestDto
+            cliente = source.cliente == null ? null : new Rest.Dtos.Usuarios.ClienteRestDto
             {
                 Id = source.cliente.Id,
                 Nombres = source.cliente.Nombres,
@@ -290,7 +262,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 Correo = source.cliente.Correo,
                 Calificacion = source.cliente.Calificacion,
                 Activo = source.cliente.Activo,
-                cuenta = source.cliente.cuenta == null ? null : new CuentaUsuarioRestDto
+                cuenta = source.cliente.cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
                 {
                     Id = source.cliente.cuenta.Id,
                     UserName = source.cliente.cuenta.UserName,

@@ -27,7 +27,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         {
             new Claim(ClaimTypes.Name, usuario.Nombres),
             new Claim(ClaimTypes.Email, usuario.Correo),
-            new Claim("IdUsuario", usuario.IdUsuario.ToString()) // Util para saber qué cliente reserva o qué propietario publica
+            new Claim("IdUsuario", usuario.Id.ToString()) // Util para saber qué cliente reserva o qué propietario publica
         }, "CustomAuthType");
 
         // 2. Inyectamos el rol detectado ("Cliente", "Propietario" o "Admin")

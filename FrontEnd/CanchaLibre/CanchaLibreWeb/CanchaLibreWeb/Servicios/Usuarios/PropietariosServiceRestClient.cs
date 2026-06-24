@@ -1,5 +1,6 @@
 using System.Net;
 using CanchaLibreWeb.Servicios.Base;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 using CanchaLibreWeb.ViewModels;
 
@@ -10,9 +11,9 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
         : base(configuration, httpClientFactory) {
         // IConfiguration e IHttpClientFactory son inyectados por el contenedor de DI.
     }
-
+    private const string ResourcePath = "propietarios";
     public List<PropietarioViewModel> Listar() {
-        var payload = Api.Get<List<PropietarioRestDto>>("v1/propietarios");
+        var payload = Api.Get<List<PropietarioRestDto>>($"{ResourcePath}");
 
         var response = new List<PropietarioViewModel>(payload.Count);
         foreach (var item in payload) {
@@ -24,7 +25,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
 
     public PropietarioViewModel? Obtener(int id) {
         try {
-            var payload = Api.Get<PropietarioRestDto>($"v1/propietarios/{id}");
+            var payload = Api.Get<PropietarioRestDto>($"{ResourcePath}/{id}");
             return ToViewModel(payload);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
             return null;
@@ -32,7 +33,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
     }
     public PropietarioViewModel? BuscarPorNombre(string nombre) {
         try {
-            var path = $"v1/propietarios/nombre/{Uri.EscapeDataString(nombre)}";
+            var path = $"{ResourcePath}/nombre/{Uri.EscapeDataString(nombre)}";
             var payload = Api.Get<PropietarioRestDto>(path);
             return ToViewModel(payload);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
@@ -44,10 +45,10 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
         var payload = ToRest(modelo);
         switch (estado) {
             case Estado.Nuevo:
-                Api.Post("v1/propietarios", payload);
+                Api.Post($"{ResourcePath}", payload);
                 break;
             case Estado.Modificado:
-                Api.Put($"v1/propietarios/{modelo.Id}", payload);
+                Api.Put($"{ResourcePath}/{modelo.Id}", payload);
                 break;
             default:
                 throw new InvalidOperationException($"Estado no soportado: {estado}");
@@ -55,28 +56,34 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
     }
 
     public void Eliminar(int id) {
-        Api.Delete($"v1/propietarios/{id}");
+        Api.Delete($"{ResourcePath}/{id}");
     }
 
     protected override PropietarioViewModel ToViewModel(PropietarioRestDto source) {
         return new PropietarioViewModel {
-            Id = source.IdUsuario,
-            Nombres = source.Nombres ?? string.Empty,
-            Contrasena = string.Empty, // No se expone la contraseña en el ViewModel por seguridad.
-            Correo = source.Correo ?? string.Empty,
-            Telefono = source.Telefono ?? string.Empty,
-            IntentosFallidos = source.IntentosFallidos,
-            UltimaSesion = source.UltimaSesion,
-            Canchas = source.canchas?.Select(c => new CanchaViewModel {
-                idCancha = c.idCancha,
-                nombre = c.nombre,
-                descripcion = c.descripcion,
-                direccion = c.direccion,
-                imagenUrl = c.imagenUrl,
-                disponible = c.disponible,
-                deportes = ParseEnumDeportes(c.deportes),
-            }).ToList() ?? new List<CanchaViewModel>(),
+            Id = source.Id,
+            Activo = source.Activo,
+            Correo = source.Correo,
+            cuenta = ParseCuenta(source.cuenta),
+            Nombres = source.Nombres,
+            Ruc = source.Ruc,
+            Telefono = source.Telefono,
             Calificacion = source.Calificacion
+        };
+    }
+
+    private CuentaUsuarioViewModel ParseCuenta(CuentaUsuarioRestDto? cuenta)
+    {
+        return new CuentaUsuarioViewModel
+        {
+            Activo = cuenta.Activo,
+            fechaBloqueo = cuenta.fechaBloqueo,
+            Id = cuenta.Id,
+            IntentosFallidos = cuenta.IntentosFallidos,
+            Password = cuenta.Password,
+            Rol = ParseEnum<RolEnum>(cuenta.Rol, RolEnum.NO_ADMITIDO),
+            UltimaSesion = cuenta.UltimaSesion,
+            UserName = cuenta.UserName
         };
     }
 
@@ -93,24 +100,33 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
 
     protected override PropietarioRestDto ToRest(PropietarioViewModel source) {
         return new PropietarioRestDto {
-            IdUsuario = source.Id,
-            Nombres = source.Nombres.Trim(),
-            Contrasena = source.Contrasena, // Se asume que el ViewModel ya tiene la contraseña en texto plano (nueva o sin cambios).
-            Correo = source.Correo.Trim(),
-            Telefono = source.Telefono.Trim(),
-            IntentosFallidos = source.IntentosFallidos,
-            UltimaSesion = source.UltimaSesion,
-            canchas = source.Canchas?.Select(c => new CanchaRestDto {
-                idCancha = c.idCancha,
-                nombre = c.nombre,
-                descripcion = c.descripcion,
-                direccion = c.direccion,
-                imagenUrl = c.imagenUrl,
-                disponible = c.disponible,
-                deportes = ParseStringDeportes(c.deportes),
-            }).ToList() ?? new List<CanchaRestDto>(),
-            Calificacion = source.Calificacion
+            Id = source.Id,
+            Activo = source.Activo,
+            Calificacion = source.Calificacion,
+            Correo = source.Correo,
+            cuenta = ParseCuenta(source.cuenta),
+            Nombres = source.Nombres,
+            Ruc = source.Ruc,
+            Telefono = source.Telefono
         };  
+    }
+
+    private CuentaUsuarioRestDto ParseCuenta(CuentaUsuarioViewModel? cuenta)
+    {
+        if (cuenta is null) {
+            return new Rest.Dtos.Cuentas.CuentaUsuarioRestDto();
+        }
+
+        return new CuentaUsuarioRestDto {
+            Activo = cuenta.Activo,
+            fechaBloqueo = cuenta.fechaBloqueo,
+            Id = cuenta.Id,
+            IntentosFallidos = cuenta.IntentosFallidos,
+            Password = cuenta.Password,
+            Rol = cuenta.Rol.ToString(),
+            UltimaSesion = cuenta.UltimaSesion,
+            UserName = cuenta.UserName
+        };
     }
 
     private List<string> ParseStringDeportes(List<DeporteEnum>? deportes)

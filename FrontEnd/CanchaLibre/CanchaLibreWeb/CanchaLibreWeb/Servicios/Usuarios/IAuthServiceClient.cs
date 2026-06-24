@@ -18,21 +18,21 @@ public class AuthServiceRestClient : BaseRestServiceClient<object, object>, IAut
     public (UsuarioRespuestaRestDto? Usuario, string? Rol) ValidarCredenciales(string correo, string contrasena)
     {
         // 1. Buscar en Clientes
-        var clientes = Api.Get<List<UsuarioRespuestaRestDto>>("v1/clientes");
+        var clientes = Api.Get<List<UsuarioRespuestaRestDto>>("clientes");
         var clienteMatch = clientes?.FirstOrDefault(c => c.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                     && c.Contrasena == contrasena);
+                                                     && c.cuenta.Password== contrasena);
         if (clienteMatch != null) return (clienteMatch, "Cliente");
 
         // 2. Buscar en Propietarios (Asumiendo que tu endpoint sigue la misma estructura de nombres)
-        var propietarios = Api.Get<List<UsuarioRespuestaRestDto>>("v1/propietarios");
+        var propietarios = Api.Get<List<UsuarioRespuestaRestDto>>("propietarios");
         var propMatch = propietarios?.FirstOrDefault(p => p.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                       && p.Contrasena == contrasena);
+                                                       && p.cuenta.Password == contrasena);
         if (propMatch != null) return (propMatch, "Propietario");
 
         // 3. Buscar en Administradores
-        var admins = Api.Get<List<UsuarioRespuestaRestDto>>("v1/administradores");
+        var admins = Api.Get<List<UsuarioRespuestaRestDto>>("administradores");
         var adminMatch = admins?.FirstOrDefault(a => a.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                      && a.Contrasena == contrasena);
+                                                      && a.cuenta.Password == contrasena);
         if (adminMatch != null) return (adminMatch, "Admin");
 
         // Si no se encontró en ninguna lista
@@ -41,7 +41,7 @@ public class AuthServiceRestClient : BaseRestServiceClient<object, object>, IAut
     public bool SolicitarRecuperacion(string correo)
     {
         // 1. Buscamos en la lista de Clientes
-        var clientes = Api.Get<List<UsuarioRespuestaRestDto>>("v1/clientes");
+        var clientes = Api.Get<List<UsuarioRespuestaRestDto>>("clientes");
         if (clientes != null && clientes.Any(c => c.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)))
         {
             // Aquí idealmente harías un POST a un endpoint de envío de correos, 
@@ -50,14 +50,14 @@ public class AuthServiceRestClient : BaseRestServiceClient<object, object>, IAut
         }
 
         // 2. Buscamos en la lista de Propietarios
-        var propietarios = Api.Get<List<UsuarioRespuestaRestDto>>("v1/propietarios");
+        var propietarios = Api.Get<List<UsuarioRespuestaRestDto>>("propietarios");
         if (propietarios != null && propietarios.Any(p => p.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)))
         {
             return true;
         }
 
         // 3. Buscamos en la lista de Administradores
-        var admins = Api.Get<List<UsuarioRespuestaRestDto>>("v1/administradores");
+        var admins = Api.Get<List<UsuarioRespuestaRestDto>>("administradores");
         if (admins != null && admins.Any(a => a.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)))
         {
             return true;
