@@ -33,8 +33,8 @@
     </div>
     <div class="mb-3">
         <label class="form-label-custom">Contraseña</label>
-        <InputText type="password" class="form-input-custom" @bind-Value="Modelo.Contrasena" placeholder="**********" />
-        <ValidationMessage For="@(() => Modelo.Contrasena)" class="text-danger small mt-1" />
+        <InputText type="password" class="form-input-custom" @bind-Value="Modelo.cuenta.Password" placeholder="**********" />
+        <ValidationMessage For="@(() => Modelo.cuenta.Password)" class="text-danger small mt-1" />
     </div>
 
     <div class="mb-4">
