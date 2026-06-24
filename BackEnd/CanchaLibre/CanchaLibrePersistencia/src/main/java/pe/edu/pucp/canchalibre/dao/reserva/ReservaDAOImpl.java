@@ -187,4 +187,9 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         });
     }
 
+    @Override
+    public List<Reserva> listarPorClienteId(int idCliente) {
+
+    }
+
 }

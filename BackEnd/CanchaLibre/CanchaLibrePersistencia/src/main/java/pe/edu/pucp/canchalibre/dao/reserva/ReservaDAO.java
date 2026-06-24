@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ReservaDAO extends Persistible<Reserva,Integer> {
     List<Reserva> listarReservasPorCuenta(String cuenta);
+    List<Reserva> listarPorClienteId(int idCliente);
 }

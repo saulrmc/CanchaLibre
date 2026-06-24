@@ -104,7 +104,7 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
     }
 
     @Override
-    public List<Reserva> listarPorCliente(int idCliente) {
+    public List<Reserva> listarPorClienteId(int idCliente) {
         //esto es ineficiente pero es una solución temporal
         List<Reserva> reservas = reservaDao.leerTodos();
         List<Reserva> reservasPorCliente = new ArrayList<>();
@@ -114,5 +114,10 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
             }
         }
         return reservasPorCliente;
+    }
+    @Override
+    public List<Reserva> listarPorClienteCuenta(String cuenta) {
+        //esto es ineficiente pero es una solución temporal
+        return reservaDao.listarReservasPorCuenta(cuenta);
     }
 }
