@@ -54,9 +54,13 @@ public partial class RegistrarPage : ComponentBase
         var nuevoCliente = new ClienteViewModel
         {
             Nombres = NombreInput,
-            Correo = CorreoInput,
-            Contrasena = ContrasenaInput
+            Correo = CorreoInput
         };
+        var nuevaCuenta = new CuentaUsuarioViewModel
+        {
+            Password = ContrasenaInput
+        };
+        nuevoCliente.cuenta = nuevaCuenta;
 
         // Aquí envías 'nuevoCliente' a tu servicio HTTP que conecta con Java
         Console.WriteLine($"Cliente registrado: {nuevoCliente.Nombres} - {nuevoCliente.Correo}");
