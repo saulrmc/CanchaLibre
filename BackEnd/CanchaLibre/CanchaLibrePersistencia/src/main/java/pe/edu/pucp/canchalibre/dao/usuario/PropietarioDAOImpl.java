@@ -10,21 +10,21 @@ import java.sql.*;
 public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements PropietarioDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Propietario modelo) throws SQLException{
-        String sql = "{call insertarPropietario(?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarPropietario(?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
-        if (idCuentaUsuario == null) {
-            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
-        }
-        else {
-            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
-        }
+//        if (idCuentaUsuario == null) {
+//            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+//        }
+//        else {
+//            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+//        }
         cmd.setString("p_nombres",modelo.getNombres());
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
-        cmd.setDouble("p_calificacion",modelo.getCalificacion());
-        cmd.setString("p_RUC",modelo.getRUC());
-        cmd.setBoolean("p_activo",modelo.isActivo());
+//        cmd.setString("p_RUC",modelo.getRUC());
+        cmd.setString("p_password",modelo.getCuentaUsuario().getPassword());
+        cmd.setString("p_username",modelo.getCuentaUsuario().getUserName());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
