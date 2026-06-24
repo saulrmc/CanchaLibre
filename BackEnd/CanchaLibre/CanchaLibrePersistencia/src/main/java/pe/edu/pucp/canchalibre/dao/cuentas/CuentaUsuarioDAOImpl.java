@@ -52,16 +52,12 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
     @Override
     public boolean login(String username, String password) {
         return ejecutarComando(conn -> {
-            String sql = "{call loginUsuarioBoolean(?, ?, ?)}";
-
-            try (CallableStatement cmd = conn.prepareCall(sql)) {
-                cmd.setString(1, username);
-                cmd.setString(2, password);
-                cmd.registerOutParameter(3, Types.BOOLEAN);
-
-                cmd.execute();
-
-                return cmd.getBoolean(3);
+            try (PreparedStatement cmd = this.comandoLogin(conn, username, password)) {
+                if (cmd instanceof CallableStatement callableCmd) {
+                    callableCmd.execute();
+                    return callableCmd.getBoolean("p_valido");
+                }
+                return false;
             }
         });
     }

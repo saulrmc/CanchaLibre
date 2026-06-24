@@ -19,11 +19,17 @@ public class ClienteBOImpl extends PersonaBOImpl<Cliente> implements ClienteBO {
     }
 
     @Override
+    public Cliente buscarPorCuenta(String cuenta){
+        return this.clienteDao.buscarPorCuenta(cuenta);
+    }
+
+    @Override
     public void guardar(Cliente modelo, Estado estado) {
         validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
+            modelo.setCalificacion(0.0);
             int id = clienteDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");
@@ -57,6 +63,13 @@ public class ClienteBOImpl extends PersonaBOImpl<Cliente> implements ClienteBO {
         validarIdPositivo(id, "id");
         if (!clienteDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar el cliente con id: " + id);
+        }
+    }
+
+    private void validarCliente(Cliente modelo){
+        validarPersonaBasica(modelo,"cliente");
+        if (modelo.getCalificacion() < 0) {
+            throw new IllegalArgumentException("La calificacion no puede ser negativa");
         }
     }
 

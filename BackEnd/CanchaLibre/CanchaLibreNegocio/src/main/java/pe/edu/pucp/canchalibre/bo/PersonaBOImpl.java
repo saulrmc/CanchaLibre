@@ -7,8 +7,7 @@ import java.util.Objects;
 public abstract class PersonaBOImpl<M extends Persona> extends BaseBO implements PersonaBO<M> {
     protected void validarPersonaBasica(M modelo, String nombreEntidad) {
         Objects.requireNonNull(modelo, "El " + nombreEntidad + " es obligatorio");
-        validarTextoObligatorio(modelo.getNombres(), "nombre");
-        //validarTextoObligatorio(modelo.getApellidoPaterno(), "apellido paterno");
+        validarTextoObligatorio(modelo.getNombres(), "nombres");
         validarTextoObligatorio(modelo.getCorreo(), "correo");
         validarTextoObligatorio(modelo.getTelefono(), "teléfono");
     }

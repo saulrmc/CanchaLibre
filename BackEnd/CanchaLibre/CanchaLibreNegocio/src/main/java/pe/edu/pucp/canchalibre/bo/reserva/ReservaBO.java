@@ -6,6 +6,6 @@ import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import java.util.List;
 
 public interface ReservaBO extends Gestionable<Reserva> {
-    List<Reserva> listarPorClienteId(int idCliente);
-    List<Reserva> listarPorClienteCuenta(String Cuenta);
+    List<Reserva> listarReservasPorCuenta(String cuenta);
+    List<Reserva> listarReservasPorId(int idCliente);
 }

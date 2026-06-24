@@ -101,13 +101,13 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
     }
 
     @Override
-    public double actualizarSaldo(Connection conn, Integer idPropietario, double monto)
-            throws SQLException {
-
-        try (PreparedStatement cmd = this.comandoActualizarSaldo(conn, idPropietario, monto)) {
-            cmd.executeUpdate();
-            return ((CallableStatement) cmd).getDouble("p_saldo");
-        }
+    public void actualizarSaldo(Integer idPropietario, double monto){
+        ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoActualizarSaldo(conn, idPropietario, monto)) {
+                cmd.executeUpdate();
+            }
+            return null;
+        });
     }
 
     @Override

@@ -15,8 +15,12 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
 
     @Override
     public List<Administrador> buscarPorNombre(String nombres){
-        return null;
-        //return this.administradorDao.buscarPorNombre(nombres);
+        return this.administradorDao.buscarPorNombre(nombres);
+    }
+
+    @Override
+    public Administrador buscarPorCuenta(String cuenta){
+        return this.administradorDao.buscarPorCuenta(cuenta);
     }
 
     @Override
@@ -59,6 +63,10 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
         if (!administradorDao.eliminar(id)) {
             throw new IllegalStateException("No se pudo eliminar el administrador con id: " + id);
         }
+    }
+
+    private void validarAdministrador(Administrador modelo){
+        validarPersonaBasica(modelo,"administrador");
     }
 
 }

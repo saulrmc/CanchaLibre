@@ -22,6 +22,7 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
+            modelo.setFechaPublicacion(java.time.LocalDateTime.now());
             int id = this.resenaDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear la reseña");
@@ -59,18 +60,27 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
     }
 
     private void validarResena(Resena modelo) {
-        Objects.requireNonNull(modelo, "La reseña es obligatoria");
+        Objects.requireNonNull(modelo, "La estructura de la resena no puede ser nula");
 
-        if (modelo.getCalificacion() < 0 || modelo.getCalificacion() > 5) {
-            throw new IllegalArgumentException("La calificación debe estar entre 0 y 5");
+        if (modelo.getCalificacion() < 1.0 || modelo.getCalificacion() > 5.0) {
+            throw new IllegalArgumentException("La calificación debe estar entre 1 y 5");
+        }
+        if (modelo.getDescripcion() != null && modelo.getDescripcion().length() > 500) {
+            throw new IllegalArgumentException("El comentario no puede exceder los 500 caracteres.");
         }
 
-        if (modelo.getFechaPublicacion() == null) {
-            throw new IllegalArgumentException("La fecha de publicación es obligatoria");
-        }
-
-        Objects.requireNonNull(modelo.getReserva(), "La reseña necesita una reserva asociada");
-
+        Objects.requireNonNull(modelo.getReserva(), "La reseña debe estar asociada a una reserva válida.");
         validarIdPositivo(modelo.getReserva().getIdReserva(), "id de la reserva");
     }
+
+    @Override
+    public List<Resena> listarResenasPorCancha(Integer idCancha){
+        return this.resenaDao.listarResenasPorCancha(idCancha);
+    }
+
+    @Override
+    public List<Resena> listarResenasPorCliente(Integer idCliente){
+        return this.resenaDao.listarResenasPorCliente(idCliente);
+    }
+
 }

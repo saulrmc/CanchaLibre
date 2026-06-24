@@ -1,5 +1,7 @@
 package pe.edu.pucp.canchalibre.bo;
 
+import pe.edu.pucp.canchalibre.modelo.Estado;
+
 import java.util.Objects;
 
 public abstract class BaseBO {
@@ -9,7 +11,7 @@ public abstract class BaseBO {
         }
     }
 
-    protected <E> void validarEstado(E estado) {
+    protected void validarEstado(Estado estado) {
         Objects.requireNonNull(estado, "El estado es obligatorio");
     }
 

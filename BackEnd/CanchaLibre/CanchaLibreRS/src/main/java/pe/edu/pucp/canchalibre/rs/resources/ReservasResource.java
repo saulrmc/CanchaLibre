@@ -141,15 +141,11 @@ public class ReservasResource {
         if(idCliente <= 0){
             return Collections.emptyList();
         }
-        return reservaBO.listarPorClienteId(idCliente);
+        return reservaBO.listarReservasPorId(idCliente);
     }
-
     @GET
-    @Path("cliente/{id}")
-    public List<Reserva> ListarPorClienteCuenta(@PathParam("id") int idCliente){
-        if(idCliente <= 0){
-            return Collections.emptyList();
-        }
-        return reservaBO.listarPorClienteId(idCliente);
+    @Path("cliente/{userName}")
+    public List<Reserva> ListarPorClienteUsername(@PathParam("userName") String userName){
+        return reservaBO.listarReservasPorCuenta(userName);
     }
 }

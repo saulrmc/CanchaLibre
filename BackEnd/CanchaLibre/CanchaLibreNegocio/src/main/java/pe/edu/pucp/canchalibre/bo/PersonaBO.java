@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface PersonaBO<M extends Persona> extends Gestionable<M> {
 	List<M> buscarPorNombre(String nombres);
+	M buscarPorCuenta(String cuenta); //userName
 }
