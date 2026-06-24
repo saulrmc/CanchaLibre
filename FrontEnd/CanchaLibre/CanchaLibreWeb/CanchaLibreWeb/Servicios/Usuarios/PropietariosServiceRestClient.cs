@@ -64,7 +64,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Id = source.Id,
             Activo = source.Activo,
             Correo = source.Correo,
-            Cuenta = ParseCuenta(source.cuenta),
+            Cuenta = ParseCuenta(source.Cuenta),
             Nombres = source.Nombres,
             Ruc = source.Ruc,
             Telefono = source.Telefono,
@@ -72,18 +72,22 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
         };
     }
 
-    private CuentaUsuarioViewModel ParseCuenta(CuentaUsuarioRestDto? cuenta)
+    private CuentaUsuarioViewModel ParseCuenta(CuentaUsuarioRestDto? Cuenta)
     {
+        if (Cuenta is null) {
+            return new CuentaUsuarioViewModel();
+        }
+
         return new CuentaUsuarioViewModel
         {
-            Activo = cuenta.Activo,
-            fechaBloqueo = cuenta.fechaBloqueo,
-            Id = cuenta.Id,
-            IntentosFallidos = cuenta.IntentosFallidos,
-            Password = cuenta.Password,
-            Rol = ParseEnum<RolEnum>(cuenta.Rol, RolEnum.NO_ADMITIDO),
-            UltimaSesion = cuenta.UltimaSesion,
-            UserName = cuenta.UserName
+            Activo = Cuenta.Activo,
+            fechaBloqueo = Cuenta.fechaBloqueo,
+            Id = Cuenta.Id,
+            IntentosFallidos = Cuenta.IntentosFallidos,
+            Password = Cuenta.Password,
+            Rol = ParseEnum<RolEnum>(Cuenta.Rol, RolEnum.NO_ADMITIDO),
+            UltimaSesion = Cuenta.UltimaSesion,
+            UserName = Cuenta.UserName
         };
     }
 
@@ -104,28 +108,28 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Activo = source.Activo,
             Calificacion = source.Calificacion,
             Correo = source.Correo,
-            cuenta = ParseCuenta(source.Cuenta),
+            Cuenta = ParseCuenta(source.Cuenta),
             Nombres = source.Nombres,
             Ruc = source.Ruc,
             Telefono = source.Telefono
         };  
     }
 
-    private CuentaUsuarioRestDto ParseCuenta(CuentaUsuarioViewModel? cuenta)
+    private CuentaUsuarioRestDto ParseCuenta(CuentaUsuarioViewModel? Cuenta)
     {
-        if (cuenta is null) {
+        if (Cuenta is null) {
             return new Rest.Dtos.Cuentas.CuentaUsuarioRestDto();
         }
 
         return new CuentaUsuarioRestDto {
-            Activo = cuenta.Activo,
-            fechaBloqueo = cuenta.fechaBloqueo,
-            Id = cuenta.Id,
-            IntentosFallidos = cuenta.IntentosFallidos,
-            Password = cuenta.Password,
-            Rol = cuenta.Rol.ToString(),
-            UltimaSesion = cuenta.UltimaSesion,
-            UserName = cuenta.UserName
+            Activo = Cuenta.Activo,
+            fechaBloqueo = Cuenta.fechaBloqueo,
+            Id = Cuenta.Id,
+            IntentosFallidos = Cuenta.IntentosFallidos,
+            Password = Cuenta.Password,
+            Rol = Cuenta.Rol.ToString(),
+            UltimaSesion = Cuenta.UltimaSesion,
+            UserName = Cuenta.UserName
         };
     }
 

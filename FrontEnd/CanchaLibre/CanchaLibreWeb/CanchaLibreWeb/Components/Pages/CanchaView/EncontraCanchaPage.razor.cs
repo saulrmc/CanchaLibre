@@ -1,89 +1,80 @@
 ﻿using Microsoft.AspNetCore.Components;
+using CanchaLibreWeb.ViewModels;
+using CanchaLibreWeb.Servicios.Canchas;
 
 namespace CanchaLibreWeb.Components.Pages.CanchaView;
 
 public partial class EncontraCanchaPage : ComponentBase
 {
+    [Inject] private ICanchasServiceClient CanchasService { get; set; } = default!;
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
     private string ordenSeleccionado = "precio_asc";
-    private int precioMax = 1400;
+    private int precioMax = 300; // Ajustado a un rango de precio real por hora
 
-    private List<string> deportesSeleccionados = new();
-    private List<string> caracteristicasSeleccionadas = new();
+    // Listas de selección basadas estrictamente en tus tipos Enum
+    private List<DeporteEnum> deportesSeleccionados = new();
+    private List<EtiquetaEnum> caracteristicasSeleccionadas = new();
 
-    private List<string> deportesDisponibles = new() { "Fútbol", "Voley", "Basquet", "Tenis" };
-    private List<string> caracteristicasDisponibles = new()
-        { "Floodlights", "Changing Room", "Parking", "Drinking Water", "AC", "First Aid" };
+    // Extracción automática de valores definidos en tus Enums (Cero hardcodeo)
+    private List<DeporteEnum> deportesDisponibles = Enum.GetValues<DeporteEnum>().ToList();
+    private List<EtiquetaEnum> caracteristicasDisponibles = Enum.GetValues<EtiquetaEnum>().ToList();
 
-    public class CanchaListaItem
-    {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
-        public string Distrito { get; set; } = string.Empty;
-        public string ImagenUrl { get; set; } = string.Empty;
-        public int PrecioHora { get; set; }
-        public List<string> Etiquetas { get; set; } = new();
-        public List<string> Deportes { get; set; } = new();
-        public bool EsOferta { get; set; }
-    }
-
-    private List<CanchaListaItem> todasLasCanchas = new()
-    {
-        new() { Id=1, Nombre="Fútbol 010", Distrito="Municipalidad de Santiago d.", ImagenUrl="cancha2.jpg",
-                PrecioHora=80,  Etiquetas=new(){"Iluminación"}, Deportes=new(){"Fútbol"} },
-        new() { Id=2, Nombre="Cancha Voley 012", Distrito="Avenida Brasil 1231, Jesús ...", ImagenUrl="cancha3.jpg",
-                PrecioHora=120, Etiquetas=new(){"Iluminación","Wifi"}, Deportes=new(){"Voley"} },
-        new() { Id=3, Nombre="Complejo Deportivo Cir...", Distrito="SJL", ImagenUrl="cancha4.jpeg",
-                PrecioHora=80,  Etiquetas=new(){"Iluminación","Parking"}, Deportes=new(){"Fútbol"} },
-        new() { Id=4, Nombre="Cancha mixta", Distrito="SMP", ImagenUrl="cancha1.jpg",
-                PrecioHora=90,  Etiquetas=new(){"Iluminación","Parking"}, Deportes=new(){"Basquet","Fútbol"} },
-        new() { Id=5, Nombre="Cancha privada", Distrito="Lince", ImagenUrl="cancha2.jpg",
-                PrecioHora=100, Etiquetas=new(){"Iluminación","Wifi"}, Deportes=new(){"Tenis"}, EsOferta=true },
-        new() { Id=6, Nombre="Cancha Tenis", Distrito="Jose Larco 4210, Miraflores", ImagenUrl="cancha3.jpg",
-                PrecioHora=85,  Etiquetas=new(){"Parking","Wifi"}, Deportes=new(){"Tenis"} },
-    };
-
-    private List<CanchaListaItem> canchasFiltradas = new();
+    private List<CanchaViewModel> todasLasCanchas = new();
+    private List<CanchaViewModel>? canchasFiltradas;
 
     protected override void OnInitialized()
     {
-        canchasFiltradas = new(todasLasCanchas);
-    }
-
-    private void ToggleDeporte(string deporte, ChangeEventArgs e)
-    {
-        if ((bool)e.Value!) deportesSeleccionados.Add(deporte);
-        else deportesSeleccionados.Remove(deporte);
+        // Traemos las canchas en tiempo real de tu backend Java
+        todasLasCanchas = CanchasService.Listar() ?? new List<CanchaViewModel>();
+        
+        // Filtrar inicialmente solo las que estén marcadas como activas
         AplicarFiltros();
     }
 
-    private void ToggleCaracteristica(string caract, ChangeEventArgs e)
+    private void ToggleDeporte(DeporteEnum deporte, ChangeEventArgs e)
     {
-        if ((bool)e.Value!) caracteristicasSeleccionadas.Add(caract);
-        else caracteristicasSeleccionadas.Remove(caract);
+        if ((bool)e.Value!) 
+            deportesSeleccionados.Add(deporte);
+        else 
+            deportesSeleccionados.Remove(deporte);
+            
+        AplicarFiltros();
+    }
+
+    private void ToggleCaracteristica(EtiquetaEnum caract, ChangeEventArgs e)
+    {
+        if ((bool)e.Value!) 
+            caracteristicasSeleccionadas.Add(caract);
+        else 
+            caracteristicasSeleccionadas.Remove(caract);
+            
         AplicarFiltros();
     }
 
     private void AplicarFiltros()
     {
         canchasFiltradas = todasLasCanchas
-            .Where(c => c.PrecioHora <= precioMax)
-            .Where(c => deportesSeleccionados.Count == 0 ||
-                        c.Deportes.Any(d => deportesSeleccionados.Contains(d)))
-            .Where(c => caracteristicasSeleccionadas.Count == 0 ||
-                        caracteristicasSeleccionadas.All(x => c.Etiquetas.Contains(x)))
+            .Where(c => c.activo) // Seguridad elemental: no mostrar canchas eliminadas/ocultas
+            .Where(c => c.precioBase <= precioMax)
+            .Where(c => !deportesSeleccionados.Any() || 
+                        (c.deportes != null && c.deportes.Any(d => deportesSeleccionados.Contains(d))))
+            .Where(c => !caracteristicasSeleccionadas.Any() || 
+                        (c.etiquetas != null && caracteristicasSeleccionadas.All(x => c.etiquetas.Contains(x))))
             .ToList();
+            
         Ordenar();
     }
 
     private void Ordenar()
     {
+        if (canchasFiltradas == null) return;
+
         canchasFiltradas = ordenSeleccionado switch
         {
-            "precio_desc" => canchasFiltradas.OrderByDescending(c => c.PrecioHora).ToList(),
-            "nombre" => canchasFiltradas.OrderBy(c => c.Nombre).ToList(),
-            _ => canchasFiltradas.OrderBy(c => c.PrecioHora).ToList()
+            "precio_desc" => canchasFiltradas.OrderByDescending(c => c.precioBase).ToList(),
+            "nombre" => canchasFiltradas.OrderBy(c => c.nombre, StringComparer.OrdinalIgnoreCase).ToList(),
+            _ => canchasFiltradas.OrderBy(c => c.precioBase).ToList()
         };
     }
 
@@ -91,19 +82,27 @@ public partial class EncontraCanchaPage : ComponentBase
     {
         deportesSeleccionados.Clear();
         caracteristicasSeleccionadas.Clear();
-        precioMax = 1400;
+        precioMax = 300;
         ordenSeleccionado = "precio_asc";
-        canchasFiltradas = new(todasLasCanchas);
+        AplicarFiltros();
     }
 
-    private void IrADetalle(int id) => NavigationManager.NavigateTo($"/cancha/{id}");
-
-    private string ObtenerColorDeporte(string deporte) => deporte switch
+    // Helper visual para asignar estilos CSS dinámicos de acuerdo al deporte mapeado
+    private string ObtenerColorDeporte(DeporteEnum deporte) => deporte switch
     {
-        "Fútbol" => "chip-futbol",
-        "Voley" => "chip-voley",
-        "Basquet" => "chip-basquet",
-        "Tenis" => "chip-tenis",
-        _ => ""
+        DeporteEnum.FUTBOL => "chip-futbol",
+        DeporteEnum.VOLEY => "chip-voley",
+        DeporteEnum.BASQUET => "chip-basquet",
+        DeporteEnum.TENIS => "chip-tenis",
+        _ => "chip-generico"
     };
+
+    // Helper estético: Pasa de "ILUMINACIÓN_NOCTURNA" a "Iluminación nocturna"
+    private string FormatearEnumTexto(string textoEnum)
+    {
+        if (string.IsNullOrEmpty(textoEnum)) return string.Empty;
+        
+        string limpio = textoEnum.Replace("_", " ").ToLower();
+        return char.ToUpper(limpio[0]) + limpio.Substring(1);
+    }
 }

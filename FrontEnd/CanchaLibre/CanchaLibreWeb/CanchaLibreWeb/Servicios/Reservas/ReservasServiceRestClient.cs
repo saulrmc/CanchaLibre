@@ -1,6 +1,8 @@
 using System.Net;
 using CanchaLibreWeb.Servicios.Base;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Reservas;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 using CanchaLibreWeb.ViewModels;
 
 namespace CanchaLibreWeb.Servicios.Reservas;
@@ -84,6 +86,9 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private PagoViewModel ParsePago(PagoRestDto? pago)
     {
+        if (pago is null) {
+            return new PagoViewModel();
+        }
         return new PagoViewModel
         {
             comprobante = ParseComprobante(pago.comprobante),
@@ -96,6 +101,9 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private ComprobanteViewModel ParseComprobante(ComprobanteRestDto? comprobante)
     {
+        if (comprobante is null) {
+            return new ComprobanteViewModel();
+        }
         return new ComprobanteViewModel
         {
             FechaEmision = comprobante.FechaEmision,
@@ -107,35 +115,46 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private ClienteViewModel ParseCliente(Rest.Dtos.Usuarios.ClienteRestDto? cliente)
     {
+        if (cliente is null) {
+            return new ClienteViewModel();
+        }
         return new ClienteViewModel
         {
             Activo = cliente.Activo,
             Calificacion = cliente.Calificacion,
             Correo = cliente.Correo,
-            Cuenta = ParseCuenta(cliente.cuenta),
+            Cuenta = ParseCuenta(cliente.Cuenta),
             Id = cliente.Id,
             Nombres = cliente.Nombres,
             Telefono = cliente.Telefono
         };
     }
 
-    private CuentaUsuarioViewModel ParseCuenta(Rest.Dtos.Cuentas.CuentaUsuarioRestDto? cuenta)
+    private CuentaUsuarioViewModel ParseCuenta(CuentaUsuarioRestDto? Cuenta)
     {
+        if(Cuenta is null)
+        {
+            return new CuentaUsuarioViewModel();
+        }
         return new CuentaUsuarioViewModel
         {
-            Activo = cuenta.Activo,
-            fechaBloqueo = cuenta.fechaBloqueo,
-            Id = cuenta.Id,
-            IntentosFallidos = cuenta.IntentosFallidos,
-            Password = cuenta.Password,
-            Rol = ParseEnum<RolEnum>(cuenta.Rol, RolEnum.NO_ADMITIDO),
-            UltimaSesion = cuenta.UltimaSesion,
-            UserName = cuenta.UserName
+            Activo = Cuenta.Activo,
+            fechaBloqueo = Cuenta.fechaBloqueo,
+            Id = Cuenta.Id,
+            IntentosFallidos = Cuenta.IntentosFallidos,
+            Password = Cuenta.Password,
+            Rol = ParseEnum<RolEnum>(Cuenta.Rol, RolEnum.NO_ADMITIDO),
+            UltimaSesion = Cuenta.UltimaSesion,
+            UserName = Cuenta.UserName
         };
     }
 
     private CanchaViewModel ParseCancha(Rest.Dtos.Canchas.CanchaRestDto? cancha)
     {
+        if(cancha is null)
+        {
+            return new CanchaViewModel();
+        }
         return new CanchaViewModel
         {
             activo = cancha.activo,
@@ -156,7 +175,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private PropietarioViewModel ParsePropietario(Rest.Dtos.Usuarios.PropietarioRestDto? propietario)
     {
-        if (propietario == null) return null;
+        if (propietario == null) return new PropietarioViewModel();
 
         return new PropietarioViewModel
         {
@@ -171,6 +190,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private List<EtiquetaEnum> ParseEtiquetas(List<string>? etiquetas)
     {
+        if(etiquetas is null) return new List<EtiquetaEnum>();
         var list = new List<EtiquetaEnum>();
         foreach (var etiqueta in etiquetas)
         {
@@ -181,6 +201,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private List<DeporteEnum> ParseDeportes(List<string>? deportes)
     {
+        if(deportes is null) return new List<DeporteEnum>();
         List<DeporteEnum> list = new List<DeporteEnum>();
         foreach(var deporte in deportes)
         {
@@ -191,6 +212,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private List<BloqueHorarioViewModel> ParseBloques(List<Rest.Dtos.Canchas.BloqueHorarioRestDto>? bloques)
     {
+        if(bloques is null) return new List<BloqueHorarioViewModel>();
         List<BloqueHorarioViewModel> list = new List<BloqueHorarioViewModel>();
         foreach(var bloque in bloques)
         {
@@ -209,7 +231,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     protected override ReservaRestDto ToRest(ReservaViewModel source)
     {   
-        if (source == null) return null;
+        if(source is null) return new ReservaRestDto();
 
         return new ReservaRestDto
         {
@@ -262,7 +284,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 Correo = source.cliente.Correo,
                 Calificacion = source.cliente.Calificacion,
                 Activo = source.cliente.Activo,
-                cuenta = source.cliente.Cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
+                Cuenta = source.cliente.Cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
                 {
                     Id = source.cliente.Cuenta.Id,
                     UserName = source.cliente.Cuenta.UserName,

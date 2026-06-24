@@ -6,7 +6,7 @@ public sealed class ClienteRestDto
 {
     public int Id {get; set;}
     public String Nombres { get; set; } = string.Empty;
-    public CuentaUsuarioRestDto? cuenta {get; set;} 
+    public CuentaUsuarioRestDto? Cuenta {get; set;} 
     public String Correo { get; set; } = string.Empty;
     public String Telefono { get; set; } = string.Empty;
     public bool Activo { get; set; }

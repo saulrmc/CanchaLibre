@@ -1,90 +1,73 @@
 using Microsoft.AspNetCore.Components;
 using CanchaLibreWeb.ViewModels;
+using CanchaLibreWeb.Servicios.Usuarios;
+using CanchaLibreWeb.Servicios.Base;
 
 namespace CanchaLibreWeb.Components.Pages.Registrar;
 
 public partial class RegistrarPage : ComponentBase
 {
-    // Variables de control de flujo
-    public int PasoActual { get; set; } = 1;
-    private bool EsPropietario { get; set; } = false;
-    private string MensajeError { get; set; } = string.Empty;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private IClientesServiceClient ClientesService { get; set; } = default!;
+    [Inject] private IPropietariosServiceClient PropietariosService { get; set; } = default!;
 
-    // Un objeto dummy para cumplir con el requisito de EditForm en Blazor
-    private object IdUsuarioFalso { get; set; } = new();
+    private int pasoActual = 1;
+    private string rolSeleccionado = string.Empty;
+    private string mensajeError = string.Empty;
 
-    // Captura temporal de datos de pantalla
-    private string NombreInput { get; set; } = string.Empty;
-    private string CorreoInput { get; set; } = string.Empty;
-    private string ContrasenaInput { get; set; } = string.Empty;
-    private string ConfirmarContrasenaInput { get; set; } = string.Empty;
-    private string RucInput { get; set; } = string.Empty;
-    private string TelefonoInput { get; set; } = string.Empty;
+    // Instanciamos los ViewModels asegurando que sus objetos internos "Cuenta" no sean nulos
+    private ClienteViewModel ClienteModel { get; set; } = new() { Cuenta = new CuentaUsuarioViewModel { Rol = RolEnum.CLIENTE } };
+    private PropietarioViewModel PropietarioModel { get; set; } = new() { Cuenta = new CuentaUsuarioViewModel { Rol = RolEnum.PROPIETARIO } };
 
-    public void SeleccionarRol(string rol)
+    private void SeleccionarRol(string rol)
     {
-        EsPropietario = string.Equals(rol, "Propietario", StringComparison.OrdinalIgnoreCase);
-        PasoActual = 2; // Transición automática al formulario base
-        MensajeError = string.Empty;
+        rolSeleccionado = rol;
+        pasoActual = 2;
+        mensajeError = string.Empty;
     }
 
-    private void AvanzarPaso2()
+    private void VolverAlPaso1()
     {
-        MensajeError = string.Empty;
+        pasoActual = 1;
+        rolSeleccionado = string.Empty;
+        mensajeError = string.Empty;
+        // Reiniciamos los modelos para limpiar el estado anterior
+        ClienteModel = new() { Cuenta = new CuentaUsuarioViewModel { Rol = RolEnum.CLIENTE } };
+        PropietarioModel = new() { Cuenta = new CuentaUsuarioViewModel { Rol = RolEnum.PROPIETARIO } };
+    }
 
-        // Validación manual de contraseñas idénticas
-        if (!string.Equals(ContrasenaInput, ConfirmarContrasenaInput, StringComparison.Ordinal))
+    private void RegistrarCliente()
+    {
+        try
         {
-            MensajeError = "Las contraseñas no coinciden.";
-            return;
+            mensajeError = string.Empty;
+            
+            // Consumo directo de tu ClientesServiceRestClient inyectado
+            ClientesService.Guardar(ClienteModel, Estado.Nuevo);
+            
+            // Una vez registrado con éxito en Java, lo mandamos al Login para que inicie sesión limpiamente
+            Nav.NavigateTo("/Login");
         }
-
-        if (EsPropietario)
+        catch (Exception ex)
         {
-            PasoActual = 3; // Si es propietario, pide RUC y Teléfono
-        }
-        else
-        {
-            FinalizarRegistroCliente(); // Si es cliente, termina aquí
+            mensajeError = $"No se pudo completar el registro: {ex.Message}";
         }
     }
 
-    private void FinalizarRegistroCliente()
+    private void RegistrarPropietario()
     {
-        var nuevoCliente = new ClienteViewModel
+        try
         {
-            Nombres = NombreInput,
-            Correo = CorreoInput
-        };
-        var nuevaCuenta = new CuentaUsuarioViewModel
+            mensajeError = string.Empty;
+
+            // Consumo directo de tu PropietariosServiceRestClient inyectado
+            PropietariosService.Guardar(PropietarioModel, Estado.Nuevo);
+
+            Nav.NavigateTo("/Login");
+        }
+        catch (Exception ex)
         {
-            Password = ContrasenaInput
-        };
-        nuevoCliente.Cuenta = nuevaCuenta;
-
-        // Aquí envías 'nuevoCliente' a tu servicio HTTP que conecta con Java
-        Console.WriteLine($"Cliente registrado: {nuevoCliente.Nombres} - {nuevoCliente.Correo}");
-    }
-
-    private void FinalizarRegistroPropietario()
-    {
-        MensajeError = string.Empty;
-
-        // Si necesitas agregar validaciones de longitud de RUC o formato puedes hacerlo aquí
-        var nuevoPropietario = new PropietarioViewModel
-        {
-            Nombres = NombreInput,
-            Correo = CorreoInput,
-            Telefono = TelefonoInput
-            // Ruc = RucInput // Descomenta esto cuando agregues la propiedad a tu ViewModel
-        };
-        var nuevaCuenta = new CuentaUsuarioViewModel
-        {
-            Password = ContrasenaInput
-        };
-        nuevoPropietario.Cuenta = nuevaCuenta;
-
-        // Aquí envías 'nuevoPropietario' a tu backend en Java
-        Console.WriteLine($"Propietario registrado: {nuevoPropietario.Nombres} - Tel: {nuevoPropietario.Telefono}");
+            mensajeError = $"Error al registrar la cuenta de propietario: {ex.Message}";
+        }
     }
 }

@@ -123,20 +123,5 @@ public sealed class RestClient {
     private static Uri BuildBaseUri(string endpoint) {
         return new Uri(endpoint.EndsWith('/') ? endpoint : $"{endpoint}/", UriKind.Absolute);
     }
-    public TResponse Post<TRequest, TResponse>(string path, TRequest payload)
-    {
-        var requestPath = BuildRequestPath(path, queryParams: null);
 
-        using var client = CreateHttpClient();
-        using var response = client.PostAsJsonAsync(requestPath, payload)
-            .GetAwaiter()
-            .GetResult();
-
-        EnsureSuccess(response);
-
-        return response.Content.ReadFromJsonAsync<TResponse>()
-            .GetAwaiter()
-            .GetResult()
-            ?? throw new InvalidOperationException("La respuesta REST devolvió un cuerpo vacío.");
-    }
 }

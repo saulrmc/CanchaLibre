@@ -4,7 +4,8 @@ namespace CanchaLibreWeb.Components.Pages.Admin;
 
 public partial class DashboardAdminPage : ComponentBase
 {
-    // Estructura básica para modelar cada barra del gráfico
+    
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     protected class RegistroHorario
     {
         public string Hora { get; set; } = string.Empty;
@@ -15,7 +16,7 @@ public partial class DashboardAdminPage : ComponentBase
 
     protected override void OnInitialized()
     {
-        // Cargamos los datos simulando los valores de la imagen de tu mock
+        
         DatosGrafico = new List<RegistroHorario>
         {
             new() { Hora = "08:00", Porcentaje = 25 },

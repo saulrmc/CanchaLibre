@@ -1,25 +1,152 @@
 @page "/Registrar"
+@rendermode InteractiveServer
 @attribute [AllowAnonymous]
 @layout Layout.AuthLayout
+
 @using CanchaLibreWeb.ViewModels
+@using CanchaLibreWeb.Servicios.Usuarios
+@using CanchaLibreWeb.Servicios.Base
 
-<h1 class="app-title">Registrarse</h1>
-<p class="app-label mb-4">Elija su tipo de cuenta</p>
+<div class="register-container">
+    
+    @if (pasoActual == 1)
+    {
+        
+        <h1 class="app-title text-center">Registrarse</h1>
+        <p class="app-subtitle text-center mt-3">Elija su tipo de cuenta</p>
 
-<div class="role-selection-container mb-4">
-    <a href="/Registrar/Cliente" class="role-card-btn text-decoration-none">
-        <div class="role-icon">⚽</div>
-        <div class="role-title">Cliente</div>
-        <div class="role-desc">Reserva canchas</div>
-    </a>
+        <div class="row g-4 mt-2 justify-content-center row-cols-1 row-cols-md-2" style="max-width: 500px; margin: 0 auto;">
+        <div class="col-md-6 d-flex">
+            <div class="role-card w-100 text-center p-4 border rounded cursor-pointer d-flex flex-column align-items-center justify-content-center" 
+                @onclick='() => SeleccionarRol("Cliente")' style="min-height: 220px; background: white;">
+                
+                <div class="img-container d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <img src="cliente.png" alt="cliente" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                </div>
+                
+                <h4 class="fw-bold text-dark mb-1 fs-5">Cliente</h4>
+                <p class="text-muted small mb-0">Reserva canchas</p>
+            </div>
+        </div>
 
-    <a href="/Registrar/Propietario" class="role-card-btn text-decoration-none">
-        <div class="role-icon">🔑</div>
-        <div class="role-title">Propietario</div>
-        <div class="role-desc">Ofrece canchas</div>
-    </a>
-</div>
+        <div class="col-md-6 d-flex">
+            <div class="role-card w-100 text-center p-4 border rounded cursor-pointer d-flex flex-column align-items-center justify-content-center" 
+                @onclick='() => SeleccionarRol("Propietario")' style="min-height: 220px; background: white;">
+                
+                <div class="img-container d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <img src="propietario.png" alt="propietario" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                </div>
+                
+                <h4 class="fw-bold text-dark mb-1 fs-5">Propietario</h4>
+                <p class="text-muted small mb-0">Ofrece canchas</p>
+            </div>
+        </div>
+    </div>
 
-<div class="app-text mt-4">
-    ¿Ya tiene una cuenta? <a href="/Login">Inicie sesión</a>
+        <div class="text-center mt-5 text-muted small">
+            ¿Ya tiene una cuenta? <a href="/Login" class="text-success text-decoration-none">Inicie sesión</a>
+        </div>
+    }
+    else if (pasoActual == 2 && rolSeleccionado == "Cliente")
+    {
+        
+        <h1 class="app-title">Registro de Cliente</h1>
+        <p class="app-subtitle">Completa tus datos para empezar a reservar</p>
+
+        <EditForm Model="@ClienteModel" OnValidSubmit="RegistrarCliente" FormName="RegClienteForm">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label-custom">Nombres Completos</label>
+                <InputText class="form-input-custom" @bind-Value="ClienteModel.Nombres" placeholder="Ej. Juan Pérez" />
+                <ValidationMessage For="@(() => ClienteModel.Nombres)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Correo electrónico</label>
+                <InputText type="email" class="form-input-custom" @bind-Value="ClienteModel.Correo" placeholder="juan@gmail.com" />
+                <ValidationMessage For="@(() => ClienteModel.Correo)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Teléfono Celular</label>
+                <InputText class="form-input-custom" @bind-Value="ClienteModel.Telefono" placeholder="987654321" />
+                <ValidationMessage For="@(() => ClienteModel.Telefono)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Nombre de Usuario (Cuenta)</label>
+                <InputText class="form-input-custom" @bind-Value="ClienteModel.Cuenta!.UserName" placeholder="juanperez123" />
+                <ValidationMessage For="@(() => ClienteModel.Cuenta!.UserName)" class="text-danger small" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label-custom">Contraseña</label>
+                <InputText type="password" class="form-input-custom" @bind-Value="ClienteModel.Cuenta!.Password" placeholder="**********" />
+                <ValidationMessage For="@(() => ClienteModel.Cuenta!.Password)" class="text-danger small" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="alert alert-danger py-2 small mb-3">@mensajeError</div>
+            }
+
+            <button class="btn btn-success w-100 py-2 mb-2" type="submit">Registrar</button>
+            <button class="btn btn-light w-100 py-2" type="button" @onclick="VolverAlPaso1">Atrás</button>
+        </EditForm>
+    }
+    else if (pasoActual == 2 && rolSeleccionado == "Propietario")
+    {
+        <!-- PASO 2: FORMULARIO ESPECÍFICO PARA PROPIETARIOS -->
+        <h1 class="app-title">Registro de Propietario</h1>
+        <p class="app-subtitle">Registra tu cuenta corporativa para administrar tus complejos deportivos</p>
+
+        <EditForm Model="@PropietarioModel" OnValidSubmit="RegistrarPropietario" FormName="RegPropForm">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label-custom">Razón Social o Nombre Completo</label>
+                <InputText class="form-input-custom" @bind-Value="PropietarioModel.Nombres" placeholder="Ej. Complejo Deportivo Sac" />
+                <ValidationMessage For="@(() => PropietarioModel.Nombres)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Número de RUC</label>
+                <InputText class="form-input-custom" @bind-Value="PropietarioModel.Ruc" placeholder="Ej. 20123456789" />
+                <ValidationMessage For="@(() => PropietarioModel.Ruc)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Correo de Contacto</label>
+                <InputText type="email" class="form-input-custom" @bind-Value="PropietarioModel.Correo" placeholder="contacto@empresa.com" />
+                <ValidationMessage For="@(() => PropietarioModel.Correo)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Teléfono Comercial</label>
+                <InputText class="form-input-custom" @bind-Value="PropietarioModel.Telefono" placeholder="987654321" />
+                <ValidationMessage For="@(() => PropietarioModel.Telefono)" class="text-danger small" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Nombre de Usuario Administrativo</label>
+                <InputText class="form-input-custom" @bind-Value="PropietarioModel.Cuenta!.UserName" placeholder="admincanchas" />
+                <ValidationMessage For="@(() => PropietarioModel.Cuenta!.UserName)" class="text-danger small" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label-custom">Contraseña Administrativa</label>
+                <InputText type="password" class="form-input-custom" @bind-Value="PropietarioModel.Cuenta!.Password" placeholder="**********" />
+                <ValidationMessage For="@(() => PropietarioModel.Cuenta!.Password)" class="text-danger small" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="alert alert-danger py-2 small mb-3">@mensajeError</div>
+            }
+
+            <button class="btn btn-success w-100 py-2 mb-2" type="submit">Registrar</button>
+            <button class="btn btn-light w-100 py-2" type="button" @onclick="VolverAlPaso1">Atrás</button>
+        </EditForm>
+    }
 </div>

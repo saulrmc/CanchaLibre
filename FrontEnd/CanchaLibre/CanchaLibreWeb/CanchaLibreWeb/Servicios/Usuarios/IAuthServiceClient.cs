@@ -19,20 +19,20 @@ public class AuthServiceRestClient : BaseRestServiceClient<object, object>, IAut
     {
         // 1. Buscar en Clientes
         var clientes = Api.Get<List<UsuarioRespuestaRestDto>>("clientes");
-        var clienteMatch = clientes?.FirstOrDefault(c => c.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                     && c.cuenta.Password== contrasena);
+        var clienteMatch = clientes?.FirstOrDefault(c => c.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)
+                                                     && c.cuenta?.Password == contrasena);
         if (clienteMatch != null) return (clienteMatch, "Cliente");
 
         // 2. Buscar en Propietarios (Asumiendo que tu endpoint sigue la misma estructura de nombres)
         var propietarios = Api.Get<List<UsuarioRespuestaRestDto>>("propietarios");
-        var propMatch = propietarios?.FirstOrDefault(p => p.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                       && p.cuenta.Password == contrasena);
+        var propMatch = propietarios?.FirstOrDefault(p => p.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)
+                                                       && p.cuenta?.Password == contrasena);
         if (propMatch != null) return (propMatch, "Propietario");
 
         // 3. Buscar en Administradores
         var admins = Api.Get<List<UsuarioRespuestaRestDto>>("administradores");
-        var adminMatch = admins?.FirstOrDefault(a => a.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase) 
-                                                      && a.cuenta.Password == contrasena);
+        var adminMatch = admins?.FirstOrDefault(a => a.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase)
+                                                      && a.cuenta?.Password == contrasena);
         if (adminMatch != null) return (adminMatch, "Admin");
 
         // Si no se encontró en ninguna lista

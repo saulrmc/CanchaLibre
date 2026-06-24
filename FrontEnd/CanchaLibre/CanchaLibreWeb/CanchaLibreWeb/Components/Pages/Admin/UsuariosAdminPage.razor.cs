@@ -1,10 +1,13 @@
+using CanchaLibreWeb.Servicios.Usuarios;
 using Microsoft.AspNetCore.Components;
 
 namespace CanchaLibreWeb.Components.Pages.Admin;
 
 public partial class UsuariosAdminPage : ComponentBase
 {
-    // Modelo interno para los renglones de la tabla
+    
+    [Inject] private IClientesServiceClient ClientesServiceClient { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     protected class UsuarioRow
     {
         public int Id { get; set; }

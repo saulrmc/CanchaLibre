@@ -63,20 +63,42 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     }
 
     protected override CanchaViewModel ToViewModel(CanchaRestDto source)
+{
+    return new CanchaViewModel
     {
-        return new CanchaViewModel
+        idCancha = source.idCancha,
+        activo = source.activo,
+        nombre = source.nombre,
+        descripcion = source.descripcion,
+        direccion = source.direccion,
+        imagenUrl = source.imagenUrl,
+        disponible = source.disponible,
+        precioBase = source.precioBase, 
+        promedioCalificacion = source.promedioCalificacion, 
+        deportes = ParseEnumDeportes(source.deportes),
+        bloques = ParseBloques(source.bloques),
+        etiquetas = ParseEnumEtiquetas(source.etiquetas), 
+        propietario = source.propietario != null ? new PropietarioViewModel {
+            Id = source.propietario.Id,
+            Nombres = source.propietario.Nombres,
+            Correo = source.propietario.Correo,
+            Telefono = source.propietario.Telefono
+        } : null
+    };
+}
+private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
+{
+    if (etiquetas == null || !etiquetas.Any()) return new List<EtiquetaEnum>();
+    var result = new List<EtiquetaEnum>();
+    foreach (var etiqueta in etiquetas)
+    {
+        if (Enum.TryParse<EtiquetaEnum>(etiqueta, true, out var parsed))
         {
-            idCancha = source.idCancha,
-            activo = source.activo,
-            nombre = source.nombre,
-            descripcion = source.descripcion,
-            direccion = source.direccion,
-            imagenUrl = source.imagenUrl,
-            disponible = source.disponible,
-            deportes = ParseEnumDeportes(source.deportes),
-            bloques = ParseBloques(source.bloques)
-        };
+            result.Add(parsed);
+        }
     }
+    return result;
+}
 
     private List<BloqueHorarioViewModel> ParseBloques(List<BloqueHorarioRestDto>? bloques)
     {

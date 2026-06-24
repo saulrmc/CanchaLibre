@@ -1,57 +1,66 @@
 @page "/Login"
 @rendermode InteractiveServer
 @attribute [AllowAnonymous]
-@layout Layout.AuthLayout 
+@layout Layout.AuthLayout
 
-<h1 class="app-title">Iniciar sesión</h1>
-<p class="app-label">Ingrese su cuenta de CanchaLibre</p>
+@using CanchaLibreWeb.ViewModels
 
-<EditForm Model="@Modelo" OnValidSubmit="ProcesarLogin" FormName="LoginForm">
-    <DataAnnotationsValidator />
-    <AntiforgeryToken />
-    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
-
-    <div class="form-group mb-4">
-        <label class="form-label-custom">Correo electrónico</label>
-                
-        <InputText class="form-input-custom" data-testid="login-user-input"
-                    @bind-Value="Modelo.Usuario" placeholder="correo@gmail.com" />
-        <ValidationMessage For="@(() => Modelo.Usuario)" class="text-danger small mt-1" />
-    </div>
-
-    <div class="form-group mb-2">
-        <label class="form-label-custom">Contraseña</label>
-                
-        <InputText type="password" class="form-input-custom" data-testid="login-password-input"
-                    @bind-Value="Modelo.Contrasena" placeholder="**********" />
-        <ValidationMessage For="@(() => Modelo.Contrasena)" class="text-danger small mt-1" />
-    </div>
-
-    <div class="text-end mb-4">
-        <a href="/RecuperarContrasena" class="green-link text-decoration-none">¿Olvidó su contraseña?</a>
-    </div>
-
-    @if (!string.IsNullOrWhiteSpace(MensajeInfo))
+<div class="login-box">
+    @if (!mostrarRecuperacion)
     {
-        <div class="alert alert-info py-2 small text-center mb-3" role="alert">
-            @MensajeInfo
+        <h1 class="app-title">Iniciar sesión</h1>
+        <p class="app-subtitle">Ingrese su cuenta de CanchaLibre</p>
+
+        <EditForm Model="@LoginModel" OnValidSubmit="ProcesarLogin" FormName="LoginForm">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label class="form-label-custom">Correo electrónico</label>
+                <InputText type="email" class="form-input-custom" @bind-Value="LoginModel.Correo" placeholder="correo@gmail.com" />
+                <ValidationMessage For="@(() => LoginModel.Correo)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label-custom">Contraseña</label>
+                <InputText type="password" class="form-input-custom" @bind-Value="LoginModel.Contrasena" placeholder="**********" />
+                <ValidationMessage For="@(() => LoginModel.Contrasena)" class="text-danger small mt-1" />
+            </div>
+
+            <div class="text-end mb-4">
+                <button type="button" class="btn btn-link text-success p-0 small text-decoration-none" @onclick="() => AlternarVista(true)">
+                    ¿Olvidó su contraseña?
+                </button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="alert alert-danger py-2 small text-center mb-3">@mensajeError</div>
+            }
+
+            <button class="btn btn-success w-100 py-2" type="submit">Iniciar sesión</button>
+        </EditForm>
+
+        <div class="text-center mt-4 text-muted small">
+            ¿No tiene una cuenta? <a href="/Registrar" class="text-success text-decoration-none">Regístrese</a>
         </div>
     }
-
-    @if (!string.IsNullOrWhiteSpace(MensajeError))
+    else
     {
-        <div class="alert alert-danger py-2 small text-center mb-3" role="alert" data-testid="login-error">
-            @MensajeError
-        </div>
-    }            
-
-            
-    <button class="btn-primary w-100 mb-4" type="submit" data-testid="btn-primary">
-        Iniciar sesión
-    </button>
-
-    <div class="text-center signup-prompt">
-        ¿No tiene una cuenta? <a href="/Registrar" class="green-link fw-bold text-decoration-none">Regístrese</a>
-    </div>
-</EditForm>
-    
+        <!-- [El formulario de recuperación se mantiene igual que antes] -->
+        <h1 class="app-title">Recuperar Contraseña</h1>
+        <EditForm Model="@RecuperarModel" OnValidSubmit="ProcesarRecuperacion" FormName="RecoveryForm">
+            <DataAnnotationsValidator />
+            <div class="mb-4">
+                <label class="form-label-custom">Correo electrónico registrado</label>
+                <InputText type="email" class="form-input-custom" @bind-Value="RecuperarModel.Correo" placeholder="correo@ejemplo.com" />
+                <ValidationMessage For="@(() => RecuperarModel.Correo)" class="text-danger small mt-1" />
+            </div>
+            @if (!string.IsNullOrEmpty(mensajeStatus))
+            {
+                <div class="alert @(esErrorStatus ? "alert-danger" : "alert-success") py-2 small text-center mb-3">@mensajeStatus</div>
+            }
+            <button class="btn btn-success w-100 mb-2" type="submit">Verificar Correo</button>
+            <button class="btn btn-light w-100" type="button" @onclick="() => AlternarVista(false)">Volver al Login</button>
+        </EditForm>
+    }
+</div>

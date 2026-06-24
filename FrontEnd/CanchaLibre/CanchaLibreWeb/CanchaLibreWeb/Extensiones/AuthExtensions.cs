@@ -43,10 +43,9 @@ public static class AuthExtensions
 
         var claims = new List<Claim>
 		{
-			new(ClaimTypes.NameIdentifier, usuarioLogueado.IdUsuario.ToString()),
-			new(ClaimTypes.Name, usuarioLogueado.Nombres),
-			new(ClaimTypes.Email, usuarioLogueado.Correo),
-			new(ClaimTypes.Role, usuarioLogueado.Rol)
+			new(ClaimTypes.NameIdentifier, (cuenta?.Id ?? 0).ToString()),
+            new(ClaimTypes.Name, usuario),
+            new(ClaimTypes.Role, tipoUsuario.ToString())
 		};
 
         var identidad = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1,127 +1,167 @@
 ﻿@page "/Cancha/{Id:int}"
 @rendermode InteractiveServer
 @using CanchaLibreWeb.ViewModels
-@using CanchaLibreWeb.Components.Pages.CanchaView
+@using CanchaLibreWeb.Servicios.Canchas
 @attribute [AllowAnonymous]
 
-<div class="detalle-shell">
-    <!-- GALERÍA -->
-    <div class="galeria-layout">
-        <img class="img-principal" src="@cancha.imagenUrl" alt="@cancha.nombre" />
-        <div class="img-miniaturas">
-            <!--otras imagenes de la cancha-->
-        </div>
+@if (cancha == null)
+{
+    <div class="text-center p-5">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-2 text-muted">Cargando información de la cancha...</p>
     </div>
+}
+else
+{
+    <div class="detalle-shell">
+        <div class="galeria-layout">
+            <img class="img-principal" src="@(string.IsNullOrEmpty(cancha.imagenUrl) ? "default-cancha.jpg" : cancha.imagenUrl)" alt="@cancha.nombre" />
+            <div class="img-miniaturas">
+                <img src="@cancha.imagenUrl" alt="Miniatura" />
+            </div>
+        </div>
 
-    <div class="detalle-body">
-
-        <!-- COLUMNA IZQUIERDA -->
-        <div class="col-info">
-
-            <div class="info-header">
-                <div>
-                    <h1>@cancha.nombre</h1>
-                    <p class="ubicacion">📍 @cancha.direccion</p>
+        <div class="detalle-body">
+            <div class="col-info">
+                <div class="info-header">
+                    <div>
+                        <h1>@cancha.nombre</h1>
+                        <p class="ubicacion">📍 @cancha.direccion</p>
+                    </div>
+                    <div class="d-flex gap-1">
+                        @if (cancha.deportes != null)
+                        {
+                            @foreach (var deporte in cancha.deportes)
+                            {
+                                <span class="badge-deporte">@deporte.ToString()</span>
+                            }
+                        }
+                    </div>
                 </div>
-                <span class="badge-deporte">Fútbol</span>
-            </div>
 
-            <div class="rating-row">
-                <span class="star">★</span>
-                <strong>4.7</strong>
-                <span class="reviews">(56 reviews)</span>
-            </div>
+                <div class="rating-row">
+                    <span class="star">★</span>
+                    <strong>@cancha.promedioCalificacion.ToString("0.0")</strong>
+                    <span class="reviews">(Calificación promedio)</span>
+                </div>
 
-            <div class="meta-row">
-                <div><span class="meta-label">Capacidad</span><span class="meta-val">12 jugadores</span></div>
-                <div><span class="meta-label">Superficie</span><span class="meta-val">Grass Sintético</span></div>
-                <div><span class="meta-label">Propietario</span><span class="meta-val">Juan Pérez</span></div>
-            </div>
+                <div class="meta-row">
+                    <div>
+                        <span class="meta-label">Precio Base</span>
+                        <span class="meta-val">S/ @cancha.precioBase</span>
+                    </div>
+                    <div>
+                        <span class="meta-label">Estado</span>
+                        <span class="meta-val text-success">@(cancha.disponible ? "Disponible" : "Mantenimiento")</span>
+                    </div>
+                    <div>
+                        <span class="meta-label">Propietario</span>
+                        <span class="meta-val">@(cancha.propietario?.Nombres ?? "Administrador General")</span>
+                    </div>
+                </div>
 
-            <div class="seccion">
-                <h3>Descripción</h3>
-                <p>@cancha.descripcion</p>
-            </div>
+                <div class="seccion">
+                    <h3>Descripción</h3>
+                    <p>@cancha.descripcion</p>
+                </div>
 
-            <div class="seccion">
-                <h3>Reglas</h3>
-                <ul class="reglas-lista">
-                    <li>✅ Llegue 10 minutos antes de la hora de su reserva.</li>
-                    <li>✅ Se requiere vestimenta y calzado deportivo adecuados.</li>
-                    <li>✅ No se permite fumar ni consumir alcohol en las instalaciones.</li>
-                    <li>✅ Se permiten cancelaciones hasta 24 horas antes de la reserva.</li>
-                </ul>
-            </div>
+                <div class="seccion">
+                    <h3>Reglas del Complejo</h3>
+                    <ul class="reglas-lista">
+                        <li>✅ Llegue 10 minutos antes de la hora de su reserva.</li>
+                        <li>✅ Se requiere vestimenta y calzado deportivo adecuados.</li>
+                        <li>✅ No se permite fumar ni consumir alcohol en las instalaciones.</li>
+                    </ul>
+                </div>
 
-            <!-- COMENTARIOS -->
-            <div class="seccion">
-                <h2>Comentarios destacados</h2>
-                <p class="sub-comentarios">Lo que dicen nuestros clientes de</p>
-                <div class="grid-comentarios">
-                    @foreach (var c in comentarios)
-                    {
-                        <div class="card-comentario">
-                            <div class="comentario-header">
-                                <img src="https://i.pravatar.cc/36?u=@c.Nombre" />
-                                <strong>@c.Nombre</strong>
+                <div class="seccion">
+                    <h2>Comentarios destacados</h2>
+                    <p class="sub-comentarios">Lo que dicen nuestros clientes</p>
+                    <div class="grid-comentarios">
+                        @foreach (var c in comentarios)
+                        {
+                            <div class="card-comentario">
+                                <div class="comentario-header">
+                                    <img src="https://i.pravatar.cc/36?u=@c.Nombre" alt="Avatar" />
+                                    <strong>@c.Nombre</strong>
+                                </div>
+                                <p>@c.Texto</p>
                             </div>
-                            <p>@c.Texto</p>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- COLUMNA DERECHA: RESERVA -->
-        <div class="col-reserva">
-
-            <div class="card-reserva">
-                <h3>Características</h3>
-                <div class="grid-caracteristicas">
-                    <span>✅ Floodlights</span>
-                    <span>✅ Drinking Water</span>
-                    <span>✅ Changing Room</span>
-                    <span>✅ Referee</span>
-                    <span>✅ Parking</span>
-                    <span>✅ Scoreboard</span>
-                </div>
-
-                <hr />
-
-                <h3>Fecha y Hora</h3>
-
-                <label class="form-label-custom">Seleccionar fecha</label>
-                <input type="date" class="form-input-custom mb-3" @bind="fechaSeleccionada" />
-
-                <label class="form-label-custom">Seleccionar hora</label>
-                <div class="grid-horarios">
-                    @foreach (var h in horarios)
-                    {
-                        <button class="btn-horario @(horaSeleccionada == h.Etiqueta ? "activo" : "")"
-                                @onclick="() => SeleccionarHora(h)">
-                            <span>@h.Etiqueta</span>
-                            <small>S/@h.Precio</small>
-                        </button>
-                    }
-                </div>
-
-                <hr />
-
-                <div class="detalle-precio">
-                    <div class="precio-fila">
-                        <span>1h x S/ 80</span><span>S/ 80</span>
+            <div class="col-reserva">
+                <div class="card-reserva">
+                    <h3>Características</h3>
+                    <div class="grid-caracteristicas">
+                        @if (cancha.etiquetas != null && cancha.etiquetas.Any())
+                        {
+                            @foreach (var etiqueta in cancha.etiquetas)
+                            {
+                                <span>✅ @etiqueta.ToString().Replace("_", " ")</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Servicios básicos estándar</span>
+                        }
                     </div>
-                    <div class="precio-fila">
-                        <span>Recarga por servicio</span><span>S/ 5</span>
-                    </div>
-                    <div class="precio-fila total">
-                        <strong>Total</strong><strong>S/ 85</strong>
-                    </div>
-                </div>
 
-                <button class="btn-reservar-main" @onclick="IrAPAgar">Reservar y Pagar</button>
+                    <hr />
+
+                    <h3>Fecha y Hora</h3>
+
+                    <label class="form-label-custom">Seleccionar fecha</label>
+                    <input type="date" class="form-input-custom mb-3" 
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")" 
+                           @bind="FechaSeleccionada" @bind:event="onchange" />
+
+                    <label class="form-label-custom">Horarios disponibles (@DiaSeleccionadoTexto)</label>
+                    <div class="grid-horarios">
+                        @if (BloquesFiltrados != null && BloquesFiltrados.Any())
+                        {
+                            @foreach (var bloque in BloquesFiltrados)
+                            {
+                                var etiquetaHora = $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm}";
+                                <button type="button" class="btn-horario @(bloqueSeleccionado == bloque ? "activo" : "")"
+                                        @onclick="() => SeleccionarBloque(bloque)">
+                                    <span>@etiquetaHora</span>
+                                    <small>S/ @bloque.precio</small>
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-span-2 text-center text-muted small py-3">
+                                No hay bloques configurados para este día.
+                            </div>
+                        }
+                    </div>
+
+                    <hr />
+
+                    <div class="detalle-precio">
+                        <div class="precio-fila">
+                            <span>Subtotal Cancha</span>
+                            <span>S/ @PrecioSubtotal</span>
+                        </div>
+                        <div class="precio-fila">
+                            <span>Recarga por servicio</span>
+                            <span>S/ @CostoServicio</span>
+                        </div>
+                        <div class="precio-fila total">
+                            <strong>Total</strong>
+                            <strong>S/ @PrecioTotal</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn-reservar-main" disabled="@(bloqueSeleccionado == null)" @onclick="IrAPagar">
+                        Reservar y Pagar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+}
