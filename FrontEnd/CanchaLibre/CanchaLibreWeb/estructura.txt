@@ -1,297 +1,417 @@
 Listado de rutas de carpetas para el volumen Windows
-El número de serie del volumen es 0000007E D8C6:382E
+El nï¿½mero de serie del volumen es 00000021 D8C6:382E
 C:.
-¦   CanchaLibreWeb.slnx
-¦   estructura.txt
-¦   
+ï¿½   CanchaLibreWeb.slnx
+ï¿½   estructura.txt
+ï¿½   
 +---CanchaLibreWeb
-    ¦   .gitignore
-    ¦   appsettings.Development.json
-    ¦   appsettings.json
-    ¦   CanchaLibreWeb.csproj
-    ¦   CanchaLibreWeb.csproj.user
-    ¦   Program.cs
-    ¦   
+    ï¿½   .gitignore
+    ï¿½   appsettings.Development.json
+    ï¿½   appsettings.json
+    ï¿½   CanchaLibreWeb.csproj
+    ï¿½   CanchaLibreWeb.csproj.user
+    ï¿½   Program.cs
+    ï¿½   
     +---bin
-    ¦   +---Debug
-    ¦   ¦   +---net10.0
-    ¦   +---Release
-    ¦       +---net10.0
+    ï¿½   +---Debug
+    ï¿½   ï¿½   +---net10.0
+    ï¿½   ï¿½           appsettings.Development.json
+    ï¿½   ï¿½           appsettings.json
+    ï¿½   ï¿½           CanchaLibreWeb.deps.json
+    ï¿½   ï¿½           CanchaLibreWeb.dll
+    ï¿½   ï¿½           CanchaLibreWeb.exe
+    ï¿½   ï¿½           CanchaLibreWeb.pdb
+    ï¿½   ï¿½           CanchaLibreWeb.runtimeconfig.json
+    ï¿½   ï¿½           CanchaLibreWeb.staticwebassets.endpoints.json
+    ï¿½   ï¿½           CanchaLibreWeb.staticwebassets.runtime.json
+    ï¿½   ï¿½           
+    ï¿½   +---Release
+    ï¿½       +---net10.0
     +---Components
-    ¦   ¦   App.razor
-    ¦   ¦   Routes.razor
-    ¦   ¦   _Imports.razor
-    ¦   ¦   
-    ¦   +---Common
-    ¦   ¦       AccionesComponent.razor
-    ¦   ¦       AlertaOperacionComponent.razor
-    ¦   ¦       BotonVolverAtrasComponent.razor
-    ¦   ¦       TituloPaginaComponent copy.razor
-    ¦   ¦       TituloPaginaComponent.razor
-    ¦   ¦       
-    ¦   +---Layout
-    ¦   ¦       AdminLayout.razor
-    ¦   ¦       AuthLayout.razor
-    ¦   ¦       AuthLayout.razor.css
-    ¦   ¦       Footer.razor
-    ¦   ¦       MainLayout.razor
-    ¦   ¦       MainLayout.razor.css
-    ¦   ¦       NavMenu.razor
-    ¦   ¦       NavMenu.razor.css
-    ¦   ¦       OnlyNavMenu.razor
-    ¦   ¦       ReconnectModal.razor
-    ¦   ¦       ReconnectModal.razor.css
-    ¦   ¦       ReconnectModal.razor.js
-    ¦   ¦       
-    ¦   +---Pages
-    ¦       ¦   Counter.razor
-    ¦       ¦   Error.razor
-    ¦       ¦   Home.razor
-    ¦       ¦   Home.razor.css
-    ¦       ¦   NotFound.razor
-    ¦       ¦   RedirectToLogin.razor
-    ¦       ¦   
-    ¦       +---Admin
-    ¦       ¦       DashboardAdminPage.razor
-    ¦       ¦       DashboardAdminPage.razor.cs
-    ¦       ¦       ReportesAdminPage.razor
-    ¦       ¦       ReportesAdminPage.razor.cs
-    ¦       ¦       UsuariosAdminPage.razor
-    ¦       ¦       UsuariosAdminPage.razor.cs
-    ¦       ¦       
-    ¦       +---CanchaView
-    ¦       ¦       DetalleCanchaPage.razor
-    ¦       ¦       DetalleCanchaPage.razor.cs
-    ¦       ¦       DetalleCanchaPage.razor.css
-    ¦       ¦       EncontraCanchaPage.razor
-    ¦       ¦       EncontraCanchaPage.razor.cs
-    ¦       ¦       EncontraCanchaPage.razor.css
-    ¦       ¦       
-    ¦       +---Login
-    ¦       ¦       LoginPage.razor
-    ¦       ¦       LoginPage.razor.cs
-    ¦       ¦       LogoutPage.razor
-    ¦       ¦       LogoutPage.razor.cs
-    ¦       ¦       RecuperarContrasenaPage.razor
-    ¦       ¦       RecuperarContrasenaPage.razor.cs
-    ¦       ¦       
-    ¦       +---MisReservas
-    ¦       ¦       MisReservasPage.razor
-    ¦       ¦       MisReservasPage.razor.cs
-    ¦       ¦       MisReservasPage.razor.css
-    ¦       ¦       
-    ¦       +---Perfil
-    ¦       ¦       PerfilPage.razor
-    ¦       ¦       PerfilPage.razor.cs
-    ¦       ¦       
-    ¦       +---PortalPropietario
-    ¦       ¦       PortalPropietarioPage.razor
-    ¦       ¦       PortalPropietarioPage.razor.cs
-    ¦       ¦       PortalPropietarioPage.razor.css
-    ¦       ¦       
-    ¦       +---PublicarCancha
-    ¦       ¦       PublicarCanchaPage.razor
-    ¦       ¦       PublicarCanchaPage.razor.cs
-    ¦       ¦       
-    ¦       +---Registrar
-    ¦       ¦       RegistrarClientePage.razor
-    ¦       ¦       RegistrarClientePage.razor.cs
-    ¦       ¦       RegistrarPage.razor
-    ¦       ¦       RegistrarPage.razor.cs
-    ¦       ¦       RegistrarPage.razor.css
-    ¦       ¦       RegistrarPropietario2Page.razor
-    ¦       ¦       RegistrarPropietario2Page.razor.cs
-    ¦       ¦       RegistrarPropietarioPage.razor
-    ¦       ¦       RegistrarPropietarioPage.razor.cs
-    ¦       ¦       
-    ¦       +---Reservas
-    ¦               ReservaConfirmadaPage.razor
-    ¦               ReservaConfirmadaPage.razor.cs
-    ¦               ReservaConfirmadaPage.razor.css
-    ¦               
+    ï¿½   ï¿½   App.razor
+    ï¿½   ï¿½   Routes.razor
+    ï¿½   ï¿½   _Imports.razor
+    ï¿½   ï¿½   
+    ï¿½   +---Common
+    ï¿½   ï¿½       AccionesComponent.razor
+    ï¿½   ï¿½       AlertaOperacionComponent.razor
+    ï¿½   ï¿½       BotonVolverAtrasComponent.razor
+    ï¿½   ï¿½       TituloPaginaComponent copy.razor
+    ï¿½   ï¿½       TituloPaginaComponent.razor
+    ï¿½   ï¿½       
+    ï¿½   +---Layout
+    ï¿½   ï¿½       AdminLayout.razor
+    ï¿½   ï¿½       AuthLayout.razor
+    ï¿½   ï¿½       AuthLayout.razor.css
+    ï¿½   ï¿½       Footer.razor
+    ï¿½   ï¿½       MainLayout.razor
+    ï¿½   ï¿½       MainLayout.razor.css
+    ï¿½   ï¿½       NavMenu.razor
+    ï¿½   ï¿½       NavMenu.razor.css
+    ï¿½   ï¿½       OnlyNavMenu.razor
+    ï¿½   ï¿½       ReconnectModal.razor
+    ï¿½   ï¿½       ReconnectModal.razor.css
+    ï¿½   ï¿½       ReconnectModal.razor.js
+    ï¿½   ï¿½       
+    ï¿½   +---Pages
+    ï¿½       ï¿½   Counter.razor
+    ï¿½       ï¿½   Error.razor
+    ï¿½       ï¿½   Home.razor
+    ï¿½       ï¿½   Home.razor.css
+    ï¿½       ï¿½   NotFound.razor
+    ï¿½       ï¿½   RedirectToLogin.razor
+    ï¿½       ï¿½   
+    ï¿½       +---Admin
+    ï¿½       ï¿½       DashboardAdminPage.razor
+    ï¿½       ï¿½       DashboardAdminPage.razor.cs
+    ï¿½       ï¿½       ReportesAdminPage.razor
+    ï¿½       ï¿½       ReportesAdminPage.razor.cs
+    ï¿½       ï¿½       UsuariosAdminPage.razor
+    ï¿½       ï¿½       UsuariosAdminPage.razor.cs
+    ï¿½       ï¿½       
+    ï¿½       +---CanchaView
+    ï¿½       ï¿½       DetalleCanchaPage.razor
+    ï¿½       ï¿½       DetalleCanchaPage.razor.cs
+    ï¿½       ï¿½       DetalleCanchaPage.razor.css
+    ï¿½       ï¿½       EncontraCanchaPage.razor
+    ï¿½       ï¿½       EncontraCanchaPage.razor.cs
+    ï¿½       ï¿½       EncontraCanchaPage.razor.css
+    ï¿½       ï¿½       
+    ï¿½       +---Login
+    ï¿½       ï¿½       LoginPage.razor
+    ï¿½       ï¿½       LoginPage.razor.cs
+    ï¿½       ï¿½       LogoutPage.razor
+    ï¿½       ï¿½       LogoutPage.razor.cs
+    ï¿½       ï¿½       RecuperarContrasenaPage.razor
+    ï¿½       ï¿½       RecuperarContrasenaPage.razor.cs
+    ï¿½       ï¿½       
+    ï¿½       +---MisReservas
+    ï¿½       ï¿½       MisReservasPage.razor
+    ï¿½       ï¿½       MisReservasPage.razor.cs
+    ï¿½       ï¿½       MisReservasPage.razor.css
+    ï¿½       ï¿½       
+    ï¿½       +---Perfil
+    ï¿½       ï¿½       PerfilPage.razor
+    ï¿½       ï¿½       PerfilPage.razor.cs
+    ï¿½       ï¿½       
+    ï¿½       +---PortalPropietario
+    ï¿½       ï¿½       PortalPropietarioPage.razor
+    ï¿½       ï¿½       PortalPropietarioPage.razor.cs
+    ï¿½       ï¿½       PortalPropietarioPage.razor.css
+    ï¿½       ï¿½       
+    ï¿½       +---PublicarCancha
+    ï¿½       ï¿½       PublicarCanchaPage.razor
+    ï¿½       ï¿½       PublicarCanchaPage.razor.cs
+    ï¿½       ï¿½       
+    ï¿½       +---Registrar
+    ï¿½       ï¿½       RegistrarClientePage.razor
+    ï¿½       ï¿½       RegistrarClientePage.razor.cs
+    ï¿½       ï¿½       RegistrarPage.razor
+    ï¿½       ï¿½       RegistrarPage.razor.cs
+    ï¿½       ï¿½       RegistrarPage.razor.css
+    ï¿½       ï¿½       RegistrarPropietario2Page.razor
+    ï¿½       ï¿½       RegistrarPropietario2Page.razor.cs
+    ï¿½       ï¿½       RegistrarPropietarioPage.razor
+    ï¿½       ï¿½       RegistrarPropietarioPage.razor.cs
+    ï¿½       ï¿½       
+    ï¿½       +---Reservas
+    ï¿½               ReservaConfirmadaPage.razor
+    ï¿½               ReservaConfirmadaPage.razor.cs
+    ï¿½               ReservaConfirmadaPage.razor.css
+    ï¿½               
     +---Extensiones
-    ¦       AuthExtensions.cs
-    ¦       EnumLocalizacionExtensions.cs
-    ¦       
+    ï¿½       AuthExtensions.cs
+    ï¿½       EnumLocalizacionExtensions.cs
+    ï¿½       
     +---obj
-    ¦   ¦   CanchaLibreWeb.csproj.nuget.dgspec.json
-    ¦   ¦   CanchaLibreWeb.csproj.nuget.g.props
-    ¦   ¦   CanchaLibreWeb.csproj.nuget.g.targets
-    ¦   ¦   project.assets.json
-    ¦   ¦   project.nuget.cache
-    ¦   ¦   
-    ¦   +---Debug
-    ¦   ¦   +---net10.0
-    ¦   ¦       ¦   .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
-    ¦   ¦       ¦   CanchaLibreWeb.AssemblyInfo.cs
-    ¦   ¦       ¦   CanchaLibreWeb.AssemblyInfoInputs.cache
-    ¦   ¦       ¦   CanchaLibreWeb.assets.cache
-    ¦   ¦       ¦   CanchaLibreWeb.csproj.CoreCompileInputs.cache
-    ¦   ¦       ¦   CanchaLibreWeb.csproj.FileListAbsolute.txt
-    ¦   ¦       ¦   CanchaLibreWeb.GeneratedMSBuildEditorConfig.editorconfig
-    ¦   ¦       ¦   CanchaLibreWeb.GlobalUsings.g.cs
-    ¦   ¦       ¦   CanchaLibreWeb.MvcApplicationPartsAssemblyInfo.cache
-    ¦   ¦       ¦   CanchaLibreWeb.sourcelink.json
-    ¦   ¦       ¦   EmbeddedAttribute.cs
-    ¦   ¦       ¦   rpswa.dswa.cache.json
-    ¦   ¦       ¦   staticwebassets.removed.txt
-    ¦   ¦       ¦   ValidatableTypeAttribute.cs
-    ¦   ¦       ¦   
-    ¦   ¦       +---ref
-    ¦   ¦       +---refint
-    ¦   ¦       +---staticwebassets
-    ¦   +---Release
-    ¦       +---net10.0
-    ¦           ¦   .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
-    ¦           ¦   CanchaLibreWeb.AssemblyInfo.cs
-    ¦           ¦   CanchaLibreWeb.AssemblyInfoInputs.cache
-    ¦           ¦   CanchaLibreWeb.GeneratedMSBuildEditorConfig.editorconfig
-    ¦           ¦   CanchaLibreWeb.GlobalUsings.g.cs
-    ¦           ¦   EmbeddedAttribute.cs
-    ¦           ¦   ValidatableTypeAttribute.cs
-    ¦           ¦   
-    ¦           +---ref
-    ¦           +---refint
+    ï¿½   ï¿½   CanchaLibreWeb.csproj.nuget.dgspec.json
+    ï¿½   ï¿½   CanchaLibreWeb.csproj.nuget.g.props
+    ï¿½   ï¿½   CanchaLibreWeb.csproj.nuget.g.targets
+    ï¿½   ï¿½   project.assets.json
+    ï¿½   ï¿½   project.nuget.cache
+    ï¿½   ï¿½   
+    ï¿½   +---Debug
+    ï¿½   ï¿½   +---net10.0
+    ï¿½   ï¿½       ï¿½   .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+    ï¿½   ï¿½       ï¿½   ApiEndpoints.json
+    ï¿½   ï¿½       ï¿½   apphost.exe
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.AssemblyInfo.cs
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.AssemblyInfoInputs.cache
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.assets.cache
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.csproj.BuildWithSkipAnalyzers
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.csproj.CoreCompileInputs.cache
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.csproj.FileListAbsolute.txt
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.dll
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.GeneratedMSBuildEditorConfig.editorconfig
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.genruntimeconfig.cache
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.GlobalUsings.g.cs
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.MvcApplicationPartsAssemblyInfo.cache
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.pdb
+    ï¿½   ï¿½       ï¿½   CanchaLibreWeb.sourcelink.json
+    ï¿½   ï¿½       ï¿½   EmbeddedAttribute.cs
+    ï¿½   ï¿½       ï¿½   rbcswa.dswa.cache.json
+    ï¿½   ï¿½       ï¿½   rjimswa.dswa.cache.json
+    ï¿½   ï¿½       ï¿½   rjsmcshtml.dswa.cache.json
+    ï¿½   ï¿½       ï¿½   rjsmrazor.dswa.cache.json
+    ï¿½   ï¿½       ï¿½   rpswa.dswa.cache.json
+    ï¿½   ï¿½       ï¿½   staticwebassets.build.endpoints.json
+    ï¿½   ï¿½       ï¿½   staticwebassets.build.json
+    ï¿½   ï¿½       ï¿½   staticwebassets.build.json.cache
+    ï¿½   ï¿½       ï¿½   staticwebassets.development.json
+    ï¿½   ï¿½       ï¿½   staticwebassets.references.upToDateCheck.txt
+    ï¿½   ï¿½       ï¿½   staticwebassets.removed.txt
+    ï¿½   ï¿½       ï¿½   staticwebassets.upToDateCheck.txt
+    ï¿½   ï¿½       ï¿½   swae.build.ex.cache
+    ï¿½   ï¿½       ï¿½   ValidatableTypeAttribute.cs
+    ï¿½   ï¿½       ï¿½   
+    ï¿½   ï¿½       +---compressed
+    ï¿½   ï¿½       ï¿½       111m7l2iky-{0}-j5mq2jizvt-j5mq2jizvt.gz
+    ï¿½   ï¿½       ï¿½       151drre5o0-{0}-iovd86k7lj-iovd86k7lj.gz
+    ï¿½   ï¿½       ï¿½       2rmr3qr4xj-{0}-fvhpjtyr6v-fvhpjtyr6v.gz
+    ï¿½   ï¿½       ï¿½       3gtoiocvd0-{0}-h1s4sie4z3-h1s4sie4z3.gz
+    ï¿½   ï¿½       ï¿½       4xdth5v345-{0}-43atpzeawx-43atpzeawx.gz
+    ï¿½   ï¿½       ï¿½       50drfhvc4e-{0}-q9ht133ko3-q9ht133ko3.gz
+    ï¿½   ï¿½       ï¿½       6b49xs5qlx-{0}-v0zj4ognzu-v0zj4ognzu.gz
+    ï¿½   ï¿½       ï¿½       778s20fpdl-{0}-4d85u1mtcx-4d85u1mtcx.gz
+    ï¿½   ï¿½       ï¿½       7y1nr9rydd-{0}-cosvhxvwiu-cosvhxvwiu.gz
+    ï¿½   ï¿½       ï¿½       86l6ttlbnm-{0}-gye83jo8yx-gye83jo8yx.gz
+    ï¿½   ï¿½       ï¿½       89ckyrfjv5-{0}-ft3s53vfgj-ft3s53vfgj.gz
+    ï¿½   ï¿½       ï¿½       b72yhw8p1o-{0}-kbrnm935zg-kbrnm935zg.gz
+    ï¿½   ï¿½       ï¿½       cbqwtf0pdk-{0}-zub09dkrxp-zub09dkrxp.gz
+    ï¿½   ï¿½       ï¿½       dboaatw78t-{0}-nvvlpmu67g-nvvlpmu67g.gz
+    ï¿½   ï¿½       ï¿½       e27rjh51zf-{0}-u9q1upor1n-u9q1upor1n.gz
+    ï¿½   ï¿½       ï¿½       ef6z10za7f-{0}-keugtjm085-keugtjm085.gz
+    ï¿½   ï¿½       ï¿½       f0etdle8ra-{0}-t1cqhe9u97-t1cqhe9u97.gz
+    ï¿½   ï¿½       ï¿½       fjfebx16th-{0}-ne14ti1q68-ne14ti1q68.gz
+    ï¿½   ï¿½       ï¿½       g4pq27vpan-{0}-8vyfqsqgz1-8vyfqsqgz1.gz
+    ï¿½   ï¿½       ï¿½       g9zot0f7in-{0}-c63t5i9ira-c63t5i9ira.gz
+    ï¿½   ï¿½       ï¿½       hmb5x4bwa6-{0}-c2oey78nd0-c2oey78nd0.gz
+    ï¿½   ï¿½       ï¿½       hx4qw8fs8u-{0}-abdmv1u4y3-abdmv1u4y3.gz
+    ï¿½   ï¿½       ï¿½       j2p1urg9a8-{0}-ei5a0vhxbs-ei5a0vhxbs.gz
+    ï¿½   ï¿½       ï¿½       j9qael5u9p-{0}-ee0r1s7dh0-ee0r1s7dh0.gz
+    ï¿½   ï¿½       ï¿½       jqp6ik6j5j-{0}-r4e9w2rdcm-r4e9w2rdcm.gz
+    ï¿½   ï¿½       ï¿½       kiwhid6qzi-{0}-wl58j5mj3v-wl58j5mj3v.gz
+    ï¿½   ï¿½       ï¿½       mu7lyiddo8-{0}-hd3gran6i8-hd3gran6i8.gz
+    ï¿½   ï¿½       ï¿½       n5t9om4fyi-{0}-4094rpi4f9-4094rpi4f9.gz
+    ï¿½   ï¿½       ï¿½       nag7fs4ov4-{0}-ausgxo2sd3-ausgxo2sd3.gz
+    ï¿½   ï¿½       ï¿½       nzy9yjq4jl-{0}-ltid2c489k-ltid2c489k.gz
+    ï¿½   ï¿½       ï¿½       o5hx3eqwpo-{0}-22vffe00uq-22vffe00uq.gz
+    ï¿½   ï¿½       ï¿½       pb7jibe3ry-{0}-ig5xotzpx5-ig5xotzpx5.gz
+    ï¿½   ï¿½       ï¿½       ph4lqyz2vb-{0}-0j3bgjxly4-0j3bgjxly4.gz
+    ï¿½   ï¿½       ï¿½       ps4wvndxfs-{0}-xvp3kq03qx-xvp3kq03qx.gz
+    ï¿½   ï¿½       ï¿½       sl2h05m67p-{0}-hrwsygsryq-hrwsygsryq.gz
+    ï¿½   ï¿½       ï¿½       sq65zhtrd9-{0}-qesaa3a1fm-qesaa3a1fm.gz
+    ï¿½   ï¿½       ï¿½       txn8dog3vr-{0}-fsbi9cje9m-fsbi9cje9m.gz
+    ï¿½   ï¿½       ï¿½       u5a9ar01l1-{0}-d4r6k3f320-d4r6k3f320.gz
+    ï¿½   ï¿½       ï¿½       ut39n7x4ey-{0}-jd9uben2k1-jd9uben2k1.gz
+    ï¿½   ï¿½       ï¿½       v89swiw1lj-{0}-rxsg74s51o-rxsg74s51o.gz
+    ï¿½   ï¿½       ï¿½       vjemat5z18-{0}-6pdc2jztkx-6pdc2jztkx.gz
+    ï¿½   ï¿½       ï¿½       vlt2v34b0h-{0}-tmc1g35s3z-tmc1g35s3z.gz
+    ï¿½   ï¿½       ï¿½       vmnd6rzeog-{0}-c2jlpeoesf-c2jlpeoesf.gz
+    ï¿½   ï¿½       ï¿½       vmwrhqqwyv-{0}-ynyaa8k90p-ynyaa8k90p.gz
+    ï¿½   ï¿½       ï¿½       vng57gzfyz-{0}-pj5nd1wqec-pj5nd1wqec.gz
+    ï¿½   ï¿½       ï¿½       vnj3qxighz-{0}-sejl45xvog-sejl45xvog.gz
+    ï¿½   ï¿½       ï¿½       ww56hwy02t-{0}-8iia79ijbp-8iia79ijbp.gz
+    ï¿½   ï¿½       ï¿½       ybtcz42jn1-{0}-aexeepp0ev-aexeepp0ev.gz
+    ï¿½   ï¿½       ï¿½       yxesy8ga40-{0}-ei5a0vhxbs-ei5a0vhxbs.gz
+    ï¿½   ï¿½       ï¿½       z28opwjq4k-{0}-y7v9cxd14o-y7v9cxd14o.gz
+    ï¿½   ï¿½       ï¿½       zg6zdr4r0m-{0}-dl8h5y6mt1-dl8h5y6mt1.gz
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---ref
+    ï¿½   ï¿½       ï¿½       CanchaLibreWeb.dll
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---refint
+    ï¿½   ï¿½       ï¿½       CanchaLibreWeb.dll
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---scopedcss
+    ï¿½   ï¿½       ï¿½   +---bundle
+    ï¿½   ï¿½       ï¿½   ï¿½       CanchaLibreWeb.styles.css
+    ï¿½   ï¿½       ï¿½   ï¿½       
+    ï¿½   ï¿½       ï¿½   +---Components
+    ï¿½   ï¿½       ï¿½   ï¿½   +---Layout
+    ï¿½   ï¿½       ï¿½   ï¿½   ï¿½       AuthLayout.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½   ï¿½       MainLayout.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½   ï¿½       NavMenu.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½   ï¿½       ReconnectModal.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½   ï¿½       
+    ï¿½   ï¿½       ï¿½   ï¿½   +---Pages
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½   Home.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½   
+    ï¿½   ï¿½       ï¿½   ï¿½       +---CanchaView
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       DetalleCanchaPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       EncontraCanchaPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       ï¿½   ï¿½       +---MisReservas
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       MisReservasPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       ï¿½   ï¿½       +---PortalPropietario
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       PortalPropietarioPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       ï¿½   ï¿½       +---Registrar
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       RegistrarPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       ï¿½   ï¿½       +---Reservas
+    ï¿½   ï¿½       ï¿½   ï¿½               ReservaConfirmadaPage.razor.rz.scp.css
+    ï¿½   ï¿½       ï¿½   ï¿½               
+    ï¿½   ï¿½       ï¿½   +---projectbundle
+    ï¿½   ï¿½       ï¿½           CanchaLibreWeb.bundle.scp.css
+    ï¿½   ï¿½       ï¿½           
+    ï¿½   ï¿½       +---staticwebassets
+    ï¿½   +---Release
+    ï¿½       +---net10.0
+    ï¿½           ï¿½   .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+    ï¿½           ï¿½   CanchaLibreWeb.AssemblyInfo.cs
+    ï¿½           ï¿½   CanchaLibreWeb.AssemblyInfoInputs.cache
+    ï¿½           ï¿½   CanchaLibreWeb.GeneratedMSBuildEditorConfig.editorconfig
+    ï¿½           ï¿½   CanchaLibreWeb.GlobalUsings.g.cs
+    ï¿½           ï¿½   EmbeddedAttribute.cs
+    ï¿½           ï¿½   ValidatableTypeAttribute.cs
+    ï¿½           ï¿½   
+    ï¿½           +---ref
+    ï¿½           +---refint
     +---Properties
-    ¦       launchSettings.json
-    ¦       
+    ï¿½       launchSettings.json
+    ï¿½       
     +---Servicios
-    ¦   +---Base
-    ¦   ¦       BaseRestServiceClient.cs
-    ¦   ¦       IServiceClient.cs
-    ¦   ¦       SoapServiceClient.cs
-    ¦   ¦       
-    ¦   +---Canchas
-    ¦   ¦       CanchasServiceRestClient.cs
-    ¦   ¦       ICanchasServiceClient.cs
-    ¦   ¦       
-    ¦   +---Cuentas
-    ¦   ¦       CuentasUsuarioRestClient.cs
-    ¦   ¦       ICuentasUsuarioServiceClient.cs
-    ¦   ¦       
-    ¦   +---Reservas
-    ¦   ¦       IReservasServiceClient.cs
-    ¦   ¦       ReservasServiceRestClient.cs
-    ¦   ¦       
-    ¦   +---Rest
-    ¦   ¦   ¦   RestClient.cs
-    ¦   ¦   ¦   
-    ¦   ¦   +---Dtos
-    ¦   ¦       +---Canchas
-    ¦   ¦       ¦       CanchaRestDto.cs
-    ¦   ¦       ¦       
-    ¦   ¦       +---Pagos
-    ¦   ¦       ¦       PagoRestDto.cs
-    ¦   ¦       ¦       
-    ¦   ¦       +---Resenas
-    ¦   ¦       ¦       ResenaRestDto.cs
-    ¦   ¦       ¦       
-    ¦   ¦       +---Reservas
-    ¦   ¦       ¦       PagoRestDto.cs
-    ¦   ¦       ¦       ReservaRestDto.cs
-    ¦   ¦       ¦       
-    ¦   ¦       +---Usuarios
-    ¦   ¦               AdministradorRestDto.cs
-    ¦   ¦               CanchaRestDto.cs
-    ¦   ¦               ClienteRestDto.cs
-    ¦   ¦               PagoRestDto.cs
-    ¦   ¦               PropietarioRestDto.cs
-    ¦   ¦               ReservaRestDto.cs
-    ¦   ¦               UsuarioRespuestaRestDto.cs
-    ¦   ¦               
-    ¦   +---Usuarios
-    ¦           ClientesServiceRestClient.cs
-    ¦           CustomAuthStateProvider.cs
-    ¦           IAuthServiceClient.cs
-    ¦           IClientesServiceClient.cs
-    ¦           IPropietariosServiceClient.cs
-    ¦           PropietariosServiceRestClient.cs
-    ¦           
+    ï¿½   +---Base
+    ï¿½   ï¿½       BaseRestServiceClient.cs
+    ï¿½   ï¿½       IServiceClient.cs
+    ï¿½   ï¿½       SoapServiceClient.cs
+    ï¿½   ï¿½       
+    ï¿½   +---Canchas
+    ï¿½   ï¿½       CanchasServiceRestClient.cs
+    ï¿½   ï¿½       ICanchasServiceClient.cs
+    ï¿½   ï¿½       
+    ï¿½   +---Cuentas
+    ï¿½   ï¿½       CuentasUsuarioRestClient.cs
+    ï¿½   ï¿½       ICuentasUsuarioServiceClient.cs
+    ï¿½   ï¿½       
+    ï¿½   +---Reservas
+    ï¿½   ï¿½       IReservasServiceClient.cs
+    ï¿½   ï¿½       ReservasServiceRestClient.cs
+    ï¿½   ï¿½       
+    ï¿½   +---Rest
+    ï¿½   ï¿½   ï¿½   RestClient.cs
+    ï¿½   ï¿½   ï¿½   
+    ï¿½   ï¿½   +---Dtos
+    ï¿½   ï¿½       +---Canchas
+    ï¿½   ï¿½       ï¿½       BloqueHorarioRestDto.cs
+    ï¿½   ï¿½       ï¿½       CanchaRestDto.cs
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---Cuentas
+    ï¿½   ï¿½       ï¿½       CuentaUsuarioRestDto.cs
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---Pagos
+    ï¿½   ï¿½       +---Resenas
+    ï¿½   ï¿½       ï¿½       ResenaRestDto.cs
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---Reservas
+    ï¿½   ï¿½       ï¿½       ComprobanteRestDto.cs
+    ï¿½   ï¿½       ï¿½       PagoRestDto.cs
+    ï¿½   ï¿½       ï¿½       ReservaRestDto.cs
+    ï¿½   ï¿½       ï¿½       
+    ï¿½   ï¿½       +---Usuarios
+    ï¿½   ï¿½               AdministradorRestDto.cs
+    ï¿½   ï¿½               ClienteRestDto.cs
+    ï¿½   ï¿½               PropietarioRestDto.cs
+    ï¿½   ï¿½               UsuarioRespuestaRestDto.cs
+    ï¿½   ï¿½               
+    ï¿½   +---Usuarios
+    ï¿½           ClientesServiceRestClient.cs
+    ï¿½           CustomAuthStateProvider.cs
+    ï¿½           IAuthServiceClient.cs
+    ï¿½           IClientesServiceClient.cs
+    ï¿½           IPropietariosServiceClient.cs
+    ï¿½           PropietariosServiceRestClient.cs
+    ï¿½           
     +---ViewModels
-    ¦       AdministradorViewModel.cs
-    ¦       CanchaViewModel.cs
-    ¦       ClienteViewModel.cs
-    ¦       ComprobanteViewModel.cs
-    ¦       CuentaUsuarioViewModel.cs
-    ¦       DeporteEnum.cs
-    ¦       EsquemaPrecioViewModel.cs
-    ¦       Estado.cs
-    ¦       EstadoReservaEnum.cs
-    ¦       EtiquetaEnum.cs
-    ¦       LoginViewModel.cs
-    ¦       MetodoPagoEnum.cs
-    ¦       NotificacionCompViewModel.cs
-    ¦       NotificacionResViewModel.cs
-    ¦       NotificacionViewModel.cs
-    ¦       PagoViewModel.cs
-    ¦       PropietarioViewModel.cs
-    ¦       ResenaViewModel.cs
-    ¦       ReservaViewModel.cs
-    ¦       RolEnum.cs
-    ¦       SolicitudCambioContrasenaViewModel.cs
-    ¦       SolicitudLoginViewModel.cs
-    ¦       SolicitudRecuperarContrasenaViewModel.cs
-    ¦       TemporadaEnum.cs
-    ¦       UsuarioViewModel.cs
-    ¦       
+    ï¿½       AdministradorViewModel.cs
+    ï¿½       BloqueHorarioViewModel.cs
+    ï¿½       CanchaViewModel.cs
+    ï¿½       ClienteViewModel.cs
+    ï¿½       ComprobanteViewModel.cs
+    ï¿½       CuentaUsuarioViewModel.cs
+    ï¿½       DeporteEnum.cs
+    ï¿½       DiaSemanaEnum.cs
+    ï¿½       Estado.cs
+    ï¿½       EstadoBloqueEnum.cs
+    ï¿½       EstadoReservaEnum.cs
+    ï¿½       EtiquetaEnum.cs
+    ï¿½       LoginViewModel.cs
+    ï¿½       MetodoPagoEnum.cs
+    ï¿½       NotificacionBlqViewModel.cs
+    ï¿½       NotificacionCompViewModel.cs
+    ï¿½       NotificacionResViewModel.cs
+    ï¿½       NotificacionViewModel.cs
+    ï¿½       PagoViewModel.cs
+    ï¿½       PersonaViewModel.cs
+    ï¿½       PropietarioViewModel.cs
+    ï¿½       ResenaViewModel.cs
+    ï¿½       ReservaViewModel.cs
+    ï¿½       RolEnum.cs
+    ï¿½       SolicitudCambioContrasenaViewModel.cs
+    ï¿½       SolicitudLoginViewModel.cs
+    ï¿½       SolicitudRecuperarContrasenaViewModel.cs
+    ï¿½       TemporadaEnum.cs
+    ï¿½       
     +---wwwroot
-        ¦   admin.png
-        ¦   app.css
-        ¦   Bloqueado.png
-        ¦   calendario.png
-        ¦   cancha1.jpg
-        ¦   cancha2.jpg
-        ¦   cancha3.jpg
-        ¦   cancha4.jpeg
-        ¦   cliente.png
-        ¦   dinero.png
-        ¦   hero-cancha.jpg
-        ¦   historial.png
-        ¦   ingresos.png
-        ¦   Logo.png
-        ¦   Logo.svg
-        ¦   propietario.png
-        ¦   ubicacion.png
-        ¦   usuario.png
-        ¦   usuarios.png
-        ¦   
+        ï¿½   admin.png
+        ï¿½   app.css
+        ï¿½   Bloqueado.png
+        ï¿½   calendario.png
+        ï¿½   cancha1.jpg
+        ï¿½   cancha2.jpg
+        ï¿½   cancha3.jpg
+        ï¿½   cancha4.jpeg
+        ï¿½   cliente.png
+        ï¿½   dinero.png
+        ï¿½   hero-cancha.jpg
+        ï¿½   historial.png
+        ï¿½   ingresos.png
+        ï¿½   Logo.png
+        ï¿½   Logo.svg
+        ï¿½   propietario.png
+        ï¿½   ubicacion.png
+        ï¿½   usuario.png
+        ï¿½   usuarios.png
+        ï¿½   
         +---lib
             +---bootstrap
                 +---dist
                     +---css
-                    ¦       bootstrap-grid.css
-                    ¦       bootstrap-grid.css.map
-                    ¦       bootstrap-grid.min.css
-                    ¦       bootstrap-grid.min.css.map
-                    ¦       bootstrap-grid.rtl.css
-                    ¦       bootstrap-grid.rtl.css.map
-                    ¦       bootstrap-grid.rtl.min.css
-                    ¦       bootstrap-grid.rtl.min.css.map
-                    ¦       bootstrap-reboot.css
-                    ¦       bootstrap-reboot.css.map
-                    ¦       bootstrap-reboot.min.css
-                    ¦       bootstrap-reboot.min.css.map
-                    ¦       bootstrap-reboot.rtl.css
-                    ¦       bootstrap-reboot.rtl.css.map
-                    ¦       bootstrap-reboot.rtl.min.css
-                    ¦       bootstrap-reboot.rtl.min.css.map
-                    ¦       bootstrap-utilities.css
-                    ¦       bootstrap-utilities.css.map
-                    ¦       bootstrap-utilities.min.css
-                    ¦       bootstrap-utilities.min.css.map
-                    ¦       bootstrap-utilities.rtl.css
-                    ¦       bootstrap-utilities.rtl.css.map
-                    ¦       bootstrap-utilities.rtl.min.css
-                    ¦       bootstrap-utilities.rtl.min.css.map
-                    ¦       bootstrap.css
-                    ¦       bootstrap.css.map
-                    ¦       bootstrap.min.css
-                    ¦       bootstrap.min.css.map
-                    ¦       bootstrap.rtl.css
-                    ¦       bootstrap.rtl.css.map
-                    ¦       bootstrap.rtl.min.css
-                    ¦       bootstrap.rtl.min.css.map
-                    ¦       
+                    ï¿½       bootstrap-grid.css
+                    ï¿½       bootstrap-grid.css.map
+                    ï¿½       bootstrap-grid.min.css
+                    ï¿½       bootstrap-grid.min.css.map
+                    ï¿½       bootstrap-grid.rtl.css
+                    ï¿½       bootstrap-grid.rtl.css.map
+                    ï¿½       bootstrap-grid.rtl.min.css
+                    ï¿½       bootstrap-grid.rtl.min.css.map
+                    ï¿½       bootstrap-reboot.css
+                    ï¿½       bootstrap-reboot.css.map
+                    ï¿½       bootstrap-reboot.min.css
+                    ï¿½       bootstrap-reboot.min.css.map
+                    ï¿½       bootstrap-reboot.rtl.css
+                    ï¿½       bootstrap-reboot.rtl.css.map
+                    ï¿½       bootstrap-reboot.rtl.min.css
+                    ï¿½       bootstrap-reboot.rtl.min.css.map
+                    ï¿½       bootstrap-utilities.css
+                    ï¿½       bootstrap-utilities.css.map
+                    ï¿½       bootstrap-utilities.min.css
+                    ï¿½       bootstrap-utilities.min.css.map
+                    ï¿½       bootstrap-utilities.rtl.css
+                    ï¿½       bootstrap-utilities.rtl.css.map
+                    ï¿½       bootstrap-utilities.rtl.min.css
+                    ï¿½       bootstrap-utilities.rtl.min.css.map
+                    ï¿½       bootstrap.css
+                    ï¿½       bootstrap.css.map
+                    ï¿½       bootstrap.min.css
+                    ï¿½       bootstrap.min.css.map
+                    ï¿½       bootstrap.rtl.css
+                    ï¿½       bootstrap.rtl.css.map
+                    ï¿½       bootstrap.rtl.min.css
+                    ï¿½       bootstrap.rtl.min.css.map
+                    ï¿½       
                     +---js
                             bootstrap.bundle.js
                             bootstrap.bundle.js.map
