@@ -66,7 +66,7 @@ public partial class RegistrarPage : ComponentBase
         Console.WriteLine($"Cliente registrado: {nuevoCliente.Nombres} - {nuevoCliente.Correo}");
     }
 
-    private void ProcesarRegistroFinal()
+    private void FinalizarRegistroPropietario()
     {
         MensajeError = string.Empty;
 
@@ -75,10 +75,14 @@ public partial class RegistrarPage : ComponentBase
         {
             Nombres = NombreInput,
             Correo = CorreoInput,
-            Contrasena = ContrasenaInput,
             Telefono = TelefonoInput
             // Ruc = RucInput // Descomenta esto cuando agregues la propiedad a tu ViewModel
         };
+        var nuevaCuenta = new CuentaUsuarioViewModel
+        {
+            Password = ContrasenaInput
+        };
+        nuevoPropietario.cuenta = nuevaCuenta;
 
         // Aquí envías 'nuevoPropietario' a tu backend en Java
         Console.WriteLine($"Propietario registrado: {nuevoPropietario.Nombres} - Tel: {nuevoPropietario.Telefono}");
