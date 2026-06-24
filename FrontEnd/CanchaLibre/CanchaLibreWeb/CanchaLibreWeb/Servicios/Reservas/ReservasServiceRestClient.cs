@@ -123,7 +123,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
             Activo = cliente.Activo,
             Calificacion = cliente.Calificacion,
             Correo = cliente.Correo,
-            Cuenta = ParseCuenta(cliente.Cuenta),
+            Cuenta = ParseCuenta(cliente.CuentaUsuario),
             Id = cliente.Id,
             Nombres = cliente.Nombres,
             Telefono = cliente.Telefono
@@ -139,12 +139,12 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         return new CuentaUsuarioViewModel
         {
             Activo = Cuenta.Activo,
-            fechaBloqueo = Cuenta.fechaBloqueo,
+            FechaBloqueo = Cuenta.FechaBloqueo ?? DateTime.MinValue,
             Id = Cuenta.Id,
             IntentosFallidos = Cuenta.IntentosFallidos,
             Password = Cuenta.Password,
             Rol = ParseEnum<RolEnum>(Cuenta.Rol, RolEnum.NO_ADMITIDO),
-            UltimaSesion = Cuenta.UltimaSesion,
+            UltimaSesion = Cuenta.UltimaSesion ?? DateTime.MinValue,
             UserName = Cuenta.UserName
         };
     }
@@ -284,7 +284,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                 Correo = source.cliente.Correo,
                 Calificacion = source.cliente.Calificacion,
                 Activo = source.cliente.Activo,
-                Cuenta = source.cliente.Cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
+                CuentaUsuario = source.cliente.Cuenta == null ? null : new Rest.Dtos.Cuentas.CuentaUsuarioRestDto
                 {
                     Id = source.cliente.Cuenta.Id,
                     UserName = source.cliente.Cuenta.UserName,
@@ -293,7 +293,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
                     Activo = source.cliente.Cuenta.Activo,
                     IntentosFallidos = source.cliente.Cuenta.IntentosFallidos,
                     UltimaSesion = source.cliente.Cuenta.UltimaSesion,
-                    fechaBloqueo = source.cliente.Cuenta.fechaBloqueo
+                    FechaBloqueo = source.cliente.Cuenta.FechaBloqueo
                 }
             },
             pago = source.pago == null ? null : new PagoRestDto

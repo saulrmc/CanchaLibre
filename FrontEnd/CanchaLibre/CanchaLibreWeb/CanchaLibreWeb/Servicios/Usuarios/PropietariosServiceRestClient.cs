@@ -81,12 +81,12 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
         return new CuentaUsuarioViewModel
         {
             Activo = Cuenta.Activo,
-            fechaBloqueo = Cuenta.fechaBloqueo,
+            FechaBloqueo = Cuenta.FechaBloqueo ?? DateTime.MinValue,
             Id = Cuenta.Id,
             IntentosFallidos = Cuenta.IntentosFallidos,
             Password = Cuenta.Password,
             Rol = ParseEnum<RolEnum>(Cuenta.Rol, RolEnum.NO_ADMITIDO),
-            UltimaSesion = Cuenta.UltimaSesion,
+            UltimaSesion = Cuenta.UltimaSesion ?? DateTime.MinValue,
             UserName = Cuenta.UserName
         };
     }
@@ -123,7 +123,7 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
 
         return new CuentaUsuarioRestDto {
             Activo = Cuenta.Activo,
-            fechaBloqueo = Cuenta.fechaBloqueo,
+            FechaBloqueo = Cuenta.FechaBloqueo,
             Id = Cuenta.Id,
             IntentosFallidos = Cuenta.IntentosFallidos,
             Password = Cuenta.Password,

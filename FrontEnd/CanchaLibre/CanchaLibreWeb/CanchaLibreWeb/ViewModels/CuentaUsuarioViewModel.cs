@@ -18,7 +18,7 @@ public class CuentaUsuarioViewModel : IValidatableObject {
     public RolEnum Rol {get; set;}
     public int IntentosFallidos {get; set;}
     public DateTime UltimaSesion {get; set;}
-    public DateTime fechaBloqueo {get; set;}
+    public DateTime FechaBloqueo {get; set;}
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) {
         if (Id <= 0 && string.IsNullOrWhiteSpace(Password)) {

@@ -1,15 +1,28 @@
+using System.Text.Json.Serialization;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
 
 namespace CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 
 public sealed class ClienteRestDto
 {
-    public int Id {get; set;}
-    public String Nombres { get; set; } = string.Empty;
-    public CuentaUsuarioRestDto? Cuenta {get; set;} 
-    public String Correo { get; set; } = string.Empty;
-    public String Telefono { get; set; } = string.Empty;
-    public bool Activo { get; set; }
-    public int Calificacion {get; set;}
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
+    [JsonPropertyName("nombres")]
+    public string Nombres { get; set; } = string.Empty;
+
+    [JsonPropertyName("cuentaUsuario")]
+    public CuentaUsuarioRestDto? CuentaUsuario { get; set; }
+
+    [JsonPropertyName("correo")]
+    public string Correo { get; set; } = string.Empty;
+
+    [JsonPropertyName("telefono")]
+    public string Telefono { get; set; } = string.Empty;
+
+    [JsonPropertyName("activo")]
+    public bool Activo { get; set; }
+
+    [JsonPropertyName("calificacion")]
+    public double Calificacion { get; set; }
 }

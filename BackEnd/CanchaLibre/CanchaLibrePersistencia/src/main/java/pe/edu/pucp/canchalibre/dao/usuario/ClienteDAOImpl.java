@@ -10,20 +10,20 @@ import java.sql.*;
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
-        String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
-        if (idCuentaUsuario == null) {
-            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
-        }
-        else {
-            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
-        }
+//        if (idCuentaUsuario == null) {
+//            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+//        }
+//        else {
+//            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+//        }
         cmd.setString("p_nombres",modelo.getNombres());
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
-        cmd.setDouble("p_calificacion",modelo.getCalificacion());
-        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.setString("p_password",modelo.getCuentaUsuario().getPassword());
+        cmd.setString("p_username",modelo.getCuentaUsuario().getUserName());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }

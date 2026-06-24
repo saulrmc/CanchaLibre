@@ -63,7 +63,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
         return new ClienteViewModel {
             Id = source.Id,
             Activo = source.Activo,
-            Cuenta = ParseCuenta(source.Cuenta),
+            Cuenta = ParseCuenta(source.CuentaUsuario),
             Nombres = source.Nombres ?? string.Empty,
             Correo = source.Correo ?? string.Empty,
             Telefono = source.Telefono ?? string.Empty,
@@ -79,12 +79,12 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
         return new CuentaUsuarioViewModel
         {
             Activo = Cuenta.Activo,
-            fechaBloqueo = Cuenta.fechaBloqueo,
+            FechaBloqueo = Cuenta.FechaBloqueo ?? DateTime.MinValue,
             Id = Cuenta.Id,
             IntentosFallidos = Cuenta.IntentosFallidos,
             Password = Cuenta.Password,
             Rol = ParseEnum<RolEnum>(Cuenta.Rol, RolEnum.NO_ADMITIDO),
-            UltimaSesion = Cuenta.UltimaSesion,
+            UltimaSesion = Cuenta.UltimaSesion ?? DateTime.MinValue,
             UserName = Cuenta.UserName
         };
     }
@@ -96,7 +96,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
             Nombres = source.Nombres.Trim(),
             Correo = source.Correo.Trim(),
             Telefono = source.Telefono.Trim(),
-            Cuenta = ParseCuenta(source.Cuenta)
+            CuentaUsuario = ParseCuenta(source.Cuenta)
         };
     }
 
@@ -108,7 +108,7 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
 
         return new CuentaUsuarioRestDto {
             Activo = Cuenta.Activo,
-            fechaBloqueo = Cuenta.fechaBloqueo,
+            FechaBloqueo = Cuenta.FechaBloqueo,
             Id = Cuenta.Id,
             IntentosFallidos = Cuenta.IntentosFallidos,
             Password = Cuenta.Password,

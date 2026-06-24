@@ -143,9 +143,9 @@ public class ReservasResource {
         }
         return reservaBO.listarReservasPorId(idCliente);
     }
-    @GET
-    @Path("cliente/{userName}")
-    public List<Reserva> ListarPorClienteUsername(@PathParam("userName") String userName){
-        return reservaBO.listarReservasPorCuenta(userName);
-    }
+//    @GET
+//    @Path("cliente/{userName}")
+//    public List<Reserva> ListarPorClienteUsername(@PathParam("userName") String userName){
+//        return reservaBO.listarReservasPorCuenta(userName);
+//    }
 }
