@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
-using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 
 namespace CanchaLibreWeb.Servicios.Usuarios;
 
@@ -19,23 +18,19 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         return Task.FromResult(new AuthenticationState(_usuarioActual));
     }
 
-    // AJUSTE: Ahora recibe directamente el DTO de respuesta común y el Rol detectado
-    public void MarcarComoAutenticado(UsuarioRespuestaRestDto usuario, string rol)
+    public void MarcarComoAutenticado(int id, string nombres, string correo, string rol)
     {
-        // 1. Creamos la identidad del usuario con sus datos básicos
         var identity = new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.Name, usuario.Nombres),
-            new Claim(ClaimTypes.Email, usuario.Correo),
-            new Claim("IdUsuario", usuario.Id.ToString()) // Util para saber qué cliente reserva o qué propietario publica
+            new Claim(ClaimTypes.Name, nombres),
+            new Claim(ClaimTypes.Email, correo),
+            new Claim("IdUsuario", id.ToString())
         }, "CustomAuthType");
 
-        // 2. Inyectamos el rol detectado ("Cliente", "Propietario" o "Admin")
         identity.AddClaim(new Claim(ClaimTypes.Role, rol));
 
         _usuarioActual = new ClaimsPrincipal(identity);
-        
-        // 3. Notificamos a Blazor para refrescar los componentes (Navbar, páginas protegidas, etc.)
+
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_usuarioActual)));
     }
 

@@ -8,6 +8,19 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 import java.sql.*;
 
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
+    @Override
+    public Integer crear(Cliente modelo) {
+        return ejecutarComando(conn -> {
+            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
+                cmd.execute();
+                return cmd.getInt("p_id");
+            } catch (SQLException e) {
+                System.err.println("Error SQL: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
         String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?)}";

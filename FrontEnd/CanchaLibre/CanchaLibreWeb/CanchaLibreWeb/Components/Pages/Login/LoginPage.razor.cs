@@ -11,11 +11,9 @@ public partial class LoginPage : ComponentBase
     [Inject] private IAuthServiceClient AuthService { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
-    // Modelos de solicitud vinculados a la vista
     private SolicitudLoginViewModel LoginModel { get; set; } = new();
     private SolicitudRecuperarContrasenaViewModel RecuperarModel { get; set; } = new();
 
-    // Estado local de la UI
     private bool mostrarRecuperacion = false;
     private string mensajeError = string.Empty;
     private string mensajeStatus = string.Empty;
@@ -27,19 +25,17 @@ public partial class LoginPage : ComponentBase
         {
             mensajeError = string.Empty;
 
-            // El servicio barre los endpoints de Java de forma automática buscando coincidencia
-            var (usuario, rolDetectado) = AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena);
+            var (id, nombres, correo, rolDetectado) = AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena);
 
-            if (usuario == null || string.IsNullOrEmpty(rolDetectado))
+            if (string.IsNullOrEmpty(rolDetectado))
             {
                 mensajeError = "El correo electrónico o la contraseña son incorrectos.";
                 return;
             }
 
-            // Si se encuentra, marcamos la sesión global con el rol devuelto directamente por la BD
             if (AuthStateProvider is CustomAuthStateProvider customAuthStateProvider)
             {
-                customAuthStateProvider.MarcarComoAutenticado(usuario, rolDetectado);
+                customAuthStateProvider.MarcarComoAutenticado(id, nombres, correo, rolDetectado);
                 RedirigirSegunRol(rolDetectado);
             }
         }
@@ -54,8 +50,7 @@ public partial class LoginPage : ComponentBase
         try
         {
             mensajeStatus = string.Empty;
-            
-            // Consumo de tu método de verificación sobre listas REST
+
             bool existeUsuario = AuthService.SolicitarRecuperacion(RecuperarModel.Correo);
 
             if (existeUsuario)
@@ -84,14 +79,6 @@ public partial class LoginPage : ComponentBase
         LoginModel = new();
         RecuperarModel = new();
     }
-
-    private string MapearRolEnumAString(RolEnum rol) => rol switch
-    {
-        RolEnum.CLIENTE => "Cliente",
-        RolEnum.PROPIETARIO => "Propietario",
-        RolEnum.ADMINISTRADOR => "Admin",
-        _ => "NoAdmitido"
-    };
 
     private void RedirigirSegunRol(string rol)
     {

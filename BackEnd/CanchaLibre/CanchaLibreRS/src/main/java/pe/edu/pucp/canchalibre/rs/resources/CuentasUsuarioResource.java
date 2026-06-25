@@ -7,8 +7,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBOImpl;
-import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
+import pe.edu.pucp.canchalibre.modelo.Persona;
 import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 
 import java.net.URI;
@@ -90,15 +90,25 @@ public class CuentasUsuarioResource {
                         cuenta.getUserName(),
                         cuenta.getPassword());
 
-        if (success) {
-            return Response.status(Response.Status.OK)
-                    .entity("Login exitoso")
+        if (!success) {
+            return Response.status(401)
+                    .entity(Map.of("error", "Credenciales inválidas"))
                     .build();
         }
 
-        return Response.status(401)
-                .entity("Usuario o password incorrectos")
-                .build();
+        Persona persona = this.cuentaUsuarioBO.buscarPersonaPorUsername(cuenta.getUserName());
+        if (persona == null || persona.getCuentaUsuario() == null) {
+            return Response.status(500)
+                    .entity(Map.of("error", "Usuario autenticado pero no encontrado"))
+                    .build();
+        }
+
+        return Response.ok(Map.of(
+                "id", persona.getId(),
+                "nombres", persona.getNombres(),
+                "correo", persona.getCorreo(),
+                "rol", persona.getCuentaUsuario().getRol().name()
+        )).build();
     }
 
     @POST

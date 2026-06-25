@@ -8,6 +8,19 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 import java.sql.*;
 
 public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements PropietarioDAO {
+    @Override
+    public Integer crear(Propietario modelo) {
+        return ejecutarComando(conn -> {
+            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
+                cmd.execute();
+                return cmd.getInt("p_id");
+            } catch (SQLException e) {
+                System.err.println("Error SQL: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     protected PreparedStatement comandoCrear(Connection conn,
                                              Propietario modelo) throws SQLException{
         String sql = "{call insertarPropietario(?, ?, ?, ?, ?, ?)}";

@@ -29,10 +29,5 @@ public class CuentaUsuarioViewModel : IValidatableObject {
             yield return new ValidationResult("La contrasena debe tener al menos 6 caracteres.", [nameof(Password)]);
         }
 
-        var passwordInformada = !string.IsNullOrWhiteSpace(Password);
-
-        if (passwordInformada) {
-            yield return new ValidationResult("La confirmacion de contrasena no coincide.", [nameof(Password)]);
-        }
     }
 }

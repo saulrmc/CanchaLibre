@@ -10,7 +10,4 @@ public class SolicitudLoginViewModel {
     [Required(ErrorMessage = "Debe ingresar la contraseña")]
     [StringLength(100, ErrorMessage = "La contraseña no puede exceder 100 caracteres")]
     public string Contrasena { get; set; } = string.Empty;
-
-    [EnumDataType(typeof(RolEnum), ErrorMessage = "Debe seleccionar un tipo de usuario valido")]
-    public RolEnum Rol { get; set; }
 }

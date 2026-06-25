@@ -28,8 +28,26 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
         this.administradorDao = new AdministradorDAOImpl();
     }
     @Override
+    public Persona buscarPersonaPorUsername(String username) {
+        if (username == null || username.isBlank()) return null;
+        Persona persona = this.clienteDao.buscarPorCuenta(username);
+        if (persona != null) return persona;
+        persona = this.propietarioDao.buscarPorCuenta(username);
+        if (persona != null) return persona;
+        persona = this.administradorDao.buscarPorCuenta(username);
+        if (persona == null) {
+            CuentaUsuario cu = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
+            if (cu != null && !cu.getUserName().equals(username)) {
+                persona = buscarPersonaPorUsername(cu.getUserName());
+            }
+        }
+        return persona;
+    }
+
+    @Override
     public boolean login(String username, String password) {
-        List<PersonaDAO<?>> daosDeSeguridad = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);        CuentaUsuario cuenta = null;
+        List<PersonaDAO<?>> daosDeSeguridad = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);
+        CuentaUsuario cuenta = null;
 
         for (PersonaDAO<?> dao : daosDeSeguridad) {
             Persona persona = dao.buscarPorCuenta(username);
@@ -38,6 +56,11 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
                 validarCuentaUsuario(cuenta);
                 break;
             }
+        }
+
+        if (cuenta == null) {
+            cuenta = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
+            if (cuenta != null) validarCuentaUsuario(cuenta);
         }
 
         if (cuenta == null) {
