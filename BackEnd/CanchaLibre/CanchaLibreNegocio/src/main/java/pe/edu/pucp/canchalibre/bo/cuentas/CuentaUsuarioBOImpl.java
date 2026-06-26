@@ -27,22 +27,23 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
         this.propietarioDao = new PropietarioDAOImpl();
         this.administradorDao = new AdministradorDAOImpl();
     }
-    @Override
-    public Persona buscarPersonaPorUsername(String username) {
-        if (username == null || username.isBlank()) return null;
-        Persona persona = this.clienteDao.buscarPorCuenta(username);
-        if (persona != null) return persona;
-        persona = this.propietarioDao.buscarPorCuenta(username);
-        if (persona != null) return persona;
-        persona = this.administradorDao.buscarPorCuenta(username);
-        if (persona == null) {
-            CuentaUsuario cu = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
-            if (cu != null && !cu.getUserName().equals(username)) {
-                persona = buscarPersonaPorUsername(cu.getUserName());
-            }
-        }
-        return persona;
-    }
+
+//    @Override
+//    public Persona buscarPersonaPorUsername(String username) {
+//        if (username == null || username.isBlank()) return null;
+//        Persona persona = this.clienteDao.buscarPorCuenta(username);
+//        if (persona != null) return persona;
+//        persona = this.propietarioDao.buscarPorCuenta(username);
+//        if (persona != null) return persona;
+//        persona = this.administradorDao.buscarPorCuenta(username);
+//        if (persona == null) {
+//            CuentaUsuario cu = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
+//            if (cu != null && !cu.getUserName().equals(username)) {
+//                persona = buscarPersonaPorUsername(cu.getUserName());
+//            }
+//        }
+//        return persona;
+//    }
 
     @Override
     public boolean login(String username, String password) {
@@ -58,10 +59,10 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
             }
         }
 
-        if (cuenta == null) {
-            cuenta = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
-            if (cuenta != null) validarCuentaUsuario(cuenta);
-        }
+//        if (cuenta == null) {
+//            cuenta = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
+//            if (cuenta != null) validarCuentaUsuario(cuenta);
+//        }
 
         if (cuenta == null) {
             System.out.println("[LOGIN FAILED] El nombre de usuario '" + username + "' no existe.");

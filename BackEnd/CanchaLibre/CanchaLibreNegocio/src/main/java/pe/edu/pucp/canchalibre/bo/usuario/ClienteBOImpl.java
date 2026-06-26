@@ -25,7 +25,7 @@ public class ClienteBOImpl extends PersonaBOImpl<Cliente> implements ClienteBO {
 
     @Override
     public void guardar(Cliente modelo, Estado estado) {
-        validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
+        validarCliente(modelo);
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {

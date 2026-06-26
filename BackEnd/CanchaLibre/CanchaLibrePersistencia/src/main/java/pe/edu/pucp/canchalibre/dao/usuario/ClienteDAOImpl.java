@@ -8,35 +8,34 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Rol;
 import java.sql.*;
 
 public class ClienteDAOImpl extends PersonaBaseDAO<Cliente> implements ClienteDAO {
-    @Override
-    public Integer crear(Cliente modelo) {
-        return ejecutarComando(conn -> {
-            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
-                cmd.execute();
-                return cmd.getInt("p_id");
-            } catch (SQLException e) {
-                System.err.println("Error SQL: " + e.getMessage());
-                throw new RuntimeException(e);
-            }
-        });
-    }
+//    @Override
+//    public Integer crear(Cliente modelo) {
+//        return ejecutarComando(conn -> {
+//            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
+//                cmd.execute();
+//                return cmd.getInt("p_id");
+//            } catch (SQLException e) {
+//                System.err.println("Error SQL: " + e.getMessage());
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
 
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cliente modelo) throws SQLException{
         String sql = "{call insertarCliente(?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
-//        if (idCuentaUsuario == null) {
-//            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
-//        }
-//        else {
-//            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
-//        }
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
         cmd.setString("p_nombres",modelo.getNombres());
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
-        cmd.setString("p_password",modelo.getCuentaUsuario().getPassword());
-        cmd.setString("p_username",modelo.getCuentaUsuario().getUserName());
+        cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }

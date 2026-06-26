@@ -8,6 +8,16 @@ public class Pago {
     private double monto;
     private LocalDateTime fechaPago;
     private Comprobante comprobante;
+    private int idReservaTransitorio;
+
+    
+    public int getIdReservaTransitorio() {
+        return idReservaTransitorio;
+    }
+
+    public void setIdReservaTransitorio(int idReservaTransitorio) {
+        this.idReservaTransitorio = idReservaTransitorio;
+    }
 
     public int getIdPago() {
         return idPago;

@@ -10,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Map;
 
 
 public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implements CuentaUsuarioDAO {
@@ -25,43 +24,43 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
         return cmd;
     }
 
-    public Map<String, Object> loginConDatos(String username, String password) {
-        return ejecutarComando(conn -> {
-            String sql = "{call loginUsuario(?, ?)}";
+//    public Map<String, Object> loginConDatos(String username, String password) {
+//        return ejecutarComando(conn -> {
+//            String sql = "{call loginUsuario(?, ?)}";
+//
+//            try (CallableStatement cmd = conn.prepareCall(sql)) {
+//                cmd.setString(1, username);
+//                cmd.setString(2, password);
+//
+//                try (ResultSet rs = cmd.executeQuery()) {
+//                    if (!rs.next()) {
+//                        return null;
+//                    }
+//
+//                    return Map.of(
+//                            "idUsuario", rs.getInt("idUsuario"),
+//                            "nombres", rs.getString("nombres"),
+//                            "correo", rs.getString("correo"),
+//                            "rol", rs.getString("rol")
+//                    );
+//                }
+//            }
+//        });
+//    }
 
-            try (CallableStatement cmd = conn.prepareCall(sql)) {
-                cmd.setString(1, username);
-                cmd.setString(2, password);
-
-                try (ResultSet rs = cmd.executeQuery()) {
-                    if (!rs.next()) {
-                        return null;
-                    }
-
-                    return Map.of(
-                            "idUsuario", rs.getInt("idUsuario"),
-                            "nombres", rs.getString("nombres"),
-                            "correo", rs.getString("correo"),
-                            "rol", rs.getString("rol")
-                    );
-                }
-            }
-        });
-    }
-
-    @Override
-    public CuentaUsuario buscarPorUsernameOCorreo(String valor) {
-        return ejecutarComando(conn -> {
-            String sql = "{call obtenerCuentaPorUsername(?)}";
-            try (CallableStatement cmd = conn.prepareCall(sql)) {
-                cmd.setString("p_username", valor);
-                try (ResultSet rs = cmd.executeQuery()) {
-                    if (!rs.next()) return null;
-                    return mapearModelo(rs);
-                }
-            }
-        });
-    }
+//    @Override
+//    public CuentaUsuario buscarPorUsernameOCorreo(String valor) {
+//        return ejecutarComando(conn -> {
+//            String sql = "{call obtenerCuentaPorUsername(?)}";
+//            try (CallableStatement cmd = conn.prepareCall(sql)) {
+//                cmd.setString("p_username", valor);
+//                try (ResultSet rs = cmd.executeQuery()) {
+//                    if (!rs.next()) return null;
+//                    return mapearModelo(rs);
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public boolean login(String username, String password) {
@@ -87,7 +86,7 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
     }
 
     protected PreparedStatement comandoActualizarSeguridad(Connection conn, CuentaUsuario cuenta) throws SQLException {
-        String sql = "{call actualizarSeguridadCuenta(?, ?, ?, ?)}"; // 4 parámetros en total
+        String sql = "{call actualizarSeguridad(?, ?, ?, ?)}"; // 4 parámetros en total
         CallableStatement cmd = conn.prepareCall(sql);
 
         cmd.setInt("p_intentosFallidos", cuenta.getIntentosFallidos());
@@ -128,15 +127,10 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
 
     protected PreparedStatement comandoActualizar(Connection conn,
                                                   CuentaUsuario modelo) throws SQLException {
-        String sql = "{call modificarCuentaUsuario(?, ?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call modificarCuentaUsuario(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_userName", modelo.getUserName());
         cmd.setString("p_password", modelo.getPassword());
-        if (modelo.getRol() != null) {
-            cmd.setString("p_rol", modelo.getRol().name());
-        } else {
-            cmd.setNull("p_rol", Types.VARCHAR);
-        }
         cmd.setInt("p_intentosFallidos",modelo.getIntentosFallidos());
         if (modelo.getUltimaSesion() != null) {
             cmd.setTimestamp("p_ultimaSesion", java.sql.Timestamp.valueOf(modelo.getUltimaSesion()));

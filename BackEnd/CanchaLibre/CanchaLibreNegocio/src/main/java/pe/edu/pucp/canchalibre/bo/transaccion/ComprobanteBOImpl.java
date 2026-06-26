@@ -24,7 +24,7 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
         if (estado == Estado.NUEVO) {
             modelo.setFechaEmision(java.time.LocalDateTime.now());
 
-            int id = this.comprobanteDao.crear(modelo);
+            int id = this.comprobanteDao.insertarComprobante(modelo,modelo.getIdReservaTransitorio());
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el comprobante");
             }
@@ -68,4 +68,11 @@ public class ComprobanteBOImpl extends BaseBO implements ComprobanteBO {
         }
         // No se valida fechaEmision, numero, valorVenta ni montoIgv.
     }
+
+    @Override
+    public int insertarComprobante(Comprobante modelo, int idReserva){
+        validarIdPositivo(idReserva, "id reserva");
+        return this.comprobanteDao.insertarComprobante(modelo, idReserva);
+    }
+
 }

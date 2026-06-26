@@ -25,7 +25,7 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
 
     @Override
     public void guardar(Propietario modelo, Estado estado) {
-        validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
+        validarPropietario(modelo);
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
@@ -81,7 +81,7 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
     }
 
     @Override
-    public void actualizarSaldo(Integer idPropietario, double monto){
+    public void actualizarSaldo(int idPropietario, double monto){
         validarIdPositivo(idPropietario,"id propietario");
         this.propietarioDao.actualizarSaldo(idPropietario,monto);
     }

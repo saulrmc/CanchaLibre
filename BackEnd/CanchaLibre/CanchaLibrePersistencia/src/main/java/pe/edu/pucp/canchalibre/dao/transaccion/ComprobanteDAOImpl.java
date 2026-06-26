@@ -7,10 +7,33 @@ import java.sql.*;
 import java.time.LocalDateTime;
 
 public class ComprobanteDAOImpl extends DefaultBaseDAO<Comprobante> implements ComprobanteDAO {
+    @Override
     protected PreparedStatement comandoCrear(Connection conn,
-                                             Comprobante modelo) throws SQLException {
-        String sql = "{call insertarComprobante(?, ?, ?, ?)}";
+                                             Comprobante modelo) throws SQLException{
+        throw new UnsupportedOperationException("Use insertarComprobante(conn, modelo, idReserva) para crear comprobante");
+    }
+
+    @Override
+    public int insertarComprobante(Comprobante modelo,
+                                    int idReserva){
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoInsertarComprobante(conn, modelo, idReserva)) {
+                cmd.executeUpdate();
+
+                try (CallableStatement cstmt = (CallableStatement) cmd) {
+                    int idGenerado = cstmt.getInt("p_id");
+                    modelo.setIdComprobante(idGenerado);
+                    return idGenerado;
+                }
+            }
+        });
+    }
+
+    protected PreparedStatement comandoInsertarComprobante(Connection conn,
+                                             Comprobante modelo,int idReserva) throws SQLException {
+        String sql = "{call insertarComprobante(?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idReserva", idReserva);
         cmd.setString("p_serie",modelo.getSerie());
         cmd.setObject("p_fechaEmision",modelo.getFechaEmision());
         cmd.setDouble("p_subtotal",modelo.getMontoBloques());

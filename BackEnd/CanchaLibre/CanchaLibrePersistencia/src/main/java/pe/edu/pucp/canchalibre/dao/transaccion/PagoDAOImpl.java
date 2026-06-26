@@ -8,11 +8,34 @@ import java.sql.*;
 import java.time.LocalDateTime;
 
 public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
+    @Override
     protected PreparedStatement comandoCrear(Connection conn,
-                                             Pago modelo) throws SQLException {
-        String sql = "{call insertarPago(?, ?, ?, ?)}";
+                                             Pago modelo) throws SQLException{
+        throw new UnsupportedOperationException("Use insertarPago(conn, modelo, idReserva) para crear pago");
+    }
+
+    @Override
+    public int insertarPago(Pago modelo,
+                                   int idReserva){
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd = this.comandoInsertarPago(conn, modelo, idReserva)) {
+                cmd.executeUpdate();
+
+                try (CallableStatement cstmt = (CallableStatement) cmd) {
+                    int idGenerado = cstmt.getInt("p_id");
+                    modelo.setIdPago(idGenerado);
+                    return idGenerado;
+                }
+            }
+        });
+    }
+
+    protected PreparedStatement comandoInsertarPago(Connection conn,
+                                             Pago modelo, int idReserva) throws SQLException {
+        String sql = "{call insertarPago(?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
 
+        cmd.setInt("p_idReserva",idReserva);
         cmd.setString("p_metodoPago",modelo.getMetodoPago().name());
         cmd.setDouble("p_monto",modelo.getMonto());
         cmd.setObject("p_fechaPago",modelo.getFechaPago());

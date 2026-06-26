@@ -182,7 +182,7 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
 
     @Override
     protected PreparedStatement comandoLeerTodos(Connection conn) throws SQLException{
-        String sql = "{call listar BloquesHorario(?)}";
+        String sql = "{call listarBloquesHorario()}";
         return conn.prepareCall(sql);
     }
 
@@ -200,7 +200,7 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
         }
 
         for(BloqueHorario bloque : bloques){
-            try(PreparedStatement cmd = this.comandoCrearBloqueHorario(conn, idReserva, bloque)){
+            try(PreparedStatement cmd = this.comandoCrearBloqueHorarioReserva(conn, idReserva, bloque)){
                 if(cmd.executeUpdate()==0){
                     throw new SQLException("No se pudo insertar un bloque en la reserva");
                 }
@@ -209,6 +209,17 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
                 }
             }
         }
+    }
+
+    private PreparedStatement comandoCrearBloqueHorarioReserva(Connection conn, int idReserva, BloqueHorario bloque) throws SQLException {
+        String sql = "{call insertarBloqueHorarioReserva(?, ?, ?, ?)}";
+
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idReserva", idReserva);
+        cmd.setInt("p_idBloqueHorario", bloque.getId());
+        cmd.setDouble("p_precioHistorico", bloque.getPrecio());
+        cmd.registerOutParameter("p_id", Types.INTEGER);
+        return cmd;
     }
 
     @Override

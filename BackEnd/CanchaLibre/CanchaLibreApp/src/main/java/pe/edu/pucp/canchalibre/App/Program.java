@@ -16,9 +16,7 @@ import pe.edu.pucp.canchalibre.bo.transaccion.ComprobanteBO;
 import pe.edu.pucp.canchalibre.bo.transaccion.ComprobanteBOImpl;
 
 import pe.edu.pucp.canchalibre.modelo.Estado;
-import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
-import pe.edu.pucp.canchalibre.modelo.cancha.Deporte;
-import pe.edu.pucp.canchalibre.modelo.cancha.Etiqueta;
+import pe.edu.pucp.canchalibre.modelo.cancha.*;
 import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
@@ -54,6 +52,8 @@ public class Program {
         Integer idReserva = null;
         Integer idComprobante = null;
 
+        Reserva reservaContexto = null;
+
         try {
             // ── 1. CUENTA Y CLIENTE (NEGOCIO) ────────────────────────────────────────
             CuentaUsuario cuentaCliente = new CuentaUsuario();
@@ -63,7 +63,6 @@ public class Program {
             cuentaCliente.setIntentosFallidos(0);
             cuentaCliente.setActivo(true);
 
-            // Guardar maneja internamente la creación
             cuentaUsuarioBO.guardar(cuentaCliente, Estado.NUEVO);
             idCuentaCliente = cuentaCliente.getId();
             System.out.println("Cuenta de Cliente creada via BO con ID: " + idCuentaCliente);
@@ -93,9 +92,9 @@ public class Program {
             Propietario propietario = new Propietario();
             propietario.setNombres("Roberto Carlos Dueño");
             propietario.setCorreo("roberto." + sufijo + "@negocio.com");
-            propietario.setTelefono("987654321");
+            propietario.setTelefono("987604321");
             propietario.setCuentaUsuario(cuentaPropietario);
-            propietario.setRUC("20123456789");
+            propietario.setRUC("20511340281");
             propietario.setSaldo(0.00);
             propietario.setCalificacion(5.0);
 
@@ -103,7 +102,6 @@ public class Program {
             idPropietario = propietario.getId();
             System.out.println("Propietario creado via BO con ID: " + idPropietario);
 
-            // Simulación de abono financiero controlado por la capa BO
             propietarioBO.actualizarSaldo(idPropietario, 90.00);
             System.out.println("Saldo verificado del Propietario tras abono: S/." + propietarioBO.obtener(idPropietario).getSaldo());
 
@@ -120,59 +118,87 @@ public class Program {
             cancha.setPrecioBase(120.00);
             cancha.setPromedioCalificacion(4.5);
 
-            canchaBO.guardar(cancha, Estado.NUEVO);
+            var bloquesCancha = new ArrayList<BloqueHorario>();
+            BloqueHorario bloque1 = new BloqueHorario();
+            bloque1.setHoraInicio(java.time.LocalTime.of(18, 0)); // 6:00 PM
+            bloque1.setHoraFin(java.time.LocalTime.of(19, 0));    // 7:00 PM
+            bloque1.setDia(DiaSemana.LUNES);     // Lunes
+            bloque1.setActivo(true);
+            bloque1.setPrecio(80.00);
+            bloque1.setEstado(EstadoBloque.DISPONIBLE);
+            bloquesCancha.add(bloque1);
+
+            BloqueHorario bloque2 = new BloqueHorario();
+            bloque2.setHoraInicio(java.time.LocalTime.of(19, 0));
+            bloque2.setHoraFin(java.time.LocalTime.of(20, 0));
+            bloque2.setDia(DiaSemana.LUNES);
+            bloque2.setActivo(true);
+            bloque2.setEstado(EstadoBloque.MANTENIMIENTO);
+            bloquesCancha.add(bloque2);
+
+            // Asignamos la lista a la cancha para pasar la validación
+            cancha.setBloques(bloquesCancha);
+            canchaBO.guardar(cancha, Estado.NUEVO); //en estado.Nuevo usara precio base para todos los bloques
             idCancha = cancha.getId();
             System.out.println("Cancha registrada con éxito. Nombre: " + canchaBO.obtener(idCancha).getNombre());
 
-            // Modificación por mantenimiento vía BO
-            cancha.setPrecioBase(135.00);
             canchaBO.guardar(cancha, Estado.MODIFICADO);
 
-            // ── 4. RESERVA, PAGO Y COMPROBANTE ───────────────────────────────────────
+            // ── 4. RESERVA, PAGO Y COMPROBANTE (FLUJO DE NEGOCIO REAL) ───────────────
             Reserva reserva = new Reserva();
             reserva.setEstado(EstadoReserva.PENDIENTE_PAGO);
             reserva.setCliente(cliente);
             reserva.setCancha(cancha);
             reserva.setPago(null);
-            reserva.setBloquesSeleccionados(new ArrayList<>()); // Inicialización estructural
+
+            var bloquesParaReservar = new ArrayList<BloqueHorario>();
+            BloqueHorario primerBloque = cancha.getBloques().get(0);
+            BloqueHorario segundoBloque = cancha.getBloques().get(1);
+
+            bloquesParaReservar.add(primerBloque);
+            //bloquesParaReservar.add(segundoBloque);
+            // No se puede registrar un bloque que no este DISPONIBLE
+            reserva.setBloquesSeleccionados(bloquesParaReservar);
 
             reservaBO.guardar(reserva, Estado.NUEVO);
-            idReserva = reserva.getIdReserva();
+            idReserva = reserva.getId();
+            reservaContexto = reserva;
             System.out.println("Reserva creada en estado inicial: " + reservaBO.obtener(idReserva).getEstado());
 
-            // Emisión de transacciones financieras controladas por BO
+            // Emisión de Comprobante delegando la matemática financiera a SQL
             Comprobante comprobante = new Comprobante();
             comprobante.setSerie("B001");
-            comprobante.setNumero((sufijo).substring(0, 8));
-            comprobante.setFechaEmision(LocalDateTime.now());
             comprobante.setMontoBloques(120.00);
+            // Inyectamos el ID necesario para el flujo interno del BO -> DAO
+            comprobante.setIdReservaTransitorio(idReserva);
 
-            double totalBruto = comprobante.getMontoBloques() + comprobante.getComisionPlataforma();
-            comprobante.setValorVenta(totalBruto / 1.18);
-            comprobante.setMontoIgv(totalBruto - comprobante.getValorVenta());
-
+            // Al guardar, el BO llama internamente a insertarComprobante(modelo, idReserva)
             comprobanteBO.guardar(comprobante, Estado.NUEVO);
             idComprobante = comprobante.getIdComprobante();
+            System.out.println("Comprobante creado y calculado vía BD: Nro " + comprobante.getNumero());
 
+            // Registro del Pago asociado
             Pago pago = new Pago();
             pago.setMetodoPago(MetodoPago.YAPE);
             pago.setFechaPago(LocalDateTime.now());
-            pago.setMonto(totalBruto);
-            pago.setComprobante(comprobante);
+            // El monto total incluye lo calculado (Monto bloques + comisión base de S/. 5.00)
+            pago.setMonto(comprobante.getMontoBloques() + 5.00);
+            pago.setIdReservaTransitorio(idReserva);
 
             pagoBO.guardar(pago, Estado.NUEVO);
+
+            pago.setComprobante(comprobante);
+            reserva.setPago(pago);
+            pagoBO.guardar(pago,Estado.MODIFICADO);
             idPago = pago.getIdPago();
 
-            // Transición lógica del negocio: Confirmación de reserva segura
-            reserva.setPago(pago);
+            // Transición lógica y confirmación final de la reserva
             reserva.setEstado(EstadoReserva.CONFIRMADA);
-
-            // validarReserva se activa automáticamente aquí dentro para proteger el negocio
             reservaBO.guardar(reserva, Estado.MODIFICADO);
+
             System.out.println("¡Validación y confirmación exitosa vía BO! Estado final: "
                     + reservaBO.obtener(idReserva).getEstado());
-
-            System.out.println("\n--- REPORTE FINAL DE BIEVENIDA DE LA RED ---");
+            System.out.println("\n--- REPORTE FINAL DE BIENVENIDA DE LA RED ---");
             System.out.println("Total reservas activas: " + reservaBO.listar().size());
             System.out.println("Flujo de negocio completado.");
 
@@ -183,9 +209,15 @@ public class Program {
             // ── LIMPIEZA CRONOLÓGICA INVERSA USANDO BO ───────────────────────────────
             System.out.println("\n--- INICIANDO LIMPIEZA DE ENTORNO ---");
             try {
-                if (idComprobante != null) { comprobanteBO.eliminar(idComprobante); System.out.println("Comprobante removido."); }
+                if (idReserva != null && reservaContexto != null) {
+                    reservaContexto.setEstado(EstadoReserva.PENDIENTE_PAGO);
+                    reservaContexto.setPago(null);
+                    reservaContexto.setActivo(true);
+                    reservaBO.guardar(reservaContexto, Estado.MODIFICADO);
+                }
                 if (idPago != null) { pagoBO.eliminar(idPago); System.out.println("Pago removido."); }
-                if (idReserva != null) { reservaBO.eliminar(idReserva); System.out.println("Reserva removida."); }
+                if (idComprobante != null) { comprobanteBO.eliminar(idComprobante); System.out.println("Comprobante removido."); }
+                if (idReserva != null) {reservaBO.eliminar(idReserva); System.out.println("Reserva removida."); }
                 if (idCancha != null) { canchaBO.eliminar(idCancha); System.out.println("Cancha removida."); }
                 if (idPropietario != null) { propietarioBO.eliminar(idPropietario); System.out.println("Propietario removido."); }
                 if (idCuentaPropietario != null) { cuentaUsuarioBO.eliminar(idCuentaPropietario); System.out.println("Cuenta Propietario desvinculada."); }

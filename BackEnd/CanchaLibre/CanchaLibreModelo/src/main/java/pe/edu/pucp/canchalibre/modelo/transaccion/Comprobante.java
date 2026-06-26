@@ -13,6 +13,11 @@ public class Comprobante {
 	private double valorVenta; //montoBloques+comision / 1.18 (precio ya incluye igv 18%)
 	private double montoIgv; //montoBloques+comision - valorVenta
 
+	private int idReservaTransitorio;
+
+	public int getIdReservaTransitorio() { return idReservaTransitorio; }
+	public void setIdReservaTransitorio(int idReservaTransitorio) { this.idReservaTransitorio = idReservaTransitorio; }
+
 	public double getMontoIgv() {return montoIgv;}
 	public void setMontoIgv(double montoIgv) {this.montoIgv = montoIgv;}
 

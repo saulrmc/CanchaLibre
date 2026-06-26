@@ -70,7 +70,7 @@ public class ResenaBOImpl extends BaseBO implements ResenaBO {
         }
 
         Objects.requireNonNull(modelo.getReserva(), "La reseña debe estar asociada a una reserva válida.");
-        validarIdPositivo(modelo.getReserva().getIdReserva(), "id de la reserva");
+        validarIdPositivo(modelo.getReserva().getId(), "id de la reserva");
     }
 
     @Override

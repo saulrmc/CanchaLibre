@@ -38,12 +38,12 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
                 modelo.setEstado(EstadoReserva.PENDIENTE_PAGO);
 
                 int id = this.reservaDao.crear(modelo);
-                modelo.setIdReserva(id);
-            }
-            else if (estado == Estado.MODIFICADO) {
-                validarIdPositivo(modelo.getIdReserva(), "id de la reserva");
+                modelo.setId(id);
+            } else if (estado == Estado.MODIFICADO) {
+                validarIdPositivo(modelo.getId(), "id de la reserva");
 
                 if (modelo.getEstado() == EstadoReserva.CANCELADA) {
+                    modelo.setActivo(false);
                     double montoOriginal = modelo.getPago().getMonto();
                     int idPropietario = modelo.getCancha().getPropietario().getId();
 
@@ -54,12 +54,14 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
                         propietarioBo.actualizarSaldo(idPropietario, -montoOriginal);
                         System.out.println("[GUARDAR BO] Deducción de saldo aplicada correctamente al propietario ID: " + idPropietario);
                     }
+                }else{
+                    modelo.setActivo(true);
                 }
 
                 if (!this.reservaDao.actualizar(modelo)) {
-                    throw new IllegalStateException("No se pudo actualizar la reserva con id: " + modelo.getIdReserva());
+                    throw new IllegalStateException("No se pudo actualizar la reserva con id: " + modelo.getId());
                 }
-            }else{
+            } else {
                 throw new IllegalArgumentException("Estado no soportado en guardar: " + estado);
             }
             TransactionsManager.commitTransaccion();
@@ -125,12 +127,15 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
 
         Objects.requireNonNull(modelo.getCancha(), "La reserva necesita una cancha asociada");
         validarIdPositivo(modelo.getCancha().getId(), "id de la cancha");
+        validarBloquesSeleccionados(modelo.getBloquesSeleccionados());
+    }
 
-        if (modelo.getBloquesSeleccionados() == null || modelo.getBloquesSeleccionados().isEmpty()) {
+    private void validarBloquesSeleccionados(List<BloqueHorario> bloques) {
+        if(bloques ==null||bloques.isEmpty()){
             throw new IllegalArgumentException("La reserva necesita al menos un bloque horario");
         }
 
-        for (BloqueHorario bloque : modelo.getBloquesSeleccionados()) {
+        for(BloqueHorario bloque : bloques){
             Objects.requireNonNull(bloque, "La reserva no puede tener bloques nulos");
             validarIdPositivo(bloque.getId(), "id del bloque horario");
 
@@ -190,7 +195,7 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
         LocalDateTime limiteCancelacionGratuita = inicioPartido.minusHours(24);
 
         System.out.println("[AUDITORÍA BO - VALIDACIÓN CANCELACIÓN]");
-        System.out.println("-> ID Reserva: " + modelo.getIdReserva());
+        System.out.println("-> ID Reserva: " + modelo.getId());
 
         if (ahora.isAfter(limiteCancelacionGratuita)) {
             System.out.println("-> Tipo: TARDÍA (Faltan menos de 24 horas).");

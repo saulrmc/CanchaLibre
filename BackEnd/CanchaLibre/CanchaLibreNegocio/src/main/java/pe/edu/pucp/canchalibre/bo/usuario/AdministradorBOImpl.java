@@ -25,7 +25,7 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
 
     @Override
     public void guardar(Administrador modelo, Estado estado) {
-        validarPersonaBasica(modelo, modelo.getClass().getSimpleName().toLowerCase());
+        validarAdministrador(modelo);
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {

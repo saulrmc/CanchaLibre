@@ -18,7 +18,7 @@ public class ResenaDAOImpl extends DefaultBaseDAO<Resena> implements ResenaDAO {
         cmd.setString("p_descripcion",modelo.getDescripcion());
         cmd.setDouble("p_calificacion",modelo.getCalificacion());
         cmd.setObject("p_fechaPublicacion",modelo.getFechaPublicacion());
-        cmd.setInt("p_idReserva",modelo.getReserva().getIdReserva());
+        cmd.setInt("p_idReserva",modelo.getReserva().getId());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }

@@ -8,42 +8,41 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 import java.sql.*;
 
 public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements PropietarioDAO {
-    @Override
-    public Integer crear(Propietario modelo) {
-        return ejecutarComando(conn -> {
-            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
-                cmd.execute();
-                return cmd.getInt("p_id");
-            } catch (SQLException e) {
-                System.err.println("Error SQL: " + e.getMessage());
-                throw new RuntimeException(e);
-            }
-        });
-    }
+//    @Override
+//    public Integer crear(Propietario modelo) {
+//        return ejecutarComando(conn -> {
+//            try (CallableStatement cmd = (CallableStatement) comandoCrear(conn, modelo)) {
+//                cmd.execute();
+//                return cmd.getInt("p_id");
+//            } catch (SQLException e) {
+//                System.err.println("Error SQL: " + e.getMessage());
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
 
     protected PreparedStatement comandoCrear(Connection conn,
                                              Propietario modelo) throws SQLException{
-        String sql = "{call insertarPropietario(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarPropietario(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
-//        if (idCuentaUsuario == null) {
-//            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
-//        }
-//        else {
-//            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
-//        }
+        if (idCuentaUsuario == null) {
+            cmd.setNull("p_idCuentaUsuario", Types.INTEGER);
+        }
+        else {
+            cmd.setInt("p_idCuentaUsuario", idCuentaUsuario);
+        }
         cmd.setString("p_nombres",modelo.getNombres());
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
-//        cmd.setString("p_RUC",modelo.getRUC());
-        cmd.setString("p_password",modelo.getCuentaUsuario().getPassword());
-        cmd.setString("p_username",modelo.getCuentaUsuario().getUserName());
+        cmd.setString("p_ruc",modelo.getRUC());
+        cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     protected PreparedStatement comandoActualizar(Connection conn, Propietario modelo) throws SQLException {
-        String sql = "{call modificarPropietario(?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call modificarPropietario(?, ?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         Integer idCuentaUsuario = getIdCuentaUsuario(modelo);
         if (idCuentaUsuario == null) {
@@ -56,7 +55,8 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
         cmd.setString("p_correo",modelo.getCorreo());
         cmd.setString("p_telefono",modelo.getTelefono());
         cmd.setDouble("p_calificacion",modelo.getCalificacion());
-        cmd.setString("P_RUC",modelo.getRUC());
+        cmd.setString("p_ruc",modelo.getRUC());
+        cmd.setDouble("p_saldo",modelo.getSaldo());
         cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.setInt("p_id",modelo.getId());
         return cmd;
@@ -100,21 +100,20 @@ public class PropietarioDAOImpl extends PersonaBaseDAO<Propietario> implements P
 
     protected PreparedStatement comandoActualizarSaldo(
             Connection conn,
-            Integer id, Double monto)
+            int id, Double monto)
             throws SQLException {
 
-        String sql = "{call actualizarSaldoPropietario(?, ?, ?)}";
+        String sql = "{call actualizarSaldo(?, ?)}";
 
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_idPropietario", id);
         cmd.setDouble("p_monto", monto);
-        cmd.registerOutParameter("p_saldo",Types.DECIMAL);
 
         return cmd;
     }
 
     @Override
-    public void actualizarSaldo(Integer idPropietario, double monto){
+    public void actualizarSaldo(int idPropietario, double monto){
         ejecutarComando(conn -> {
             try (PreparedStatement cmd = this.comandoActualizarSaldo(conn, idPropietario, monto)) {
                 cmd.executeUpdate();

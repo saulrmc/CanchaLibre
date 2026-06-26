@@ -1,5 +1,6 @@
 package pe.edu.pucp.canchalibre.modelo.reserva;
 
+import pe.edu.pucp.canchalibre.modelo.Registro;
 import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
@@ -8,8 +9,7 @@ import pe.edu.pucp.canchalibre.modelo.usuario.Cliente;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Reserva {
-    private int idReserva;
+public class Reserva extends Registro {
     private EstadoReserva estado;
     private Cliente cliente;
     private Cancha cancha;
@@ -53,12 +53,5 @@ public class Reserva {
     }
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
-    }
-
-    public int getIdReserva() {
-        return idReserva;
-    }
-    public void setIdReserva(int idReserva) {
-        this.idReserva = idReserva;
     }
 }

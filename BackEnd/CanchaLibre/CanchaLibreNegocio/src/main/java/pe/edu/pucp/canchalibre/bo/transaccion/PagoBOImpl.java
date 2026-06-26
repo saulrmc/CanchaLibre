@@ -25,7 +25,7 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
             modelo.setFechaPago(java.time.LocalDateTime.now());
             modelo.setComprobante(null);
 
-            int id = this.pagoDao.crear(modelo);
+            int id = this.pagoDao.insertarPago(modelo,modelo.getIdReservaTransitorio());
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el pago");
             }
@@ -87,5 +87,11 @@ public class PagoBOImpl extends BaseBO implements PagoBO {
             throw new IllegalArgumentException("El monto de pago nebe ser no nulo");
         }
         Objects.requireNonNull(modelo.getMetodoPago(), "El método de pago es obligatorio");
+    }
+
+    @Override
+    public int insertarPago(Pago modelo, int idReserva) {
+        validarIdPositivo(idReserva, "id reserva");
+        return this.pagoDao.insertarPago(modelo, idReserva);
     }
 }

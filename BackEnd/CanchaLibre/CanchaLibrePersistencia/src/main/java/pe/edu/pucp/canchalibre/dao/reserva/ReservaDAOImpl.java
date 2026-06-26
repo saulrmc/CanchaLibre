@@ -28,7 +28,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             if (idOrden == null) {
                 return null;
             }
-            modelo.setIdReserva(idOrden);
+            modelo.setId(idOrden);
             this.bloqueDao.crearBloquesPorReserva(conn, idOrden, modelo.getBloquesSeleccionados());
             return idOrden;
         });
@@ -66,7 +66,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 }
 
                 Reserva modelo = this.mapearModelo(rs);
-                modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva()));
+                modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getId()));
                 return modelo;
             }
         });
@@ -80,7 +80,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 List<Reserva> modelos = new ArrayList<>();
                 while (rs.next()) {
                     Reserva modelo = this.mapearModelo(rs);
-                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getIdReserva()));
+                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getId()));
                     modelos.add(modelo);
                 }
                 return modelos;
@@ -91,7 +91,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
     @Override
     protected PreparedStatement comandoCrear(Connection conn, Reserva modelo) throws SQLException {
-        String sql = "{call insertarReserva(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call insertarReserva(?, ?, ?, ?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_estado",modelo.getEstado().name());
         cmd.setInt("p_idCliente",modelo.getCliente().getId());
@@ -103,13 +103,14 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         else {
             cmd.setInt("p_idPago",modelo.getPago().getIdPago());
         }
+        cmd.setBoolean("p_activo",modelo.isActivo());
         cmd.registerOutParameter("p_id",Types.INTEGER);
         return cmd;
     }
 
     @Override
     protected PreparedStatement comandoActualizar(Connection conn, Reserva modelo) throws SQLException {
-        String sql = "{call modificarReserva(?, ?, ?)}";
+        String sql = "{call modificarReserva(?, ?, ?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setString("p_estado",modelo.getEstado().name());
         if(modelo.getPago()==null){
@@ -118,7 +119,8 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         else {
             cmd.setInt("p_idPago",modelo.getPago().getIdPago());
         }
-        cmd.setInt("p_id",modelo.getIdReserva());
+        cmd.setBoolean("p_activo",modelo.isActivo());
+        cmd.setInt("p_id",modelo.getId());
         return cmd;
     }
 
@@ -147,7 +149,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     protected Reserva mapearModelo(ResultSet rs) throws SQLException {
         Reserva modelo = new Reserva();
-        modelo.setIdReserva(rs.getInt("idReserva"));
+        modelo.setId(rs.getInt("id"));
         modelo.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
         modelo.setCliente(new ClienteDAOImpl().leer(rs.getInt("idCliente")));
         modelo.setCancha(new CanchaDAOImpl().leer(rs.getInt("idCancha")));
@@ -156,7 +158,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
         if(!rs.wasNull()){
             modelo.setPago(new PagoDAOImpl().leer(idPago));
         }
-
+        modelo.setActivo(rs.getBoolean("activo"));
         return modelo;
     }
 
