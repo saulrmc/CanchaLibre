@@ -119,6 +119,24 @@ public class ClientesResource {
         return Response.noContent().build();
     }
 
+    @GET
+    @Path("nombres/{nombres}")
+    public List<Cliente> buscarPorNombre(@PathParam("nombres") String nombres) {
+        return clienteBO.buscarPorNombre(nombres);
+    }
+
+    @GET
+    @Path("username/{userName}")
+    public Response buscarPorCuenta(@PathParam("userName") String userName) {
+        Cliente cliente = clienteBO.buscarPorCuenta(userName);
+        if (cliente == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "El cliente con cuenta: " + userName + ", no existe"))
+                    .build();
+        }
+        return Response.ok(cliente).build();
+    }
+
     private boolean payloadInvalido(Cliente cliente) {
         return cliente == null ||
                 cliente.getCorreo() == null ||

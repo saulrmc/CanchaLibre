@@ -70,7 +70,7 @@ public class ReservasResource {
         reservaBO.guardar(reserva, Estado.NUEVO);
 
         URI location = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(reserva.getIdReserva()))
+                .path(String.valueOf(reserva.getId()))
                 .build();
 
         return Response.created(location)
@@ -106,7 +106,7 @@ public class ReservasResource {
                     .build();
         }
 
-        reserva.setIdReserva(idReserva);
+        reserva.setId(idReserva);
 
         reservaBO.guardar(reserva, Estado.MODIFICADO);
 

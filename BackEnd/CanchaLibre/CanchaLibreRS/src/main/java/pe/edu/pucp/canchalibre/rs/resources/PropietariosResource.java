@@ -122,6 +122,53 @@ public class PropietariosResource {
         return Response.noContent().build();
     }
 
+    @GET
+    @Path("nombres/{nombres}")
+    public List<Propietario> buscarPorNombre(@PathParam("nombres") String nombres) {
+        return propietarioBO.buscarPorNombre(nombres);
+    }
+
+    @GET
+    @Path("username/{userName}")
+    public Response buscarPorCuenta(@PathParam("userName") String userName) {
+        Propietario propietario = propietarioBO.buscarPorCuenta(userName);
+        if (propietario == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "El propietario con cuenta: " + userName + ", no existe"))
+                    .build();
+        }
+        return Response.ok(propietario).build();
+    }
+
+    @PATCH
+    @Path("{id}/saldo")
+    public Response actualizarSaldo(@PathParam("id") int idPropietario, Map<String, Double> body) {
+        if (idPropietario <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("error", "El ID es inválido"))
+                    .build();
+        }
+
+        Double monto = body.get("monto");
+        if (monto == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("error", "El monto es obligatorio"))
+                    .build();
+        }
+
+        Propietario propietario = propietarioBO.obtener(idPropietario);
+        if (propietario == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "El propietario con id: " + idPropietario + ", no existe"))
+                    .build();
+        }
+
+        propietarioBO.actualizarSaldo(idPropietario, monto);
+        propietario = propietarioBO.obtener(idPropietario);
+
+        return Response.ok(propietario).build();
+    }
+
     private boolean payloadInvalido(Propietario propietario) {
         return propietario == null ||
                 propietario.getCorreo() == null ||

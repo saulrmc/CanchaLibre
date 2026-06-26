@@ -5,11 +5,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
+import pe.edu.pucp.canchalibre.bo.PersonaBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBOImpl;
+import pe.edu.pucp.canchalibre.bo.usuario.*;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.Persona;
-import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
+import pe.edu.pucp.canchalibre.modelo.usuario.*;
 
 import java.net.URI;
 import java.util.Map;
@@ -21,11 +23,17 @@ import java.util.List;
 public class CuentasUsuarioResource {
 
     private final CuentaUsuarioBO cuentaUsuarioBO;
+    private final ClienteBO clienteBO;
+    private final PropietarioBO  propietarioBO;
+    private final AdministradorBO administradorBO;
     @Context
     private UriInfo uriInfo;
 
     public CuentasUsuarioResource() {
         cuentaUsuarioBO = new CuentaUsuarioBOImpl();
+        propietarioBO = new PropietarioBOImpl();
+        clienteBO = new ClienteBOImpl();
+        administradorBO = new AdministradorBOImpl();
     }
 
     @GET
@@ -96,7 +104,11 @@ public class CuentasUsuarioResource {
                     .build();
         }
 
-        Persona persona = this.cuentaUsuarioBO.buscarPersonaPorUsername(cuenta.getUserName());
+        Persona persona;
+        if(cuenta.getRol() == Rol.PROPIETARIO) persona = propietarioBO.buscarPorCuenta(cuenta.getUserName());
+        else if(cuenta.getRol() == Rol.ADMINISTRADOR) persona = administradorBO.buscarPorCuenta(cuenta.getUserName());
+        else if(cuenta.getRol() == Rol.CLIENTE) persona = clienteBO.buscarPorCuenta(cuenta.getUserName());
+        else persona = null;
         if (persona == null || persona.getCuentaUsuario() == null) {
             return Response.status(500)
                     .entity(Map.of("error", "Usuario autenticado pero no encontrado"))
@@ -109,6 +121,27 @@ public class CuentasUsuarioResource {
                 "correo", persona.getCorreo(),
                 "rol", persona.getCuentaUsuario().getRol().name()
         )).build();
+    }
+
+    @PUT
+    @Path("{id}/seguridad")
+    public Response actualizarDatosSeguridad(@PathParam("id") int id, CuentaUsuario cuenta) {
+        if (id <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("error", "El ID es inválido"))
+                    .build();
+        }
+
+        if (this.cuentaUsuarioBO.obtener(id) == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Cuenta: " + id + ", no encontrada")
+                    .build();
+        }
+
+        cuenta.setId(id);
+        this.cuentaUsuarioBO.actualizarDatosSeguridad(cuenta);
+
+        return Response.ok(cuenta).build();
     }
 
     @POST

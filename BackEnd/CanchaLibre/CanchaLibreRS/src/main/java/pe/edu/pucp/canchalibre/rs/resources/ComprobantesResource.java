@@ -57,13 +57,45 @@ public class ComprobantesResource {
             comprobante.getFechaEmision() == null ) {
 
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(Map.of("error", "El payload para crear la comprobante es inválido"))
+                    .entity(Map.of("error", "El payload para crear el comprobante es inválido"))
                     .build();
         }
 
         comprobanteBO.guardar(comprobante, Estado.NUEVO);
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(comprobante.getIdComprobante()))
+                .build();
+
+        return Response.created(location)
+                .entity(comprobante)
+                .build();
+    }
+
+    @POST
+    @Path("reserva/{idReserva}")
+    public Response crearComprobanteConReserva(Comprobante comprobante, @PathParam("idReserva") int idReserva) {
+        if (idReserva <= 0) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("error", "El ID de reserva es inválido"))
+                    .build();
+        }
+
+        if (comprobante == null || comprobante.getSerie() == null || comprobante.getSerie().isBlank()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("error", "El payload para crear el comprobante es inválido"))
+                    .build();
+        }
+
+        int id = comprobanteBO.insertarComprobante(comprobante, idReserva);
+        if (id <= 0) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", "No se pudo crear el comprobante"))
+                    .build();
+        }
+
+        comprobante.setIdComprobante(id);
+        URI location = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(id))
                 .build();
 
         return Response.created(location)

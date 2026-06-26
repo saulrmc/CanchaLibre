@@ -104,6 +104,18 @@ public class ResenasResource {
         return Response.ok(resena).build();
     }
 
+    @GET
+    @Path("cancha/{idCancha}")
+    public List<Resena> listarResenasPorCancha(@PathParam("idCancha") Integer idCancha) {
+        return resenaBO.listarResenasPorCancha(idCancha);
+    }
+
+    @GET
+    @Path("cliente/{idCliente}")
+    public List<Resena> listarResenasPorCliente(@PathParam("idCliente") Integer idCliente) {
+        return resenaBO.listarResenasPorCliente(idCliente);
+    }
+
     @DELETE
     @Path("{id}")
     public Response eliminarResena(@PathParam("id") int idResena) {

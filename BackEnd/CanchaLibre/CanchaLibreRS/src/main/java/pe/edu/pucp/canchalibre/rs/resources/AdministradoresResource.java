@@ -110,6 +110,24 @@ public class AdministradoresResource {
         return Response.ok(administrador).build();
     }
 
+    @GET
+    @Path("nombres/{nombres}")
+    public List<Administrador> buscarPorNombre(@PathParam("nombres") String nombres) {
+        return administradorBO.buscarPorNombre(nombres);
+    }
+
+    @GET
+    @Path("username/{userName}")
+    public Response buscarPorCuenta(@PathParam("userName") String userName) {
+        Administrador administrador = administradorBO.buscarPorCuenta(userName);
+        if (administrador == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(Map.of("error", "El administrador con cuenta: " + userName + ", no existe"))
+                    .build();
+        }
+        return Response.ok(administrador).build();
+    }
+
     @DELETE
     @Path("{id}")
     public Response eliminarAdministrador(@PathParam("id") int idAdministrador) {

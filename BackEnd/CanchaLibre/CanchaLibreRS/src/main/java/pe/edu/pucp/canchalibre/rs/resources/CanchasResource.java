@@ -104,6 +104,12 @@ public class CanchasResource {
         return Response.ok(cancha).build();
     }
 
+    @GET
+    @Path("propietario/{userName}")
+    public List<Cancha> listarCanchasPorCuenta(@PathParam("userName") String userName) {
+        return canchaBO.listarCanchasPorCuenta(userName);
+    }
+
     @DELETE
     @Path("{id}")
     public Response eliminarCancha(@PathParam("id") int idCancha) {
