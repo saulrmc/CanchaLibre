@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CanchaDAO extends Persistible<Cancha,Integer> {
     List<Cancha> listarCanchasPorCuenta(String cuenta); //canchas por propietario, conectado al userName
+    List<Cancha> listarCanchasPorDistrito(String distritoOficial);
 }

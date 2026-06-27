@@ -12,6 +12,8 @@ DROP PROCEDURE IF EXISTS listarDeportesCancha;
 DROP PROCEDURE IF EXISTS listarEtiquetasCancha;
 DROP PROCEDURE IF EXISTS listarCanchasPorCuenta;
 
+DROP PROCEDURE IF EXISTS listarCanchasPorDistrito;
+
 DELIMITER //
 
 CREATE PROCEDURE insertarCancha(
@@ -176,4 +178,13 @@ BEGIN
         FROM CANCHA_DEPORTE cd2
         WHERE cd2.idCancha = p_idCancha
     );
+END //
+
+CREATE PROCEDURE listarCanchasPorDistrito(
+    IN p_distrito VARCHAR(255)
+)
+BEGIN
+    SELECT * FROM CANCHA
+    WHERE activo = TRUE
+      AND direccion LIKE CONCAT('% - ', p_distrito);
 END //
