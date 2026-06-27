@@ -4,6 +4,7 @@ using CanchaLibreWeb.Servicios.Cuentas;
 using CanchaLibreWeb.Servicios.Reservas;
 using CanchaLibreWeb.Servicios.Usuarios;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
