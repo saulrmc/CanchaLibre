@@ -22,23 +22,33 @@ public class AuthServiceRestClient : IAuthServiceClient
 
     public (int Id, string Nombres, string Correo, string? Rol) ValidarCredenciales(string correo, string contrasena)
     {
-        var payload = new { userName = correo, password = contrasena };
-        var requestJson = JsonSerializer.Serialize(payload);
-        var content = new StringContent(requestJson, System.Text.Encoding.UTF8, "application/json");
+        string[] roles = ["CLIENTE", "PROPIETARIO", "ADMINISTRADOR"];
 
-        var response = _httpClient.PostAsync("cuentas/login", content)
-            .GetAwaiter().GetResult();
+        foreach (var rol in roles)
+        {
+            var payload = new { userName = correo, password = contrasena, rol };
+            var requestJson = JsonSerializer.Serialize(payload);
+            var content = new StringContent(requestJson, System.Text.Encoding.UTF8, "application/json");
 
-        if (!response.IsSuccessStatusCode)
-            return (0, string.Empty, string.Empty, null);
+            var response = _httpClient.PostAsync("cuentas/login", content)
+                .GetAwaiter().GetResult();
 
-        var json = response.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
-        int id = json.GetProperty("id").GetInt32();
-        string nombres = json.GetProperty("nombres").GetString() ?? string.Empty;
-        string correoResp = json.GetProperty("correo").GetString() ?? string.Empty;
-        string rol = json.GetProperty("rol").GetString() ?? string.Empty;
+            if (response.IsSuccessStatusCode)
+            {
+                var json = response.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+                int id = json.GetProperty("id").GetInt32();
+                string nombres = json.GetProperty("nombres").GetString() ?? string.Empty;
+                string correoResp = json.GetProperty("correo").GetString() ?? string.Empty;
+                string rolResp = json.GetProperty("rol").GetString() ?? string.Empty;
 
-        return (id, nombres, correoResp, rol);
+                return (id, nombres, correoResp, rolResp);
+            }
+
+            if ((int)response.StatusCode == 401)
+                return (0, string.Empty, string.Empty, null);
+        }
+
+        return (0, string.Empty, string.Empty, null);
     }
 
     public bool SolicitarRecuperacion(string correo)
