@@ -36,6 +36,12 @@
     position: relative;
 }
 
+    .wizard-steps-flex .text-center:hover .step-number {
+        transform: scale(1.08);
+        transition: transform 0.1s ease-in-out;
+        box-shadow: 0 0 8px rgba(22, 163, 74, 0.2); /* Sutil brillo verde */
+    }
+
 .preview-box {
     background-color: #f8f9fa; /* bg-light */
     border: 1px solid #dee2e6; /* border */
@@ -181,3 +187,233 @@
         border-color: #A7F3D0 !important;
         cursor: not-allowed;
     }
+
+/* Indicadores de leyenda en el Paso 3 */
+.indicador-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+    .indicador-color.activo {
+        background-color: #dcfce7;
+        border: 1px solid #bbf7d0;
+    }
+
+    .indicador-color.inactivo {
+        background-color: #e5e7eb;
+        border: 1px solid #cbd5e1;
+    }
+
+.contenedor-matriz-fina {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    max-height: 500px; /* Controla la altura del scroll */
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
+.tabla-horarios-custom thead th {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #f8fafc !important; /* Evita que las horas pasen por detrás y se traslapan de forma transparente */
+    color: #1e293b !important;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    vertical-align: middle !important;
+    padding: 12px;
+    border-bottom: 2px solid #cbd5e1 !important;
+    z-index: 20; /* Prioridad alta para que flote por encima de los números de las horas */
+    box-shadow: inset 0 -2px 0 #cbd5e1; /* Reemplaza el borde nativo que Bootstrap a veces borra al hacer sticky */
+}
+
+.columna-hora-header {
+    min-width: 95px;
+    background-color: #f1f5f9 !important;
+    z-index: 25; /* Un toque más arriba por si acaso */
+}
+
+/* Tabla Estilizada */
+.tabla-horarios-custom {
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin: 0 !important;
+}
+
+    /* Cabecera Fija (Sticky) para que no se pierdan los días al scrollear */
+    .tabla-horarios-custom theological th {
+        position: sticky;
+        top: 0;
+        background: #f8fafc;
+        color: #334155;
+        font-size: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-align: center;
+        padding: 12px;
+        border-bottom: 2px solid #cbd5e1;
+        z-index: 10;
+    }
+
+
+.celda-hora {
+    width: 12% !important;
+    min-width: 85px;
+    background: #f1f5f9 !important;
+}
+
+/* El 88% restante del ancho se divide equitativamente entre los 7 días (aprox 12.5% cada uno) */
+.tabla-horarios-custom th:not(.columna-hora-header),
+.celda-slot {
+    width: 12.5% !important;
+    min-width: 0 !important; /* Permite que colapsen de forma fluida */
+    padding: 8px 4px !important; /* Un padding un toque más compacto */
+}
+
+/* Ajuste del tamaño de los textos internos por si el botón se achica */
+.texto-precio {
+    color: #16a34a;
+    font-size: 11px; /* Subimos un puntito para que se lea mejor */
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+/* Celdas de hora fijas a la izquierda */
+.celda-hora {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    background: #f8fafc;
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1px solid #cbd5e1;
+    padding: 10px;
+}
+
+/* Estilo Base de las Celdas Interactivas (Inactivas por defecto) */
+.celda-slot {
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #f1f5f9; /* Gris base idéntico a la imagen */
+    color: #94a3b8;
+    transition: all 0.1s ease-in-out;
+    padding: 6px !important;
+    border: 2px solid #ffffff !important; /* Margen blanco divisor entre botones */
+    user-select: none;
+    min-width: 90px;
+    border-radius: 6px;
+}
+
+    .celda-slot:hover {
+        background-color: #e2e8f0;
+        color: #16a34a;
+    }
+
+.slot-activo {
+    background-color: #dcfce7 !important;
+    border: 2px solid #ffffff !important;
+    position: relative;
+}
+
+    .slot-activo:hover {
+        background-color: #bbf7d0 !important;
+        cursor: revert; /* O puedes usar 'pointer' o 'cell' */
+    }
+
+        /* Opcional: Un micro texto que aparece al pasar el mouse por encima del bloque activo */
+        .slot-activo:hover .texto-precio {
+            color: #15803d;
+        }
+
+/* Contenidos Internos */
+.wrapper-info-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.icono-check {
+    color: #16a34a;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+.icono-mas {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Leyendas superiores */
+.indicador-color {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+}
+
+    .indicador-color.activo {
+        background-color: #dcfce7;
+        border: 1px solid #bbf7d0;
+    }
+
+    .indicador-color.inactivo {
+        background-color: #f1f5f9;
+        border: 1px solid #cbd5e1;
+    }
+
+/* Backdrop oscuro del fondo */
+.custom-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.4); /* Opacidad moderna estilo Tailwind */
+    backdrop-filter: blur(2px); /* Difumina sutilmente el fondo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000; /* Por encima de la cabecera fija */
+}
+
+/* El mini modal plano */
+.custom-mini-modal {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 360px; /* Tamaño super compacto */
+    padding: 20px;
+    animation: modalScaleIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.extra-small {
+    font-size: 10px;
+}
+
+/* Animación sutil de entrada */
+@keyframes modalScaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

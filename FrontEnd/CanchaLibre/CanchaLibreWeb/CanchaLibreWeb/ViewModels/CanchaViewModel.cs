@@ -18,6 +18,9 @@ public class CanchaViewModel
 
     [Required(ErrorMessage = "Debe agregar una dirección")]
     public String direccion {get; set;} = string.Empty;
+
+    [Required(ErrorMessage = "Debe seleccionar un distrito")]
+
     public string distrito { get; set; } = string.Empty;
 
     public PropietarioViewModel? propietario {get; set;} 
@@ -27,6 +30,7 @@ public class CanchaViewModel
     public List<BloqueHorarioViewModel>? bloques {get; set;}
 
     [Required(ErrorMessage = "Debe agregar un precio base")]
+    [Range(1, 500, ErrorMessage = "El precio debe ser mayor a 0.")]
     public double precioBase {get; set;}
     public double promedioCalificacion{get; set;}
     public bool activo {get; set;}

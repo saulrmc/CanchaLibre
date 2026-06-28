@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.ViewModels;
-using CanchaLibreWeb.Servicios.Base;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CanchaLibreWeb.Components.Pages.PublicarCancha;
 
@@ -69,8 +67,17 @@ public partial class PublicarCanchaPage : ComponentBase
 
             if (tieneErroresPaso2) return;
         }
-
-        if (PasoActual < 3)
+        else if (PasoActual ==3)
+        {
+            bool tieneErroresPaso3 = FormContext.GetValidationMessages(() => HorariosSeleccionados).Any();
+            if (tieneErroresPaso3 || HorariosSeleccionados == null) return;
+        }
+        else if(PasoActual == 4)
+        {
+            bool tieneErroresPaso4 = FormContext.GetValidationMessages(() => Modelo.imagenUrl).Any();
+            if (tieneErroresPaso4) return;
+        }
+        if (PasoActual < 4)
         {
             PasoActual++;
             StateHasChanged();
@@ -85,6 +92,67 @@ public partial class PublicarCanchaPage : ComponentBase
             StateHasChanged();
         }
     }
+
+    protected List<BloqueHorarioViewModel> HorariosSeleccionados { get; set; } = new();
+    private BloqueHorarioViewModel? ObtenerBloque(DiaSemanaEnum dia, TimeOnly hora)
+    {
+        return HorariosSeleccionados.FirstOrDefault(b => b.diaSemana == dia && b.horaInicio == hora);
+    }
+
+    private bool mostrarModalPrecio = false;
+    private BloqueHorarioViewModel? bloqueAEditar;
+    private double nuevoPrecioInput;
+    private void ToggleSlot(DiaSemanaEnum dia, TimeOnly hora)
+    {
+        var bloque = ObtenerBloque(dia, hora);
+
+        if (bloque != null)
+        {
+            bloqueAEditar = bloque;
+            nuevoPrecioInput = bloque.precio;
+            mostrarModalPrecio = true;
+        }
+        else
+        {
+            double precioActual = Modelo.precioBase;
+            HorariosSeleccionados.Add(new BloqueHorarioViewModel
+            {
+                diaSemana = dia,
+                horaInicio = hora,
+                horaFin = hora.AddHours(1), // Bloques fijos estándar de 1 hora de duración
+                precio = precioActual,
+                estadoBloque = EstadoBloqueEnum.DISPONIBLE // Tu estado inicial por defecto
+            });
+        }
+
+        StateHasChanged();
+    }
+
+    private void GuardarPrecioIndividual()
+    {
+        if (bloqueAEditar != null)
+        {
+            bloqueAEditar.precio = nuevoPrecioInput;
+        }
+        CerrarModal();
+    }
+
+    private void EliminarBloqueIndividual()
+    {
+        if (bloqueAEditar != null)
+        {
+            HorariosSeleccionados.Remove(bloqueAEditar);
+        }
+        CerrarModal();
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalPrecio = false;
+        bloqueAEditar = null;
+        StateHasChanged();
+    }
+
 
     protected bool IsLoading { get; set; } = false;
     protected string? MensajeError { get; set; }
@@ -119,7 +187,7 @@ public partial class PublicarCanchaPage : ComponentBase
             });
 
             await Task.Delay(500); // Pequeño respiro táctico visual
-            PasoActual = 4;
+            PasoActual = 5;
         }
         catch (Exception)
         {

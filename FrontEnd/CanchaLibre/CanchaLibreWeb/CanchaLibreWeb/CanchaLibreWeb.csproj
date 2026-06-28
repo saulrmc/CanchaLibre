@@ -18,7 +18,6 @@
   <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap5" Version="2.2.1" />
     <PackageReference Include="Blazorise.Components" Version="2.2.1" />
-    <PackageReference Include="Blazorise.Scheduler" Version="2.2.1" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 @page "/PortalUsuario/Publicar"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
+@using CanchaLibreWeb.ViewModels
 
 @attribute [AllowAnonymous]
 @*@attribute [Authorize(Roles = "Propietario")]*@
@@ -21,6 +22,10 @@
                 </div>
                 <div class="text-center z-index-1">
                     <div class="step-number @(PasoActual >= 3 ? "step-active" : "")">3</div>
+                    <span class="small fw-bold text-secondary d-none d-md-block mt-2">Reglas y Pago</span>
+                </div>
+                <div class="text-center z-index-1 user-select-none">
+                    <div class="step-number @(PasoActual >= 4 ? "step-active" : "")">4</div>
                     <span class="small fw-bold text-secondary d-none d-md-block mt-2">Reglas y Pago</span>
                 </div>
             </div>
@@ -57,7 +62,7 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-secondary">Precio por hora (S/.)</label>
                             <InputNumber class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" 
-                                         @bind-Value="Modelo.precioBase" placeholder="80" />
+                                         @bind-Value="Modelo.precioBase" onclick="this.select();" />
                             <ValidationMessage For="@(() => Modelo.precioBase)" class="text-danger small mt-1" />
                         </div>
                     </div>
@@ -109,15 +114,117 @@
                         </div>
                     </div>
                 }
-
                 else if (PasoActual == 3)
                 {
-                    <h4 class="fw-bold text-dark mb-4">Paso 3: Normas y confirmación</h4>
+                    <h4 class="fw-bold text-dark mb-4">Paso 3: ¿Cuándo está disponible?</h4>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary d-block mb-3">Selecciona los días y horarios de disponibilidad</label>
+
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="indicador-color activo"></span>
+                                <span class="small text-secondary fw-semibold">Disponible</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="indicador-color inactivo"></span>
+                                <span class="small text-secondary fw-semibold">No disponible</span>
+                            </div>
+                        </div>
+
+                        <p class="text-muted small mt-2 mb-4 bg-light p-2 rounded border-start border-sucess border-3">
+                            ⚽ <strong>Tip pro:</strong> Por defecto se aplica tu precio base. Puedes usar bloques individuales para ajustar tarifas especiales en horarios nocturnos (por costos de iluminación) o fines de semana.
+                        </p>
+
+                        <div class="table-responsive contenedor-matriz-fina">
+                            <table class="table table-bordered tabla-horarios-custom m-0">
+                                <thead>
+                                    <tr>
+                                        <th class="columna-hora-header">Hora</th>
+                                        @foreach (DiaSemanaEnum dia in Enum.GetValues(typeof(DiaSemanaEnum)))
+                                        {
+                                            if (dia != DiaSemanaEnum.NO_VALIDO)
+                                            {
+                                                <th>@dia.ToString()</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int h = 6; h <= 23; h++)
+                                    {
+                                        var horaFija = new TimeOnly(h, 0);
+                                        <tr>
+                                            <td class="celda-hora">@horaFija.ToString("hh:mm tt")</td>
+
+                                            @foreach (DiaSemanaEnum dia in Enum.GetValues(typeof(DiaSemanaEnum)))
+                                            {
+                                                if (dia != DiaSemanaEnum.NO_VALIDO)
+                                                {
+                                                    var bloqueExistente = ObtenerBloque(dia, horaFija);
+
+                                                    <td class="celda-slot @(bloqueExistente != null ? "slot-activo" : "")"
+                                                        @onclick="() => ToggleSlot(dia, horaFija)">
+                                                        @if (bloqueExistente != null)
+                                                        {
+                                                            <div class="wrapper-info-slot">
+                                                                <span class="icono-check">✓</span>
+                                                                <span class="texto-precio">S/.@bloqueExistente.precio</span>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="icono-mas">+</span>
+                                                        }
+                                                    </td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2">
+                            <ValidationMessage For="@(() => HorariosSeleccionados)" class="text-danger small fw-semibold" />
+                        </div>
+                    </div>
+
+                    @if (mostrarModalPrecio && bloqueAEditar != null)
+                    {
+                        <div class="custom-modal-backdrop" @onclick="CerrarModal">
+                            <div class="custom-mini-modal" @onclick:stopPropagation="true">
+                                <div class="modal-header-custom">
+                                    <h6 class="m-0 fw-bold text-dark">
+                                        Ajustar Tarifa (@bloqueAEditar.diaSemana - @bloqueAEditar.horaInicio.ToString("hh:mm tt"))
+                                    </h6>
+                                </div>
+                                <div class="modal-body-custom my-3">
+                                    <label class="form-label small text-secondary fw-semibold">Precio para este bloque (S/.):</label>
+                                    <input type="number" class="form-control form-control-sm" @bind="nuevoPrecioInput" autofocus />
+                                </div>
+                                <div class="d-flex justify-content-between gap-2 mt-4">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="EliminarBloqueIndividual">
+                                        Desactivar Hora
+                                    </button>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-light border" @onclick="CerrarModal">Cancelar</button>
+                                        <button type="button" class="btn btn-sm btn-success px-3" @onclick="GuardarPrecioIndividual">Guardar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+                else if (PasoActual == 4)
+                {
+                    <h4 class="fw-bold text-dark mb-4">Paso 4: Normas y confirmación</h4>
 
                     <div class="mb-4 p-4 rounded-4 bg-light border border-dashed text-center">
                         <span class="display-4 text-success d-block mb-2">📸</span>
                         <h6 class="fw-bold text-dark mb-1">Sube las fotos de tus campos deportivos</h6>
                         <p class="text-secondary small mb-0">Arrastra tus archivos aquí o haz clic para buscarlos (.jpg, .png)</p>
+                        <ValidationMessage For="@(() => Modelo.imagenUrl)" class="text-danger small fw-semibold" />
                     </div>
 
                     <div class="mb-4">
@@ -151,7 +258,7 @@
                     }
                 }
 
-                else if (PasoActual == 4)
+                else if (PasoActual == 5)
                 {
                     <div class="text-center py-5">
                         <span class="display-1 text-success d-block mb-4">🎉</span>
@@ -163,7 +270,7 @@
                     </div>
                 }
 
-                @if (PasoActual <= 3)
+                @if (PasoActual <= 4)
                 {
                     <div class="d-flex @(PasoActual > 1 ? "justify-content-between" : "justify-content-end") pt-4 border-top mt-5">
                         @if (PasoActual > 1)
@@ -173,7 +280,7 @@
                             </button>
                         }
 
-                        @if (PasoActual < 3)
+                        @if (PasoActual < 4)
                         {
                             <button type="button" class="btn text-white py-2 px-4 rounded-3 fw-bold" style="background-color: #10B981; border: none;" @onclick="SiguientePaso">
                                 Siguiente
