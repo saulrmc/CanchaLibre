@@ -1,71 +1,138 @@
-using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
+using CanchaLibreWeb.Servicios.Canchas;
+using CanchaLibreWeb.ViewModels;
+using CanchaLibreWeb.Servicios.Base;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Linq;
 
 namespace CanchaLibreWeb.Components.Pages.PublicarCancha;
 
 public partial class PublicarCanchaPage : ComponentBase
 {
-    protected int PasoActual { get; set; } = 1;
-    protected CanchaPublishModel Modelo { get; set; } = new();
+    [Inject] public ICanchasServiceClient RestClient { get; set; } = default!;
 
-    // Listas de opciones basadas exactamente en la interfaz de filtrado y visualización
+    protected int PasoActual { get; set; } = 1;
+
+    [SupplyParameterFromForm(FormName = "PublicarCanchaForm")]
+    public CanchaViewModel Modelo { get; set; } = default!;
+    protected EditContext FormContext { get; set; } = default!;
+    protected string DeporteSeleccionado { get; set; } = "Fútbol";
+    protected string ReglasInternas { get; set; } = "Llega 10 minutos antes de la hora de la reserva.";
+    protected List<string> CaracteristicasCopia { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Modelo ??= new CanchaViewModel
+        {
+            nombre = string.Empty,
+            descripcion = string.Empty,
+            direccion = string.Empty,
+            distrito = string.Empty,
+            deportes = new List<DeporteEnum>(),
+            etiquetas = new List<EtiquetaEnum>(),
+            bloques = new List<BloqueHorarioViewModel>(),
+            disponible = true,
+            activo = true
+        };
+        FormContext = new EditContext(Modelo);
+    }
+
     protected List<string> DeportesDisponibles = new() { "Fútbol", "Voley", "Basquet", "Tenis" };
-    
+
     protected List<CaracteristicaItem> CaracteristicasDisponibles = new()
     {
-        new() { Nombre = "Floodlights", Icono = "💡" },
-        new() { Nombre = "Changing Room", Icono = "👕" },
-        new() { Nombre = "Parking", Icono = "🚗" },
-        new() { Nombre = "Drinking Water", Icono = "💧" },
-        new() { Nombre = "AC", Icono = "❄️" },
-        new() { Nombre = "First Aid", Icono = "📦" }
+        new() { Nombre = "ILUMINACION", Icono = "💡" },
+        new() { Nombre = "PARKING", Icono = "🚗" },
+        new() { Nombre = "WIFI", Icono = "📶" },
+        new() { Nombre = "VESTIDORES", Icono = "👕" },
+        new() { Nombre = "DUCHAS", Icono = "🚿" },
+        new() { Nombre = "BAÑOS", Icono = "🚽" }
     };
 
     protected void SiguientePaso()
     {
-        if (PasoActual < 3) PasoActual++;
+        FormContext.Validate();
+
+        if (PasoActual == 1)
+        {
+            bool tieneErroresPaso1 = FormContext.GetValidationMessages(() => Modelo.nombre).Any() ||
+                                    FormContext.GetValidationMessages(() => Modelo.precioBase).Any() ||
+                                    FormContext.GetValidationMessages(() => Modelo.descripcion).Any();
+
+            if (tieneErroresPaso1) return;
+        }
+        else if (PasoActual == 2)
+        {
+            bool tieneErroresPaso2 = FormContext.GetValidationMessages(() => Modelo.distrito).Any() ||
+                                    FormContext.GetValidationMessages(() => Modelo.direccion).Any();
+
+            if (tieneErroresPaso2) return;
+        }
+
+        if (PasoActual < 3)
+        {
+            PasoActual++;
+            StateHasChanged();
+        }
     }
 
     protected void PasoAnterior()
     {
-        if (PasoActual > 1) PasoActual--;
+        if (PasoActual > 1)
+        {
+            PasoActual--;
+            StateHasChanged();
+        }
     }
 
-    protected void FinalizarPublicacion()
+    protected bool IsLoading { get; set; } = false;
+    protected string? MensajeError { get; set; }
+
+    protected async Task FinalizarPublicacion()
     {
-        // Aquí se conectaría con tu API gateway / Backend en Java
-        // await CanchaService.CrearAsync(Modelo);
-        
-        // Redirección simulada tras el éxito
-        PasoActual = 4; 
+        try
+        {
+            IsLoading = true;
+            MensajeError = null;
+            StateHasChanged();
+
+            // Sincronizamos las variables del formulario con los Enums del Backend en Java
+            if (Enum.TryParse<DeporteEnum>(DeporteSeleccionado, true, out var deporteEnum))
+            {
+                Modelo.deportes = new List<DeporteEnum> { deporteEnum };
+            }
+
+            Modelo.etiquetas = new List<EtiquetaEnum>();
+            foreach (var caracteristica in CaracteristicasCopia)
+            {
+                if (Enum.TryParse<EtiquetaEnum>(caracteristica, true, out var etiquetaEnum))
+                {
+                    Modelo.etiquetas.Add(etiquetaEnum);
+                }
+            }
+
+            // Ejecutamos la inserción en el hilo de fondo
+            await Task.Run(() =>
+            {
+                RestClient.Guardar(Modelo, Estado.Nuevo);
+            });
+
+            await Task.Delay(500); // Pequeño respiro táctico visual
+            PasoActual = 4;
+        }
+        catch (Exception)
+        {
+            MensajeError = "Hubo un problema al registrar la cancha en el servidor. Por favor, inténtalo de nuevo.";
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
-    // Modelos de datos y validación
-    protected class CanchaPublishModel
-    {
-        [Required(ErrorMessage = "El nombre del complejo es obligatorio.")]
-        public string Nombre { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "La descripción ayuda a conseguir más reservas.")]
-        public string Descripcion { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Define un precio por hora.")]
-        public decimal PrecioPorHora { get; set; }
-
-        [Required(ErrorMessage = "Debes seleccionar un deporte principal.")]
-        public string DeportePrincipal { get; set; } = "Fútbol";
-
-        [Required(ErrorMessage = "La dirección exacta es requerida.")]
-        public string Direccion { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Selecciona el distrito.")]
-        public string Distrito { get; set; } = string.Empty;
-
-        public List<string> CaracteristicasSeleccionadas { get; set; } = new();
-        public string Reglas { get; set; } = "Arrive 10 minutes before your booking time.";
-    }
-
-    protected class CaracteristicaItem
+    public class CaracteristicaItem
     {
         public string Nombre { get; set; } = string.Empty;
         public string Icono { get; set; } = string.Empty;

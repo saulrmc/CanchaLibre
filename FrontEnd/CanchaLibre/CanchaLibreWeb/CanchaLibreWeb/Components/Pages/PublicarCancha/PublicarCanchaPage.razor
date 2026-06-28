@@ -1,14 +1,15 @@
 @page "/PortalUsuario/Publicar"
 @rendermode InteractiveServer
-@attribute [AllowAnonymous]
-@attribute [Authorize(Roles = "Propietario")]
+@using Microsoft.AspNetCore.Components.Forms
 
+@attribute [AllowAnonymous]
+@*@attribute [Authorize(Roles = "Propietario")]*@
 
 <div class="bg-light py-5" style="min-height: 80vh;">
     <div class="container py-5" style="max-width: 850px;">
-        
-        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 mb-4">
-            <div class="d-flex justify-content-between align-items-center position-relative px-md-5">
+
+        <div class="wizard-steps-container">
+            <div class="wizard-steps-flex px-md-5">
                 <div class="step-line"></div>
                 <div class="text-center z-index-1">
                     <div class="step-number @(PasoActual >= 1 ? "step-active" : "")">1</div>
@@ -25,24 +26,28 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm p-4 p-md-5 bg-white rounded-4">
-            <EditForm Model="@Modelo" OnValidSubmit="SiguientePaso">
+        <div class="form-container-card">
+            <EditForm Model="@Modelo" OnValidSubmit="@FinalizarPublicacion" FormName="PublicarCanchaForm">
                 <DataAnnotationsValidator />
 
                 @if (PasoActual == 1)
                 {
                     <h4 class="fw-bold text-dark mb-4">Paso 1: Cuéntanos sobre tu cancha</h4>
-                    
+
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Nombre de la Cancha / Complejo</label>
-                        <InputText class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="Modelo.Nombre" placeholder="Ej. Complejo Deportivo Ciro Alegría" />
-                        <ValidationMessage For="@(() => Modelo.Nombre)" class="text-danger small mt-1" />
+                        <InputText 
+                            class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" 
+                            @bind-Value="Modelo.nombre" 
+                            placeholder="Ej. Complejo Deportivo Ciro Alegría" />
+                        <ValidationMessage For="@(() => Modelo.nombre)" class="text-danger small mt-1" />
                     </div>
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-secondary">Deporte Principal</label>
-                            <select class="form-select bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind="Modelo.DeportePrincipal">
+                            <select class="form-select bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" 
+                                    @bind="DeporteSeleccionado">
                                 @foreach (var deporte in DeportesDisponibles)
                                 {
                                     <option value="@deporte">@deporte</option>
@@ -51,15 +56,19 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold text-secondary">Precio por hora (S/.)</label>
-                            <InputNumber class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="Modelo.PrecioPorHora" placeholder="80" />
-                            <ValidationMessage For="@(() => Modelo.PrecioPorHora)" class="text-danger small mt-1" />
+                            <InputNumber class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" 
+                                         @bind-Value="Modelo.precioBase" placeholder="80" />
+                            <ValidationMessage For="@(() => Modelo.precioBase)" class="text-danger small mt-1" />
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Descripción para los jugadores</label>
-                        <InputTextArea rows="4" class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="Modelo.Descripcion" placeholder="Premium 5-a-side and 7-a-side football turf with international standard artificial grass..." />
-                        <ValidationMessage For="@(() => Modelo.Descripcion)" class="text-danger small mt-1" />
+                        <InputTextArea rows="4" 
+                            class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input"
+                            @bind-Value="Modelo.descripcion" 
+                            placeholder="Césped artificial de alta calidad que cumple con los estándares internacionales..." />
+                        <ValidationMessage For="@(() => Modelo.descripcion)" class="text-danger small mt-1" />
                     </div>
                 }
 
@@ -70,17 +79,14 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label small fw-bold text-secondary">Distrito</label>
-                            <select class="form-select bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind="Modelo.Distrito">
-                                <option value="">Selecciona...</option>
-                                <option value="San Juan de Lurigancho">San Juan de Lurigancho</option>
-                                <option value="Surco">Surco</option>
-                                <option value="Jesús María">Jesús María</option>
-                                <option value="Miraflores">Miraflores</option>
-                            </select>
+                            <SelectorDistrito @bind-DistritoSeleccionado="Modelo.distrito" />
+                            <ValidationMessage For="@(() => Modelo.distrito)" class="text-danger small mt-1" />
                         </div>
                         <div class="col-md-8">
                             <label class="form-label small fw-bold text-secondary">Dirección Exacta</label>
-                            <InputText class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="Modelo.Direccion" placeholder="Av. Próceres de la Independencia 123" />
+                            <InputText class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" 
+                                       @bind-Value="Modelo.direccion" placeholder="Av. Próceres de la Independencia 123" />
+                            <ValidationMessage For="@(() => Modelo.direccion)" class="text-danger small mt-1" />
                         </div>
                     </div>
 
@@ -90,8 +96,11 @@
                             @foreach (var item in CaracteristicasDisponibles)
                             {
                                 <div class="col-6 col-md-4">
-                                    <div class="p-3 bg-light rounded-3 d-flex align-items-center gap-3 feature-card @(item.Seleccionado ? "feature-active" : "")" 
-                                         @onclick="() => { item.Seleccionado = !item.Seleccionado; if(item.Seleccionado) Modelo.CaracteristicasSeleccionadas.Add(item.Nombre); else Modelo.CaracteristicasSeleccionadas.Remove(item.Nombre); }">
+                                    <div class="p-3 bg-light rounded-3 d-flex align-items-center gap-3 feature-card @(item.Seleccionado ? "feature-active" : "")"
+                                         @onclick="() => { 
+                                             item.Seleccionado = !item.Seleccionado; 
+                                             if (item.Seleccionado) CaracteristicasCopia.Add(item.Nombre); 
+                                             else CaracteristicasCopia.Remove(item.Nombre); }">
                                         <span class="fs-4">@item.Icono</span>
                                         <span class="small fw-semibold text-dark">@item.Nombre</span>
                                     </div>
@@ -113,26 +122,35 @@
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Reglas internas del Complejo</label>
-                        <InputTextArea rows="3" class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="Modelo.Reglas" />
+                        <InputTextArea rows="3" class="form-control bg-light py-2 px-3 border-0 rounded-3 text-dark custom-input" @bind-Value="ReglasInternas" />
                     </div>
 
-                    
-                    <div class="p-3 bg-light rounded-4 border mb-4">
+                    <div class="preview-box p-3 border rounded-3 bg-white mb-4 shadow-sm">
                         <div class="row align-items-center">
                             <div class="col-md-3">
-                                <div class="bg-secondary text-white text-center py-4 rounded-3 fw-bold">VISTA PREVIA</div>
+                                <div class="bg-secondary text-white text-center py-4 rounded-3 fw-bold small">VISTA PREVIA</div>
                             </div>
                             <div class="col-md-9 mt-2 mt-md-0">
-                                <span class="badge mb-1 @(Modelo.DeportePrincipal == "Fútbol" ? "bg-purple-badge" : Modelo.DeportePrincipal == "Voley" ? "bg-blue-badge" : "bg-orange-badge")">
-                                    @Modelo.DeportePrincipal
+                                <span class="badge mb-1 @(DeporteSeleccionado == "Fútbol" ? "bg-purple-badge" : 
+                                                          DeporteSeleccionado == "Voley" ? "bg-blue-badge" : 
+                                                          DeporteSeleccionado == "Basquet" ? "bg-pink-badge" : 
+                                                            "bg-orange-badge")">
+                                    @DeporteSeleccionado
                                 </span>
-                                <h5 class="fw-bold text-dark mb-1">@(string.IsNullOrEmpty(Modelo.Nombre) ? "Nombre de tu Complejo" : Modelo.Nombre)</h5>
-                                <p class="text-secondary small mb-0">📍 @(string.IsNullOrEmpty(Modelo.Distrito) ? "Ubicación" : Modelo.Distrito) • <span class="text-success fw-bold">S/ @Modelo.PrecioPorHora por hora</span></p>
+                                <h5 class="fw-bold text-dark mb-1">@(string.IsNullOrEmpty(Modelo.nombre) ? "Nombre de tu Complejo" : Modelo.nombre)</h5>
+                                <p class="text-secondary small mb-0">📍 @(string.IsNullOrEmpty(Modelo.direccion) ? "Dirección" : Modelo.direccion) - @(string.IsNullOrEmpty(Modelo.distrito) ? "Ubicación" : Modelo.distrito) • <span class="text-success fw-bold">S/ @Modelo.precioBase por hora</span></p>
                             </div>
                         </div>
                     </div>
+
+                    @if (!string.IsNullOrEmpty(MensajeError))
+                    {
+                        <div class="alert alert-danger small rounded-3 p-2 mb-3" role="alert">
+                            ⚠️ @MensajeError
+                        </div>
+                    }
                 }
-                
+
                 else if (PasoActual == 4)
                 {
                     <div class="text-center py-5">
@@ -145,100 +163,40 @@
                     </div>
                 }
 
-                
                 @if (PasoActual <= 3)
                 {
                     <div class="d-flex @(PasoActual > 1 ? "justify-content-between" : "justify-content-end") pt-4 border-top mt-5">
                         @if (PasoActual > 1)
                         {
-                            <button type="button" class="btn btn-outline-secondary px-4 py-2.5 fw-bold rounded-3" @onclick="PasoAnterior">
+                            <button type="button" class="btn btn-outline-secondary py-2 px-4 rounded-3" @onclick="PasoAnterior" disabled="@IsLoading">
                                 Atrás
                             </button>
                         }
-                        
+
                         @if (PasoActual < 3)
                         {
-                            <button type="submit" class="btn btn-success px-5 py-2.5 fw-bold rounded-3 shadow-sm" style="background-color: #10B981; border: none;">
+                            <button type="button" class="btn text-white py-2 px-4 rounded-3 fw-bold" style="background-color: #10B981; border: none;" @onclick="SiguientePaso">
                                 Siguiente
                             </button>
                         }
                         else
                         {
-                            <button type="button" class="btn btn-success px-5 py-2.5 fw-bold rounded-3 shadow-sm text-white" style="background-color: #10B981; border: none;" @onclick="FinalizarPublicacion">
-                                Publicar Cancha
+                            <button type="submit" class="btn text-white py-2 px-4 rounded-3 fw-bold" style="background-color: #10B981; border: none;" disabled="@IsLoading">
+                                @if (IsLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    <span>Publicando...</span>
+                                }
+                                else
+                                {
+                                    <span>Publicar Cancha</span>
+                                }
                             </button>
                         }
                     </div>
                 }
-
             </EditForm>
         </div>
 
     </div>
 </div>
-
-    
-
-<style>
-    /* Estilos del Wizard */
-    .step-line {
-        position: absolute;
-        top: 20px;
-        left: 10%;
-        right: 10%;
-        height: 3px;
-        background-color: #E2E8F0;
-        z-index: 0;
-    }
-    .step-number {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background-color: #E2E8F0;
-    color: #718096;
-    font-weight: bold;
-    
-    
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center;
-    
-    
-    flex-shrink: 0; 
-
-    margin: 0 auto;
-    position: relative;
-    border: 3px solid white;
-}
-    .step-active {
-        background-color: #10B981 !important;
-        color: white !important;
-    }
-    .z-index-1 { z-index: 1; }
-
-    /* Inputs e interactividad */
-    .custom-input:focus {
-        background-color: #FFF !important;
-        border: 1px solid #10B981 !important;
-        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.15) !important;
-    }
-    .feature-card {
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        border: 2px solid transparent;
-    }
-    .feature-card:hover {
-        background-color: #EDF2F7 !important;
-    }
-    .feature-active {
-        background-color: #E6F4EA !important;
-        border-color: #10B981 !important;
-    }
-
-    /* Insignias de Deportes idénticas a Escoger cancha.jpg */
-    .bg-purple-badge { background-color: #A855F7; color: white; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-    .bg-blue-badge { background-color: #3B82F6; color: white; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-    .bg-orange-badge { background-color: #F97316; color: white; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-    .border-dashed { border-style: dashed !important; border-width: 2px !important; border-color: #CBD5E1 !important; }
-</style>

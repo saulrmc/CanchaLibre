@@ -164,7 +164,7 @@ private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
             idCancha = source.idCancha,
             nombre = source.nombre,
             descripcion = source.descripcion,
-            direccion = source.direccion,
+            direccion = $"{source.direccion} - {source.distrito}",
             imagenUrl = source.imagenUrl,
             disponible = source.disponible,
             deportes = ParseStringDeportes(source.deportes)
