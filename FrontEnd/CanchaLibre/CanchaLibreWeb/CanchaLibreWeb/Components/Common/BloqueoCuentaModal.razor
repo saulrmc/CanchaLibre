@@ -1,0 +1,46 @@
+﻿@if (Mostrar)
+{
+    <div class="bloqueo-overlay">
+        <div class="bloqueo-card">
+            <div class="bloqueo-icono">🔒</div>
+            <h3>Cuenta bloqueada temporalmente</h3>
+            <p>Has superado el número de intentos permitidos.</p>
+            <p>Vuelve a intentarlo en:</p>
+            <div class="bloqueo-tiempo">@TiempoFormateado</div>
+        </div>
+    </div>
+}
+
+<style>
+    .bloqueo-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bloqueo-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        max-width: 360px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .bloqueo-icono {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .bloqueo-tiempo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #dc3545;
+        margin-top: 0.5rem;
+        font-family: monospace;
+    }
+</style>
