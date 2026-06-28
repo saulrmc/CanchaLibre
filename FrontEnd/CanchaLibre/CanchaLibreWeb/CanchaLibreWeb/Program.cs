@@ -1,3 +1,5 @@
+using Blazorise;
+using Blazorise.Bootstrap5;
 using CanchaLibreWeb.Components;
 using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.Servicios.Cuentas;
@@ -32,7 +34,15 @@ builder.Services.AddScoped<IReservasServiceClient, ReservasServiceRestClient>();
 builder.Services.AddScoped<ICanchasServiceClient, CanchasServiceRestClient>();
 builder.Services.AddScoped<IAuthServiceClient, AuthServiceRestClient>();
 
-//add more RestClient
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<CanchaLibreWeb.Components.Common.DistritoData>();
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrap5Providers();
 
 var app = builder.Build();
 

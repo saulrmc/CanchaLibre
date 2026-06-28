@@ -7,19 +7,40 @@
 @inject NavigationManager NavigationManager
 
 <section class="hero-cancha">
-    <div class="buscador-cancha">
-        <div>
-            <label>Ubicación</label>
-            <input @bind="filtroUbicacion" placeholder="Distrito, dirección o lugar..." />
+
+    <div class="hero-texto">
+        <h1>Encuentra tu <br>cancha al toque</h1>
+    </div>
+
+        <div class="buscador-cancha">
+            <div class="inputs-inline-container">
+            <!-- Columna 1: Distrito -->
+            <div class="seccion-input-home">
+                <label>Distrito</label>
+                <div class="input-contenedor-blazor">
+                    <SelectorDistrito @bind-DistritoSeleccionado="filtroDistrito" />
+                </div>
+            </div>
+
+        
+            <!-- Columna 2: Dirección / Palabra clave -->
+            <div class="seccion-input-home">
+                <label>¿Qué buscas?</label>
+                <input type="text" @bind="filtroDireccion" placeholder="Dirección o nombre del complejo..." />
+            </div>
         </div>
+        <!-- Acción única de envío -->
         <button @onclick="Buscar">Buscar</button>
     </div>
 </section>
 
 <section class="contenido-home">
     <div class="titulo-home">
-        <h2>Canchas destacadas</h2>
-        <button class="btn-ver-todo" @onclick="VerTodo">Ver todo</button>
+        <div>
+            <h2>Canchas destacadas</h2>
+            <p>Reserva los mejores establecimientos deportivos cerca de ti</p>
+        </div>
+        <a class="btn-ver-todo" href="/EncuentraCancha" @onclick="VerTodo" @onclick:preventDefault>Ver todo</a>
     </div>
 
     <div class="grid-canchas">
@@ -40,7 +61,7 @@
                     <div class="card-body-cancha">
                         <h3>@cancha.nombre</h3>
                         <p class="ubicacion">📍 @cancha.direccion</p>
-                        <p class="precio"><strong>S/80</strong> <span>por hora</span></p>
+                        <p class="precio"><strong>S/ @cancha.precioBase</strong> <span>por hora</span></p>
                         <div class="etiquetas-card">
                             @if (cancha.etiquetas != null)
                             {
@@ -58,18 +79,24 @@
     </div>
 </section>
 
+<section class="publica-cancha">
+    <div>
+        <h2>¿Tienes un<br>complejo deportivo?</h2>
+        <p>Regístralo en CanchaLibre y gestiona tus reservas de forma rápida y sencilla.</p>
+    </div>
+    <button @onclick='() => NavigationManager.NavigateTo("/PortalUsuario/Publicar")'>Publicar ahora</button>
+</section>
+
 @code {
-    private string filtroUbicacion = string.Empty;
+    protected string filtroDistrito { get; set; } = string.Empty;
+    protected string filtroDireccion { get; set; } = string.Empty;
     private string deporteSeleccionado = string.Empty;
 
-    // Lista maestra que viene del API
     private List<CanchaViewModel> _canchasMaestras = new();
-    // Lista que se muestra en pantalla tras filtrar
     private List<CanchaViewModel> canchasFiltradas = new();
 
     protected override void OnInitialized()
     {
-        //  Cargamos los datos reales desde el servicio REST
         try
         {
             _canchasMaestras = CanchasService.Listar();
@@ -83,12 +110,14 @@
 
     private void Buscar()
     {
-        // Filtramos sobre la lista maestra cargada
         canchasFiltradas = _canchasMaestras
             .Where(c =>
-                string.IsNullOrWhiteSpace(filtroUbicacion) ||
-                (c.direccion?.Contains(filtroUbicacion, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (c.nombre?.Contains(filtroUbicacion, StringComparison.OrdinalIgnoreCase) ?? false))
+                string.IsNullOrWhiteSpace(filtroDistrito) ||
+                (c.distrito?.Contains(filtroDistrito, StringComparison.OrdinalIgnoreCase) ?? false))
+            .Where(c =>
+                string.IsNullOrWhiteSpace(filtroDireccion) ||
+                (c.direccion?.Contains(filtroDireccion, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (c.nombre?.Contains(filtroDireccion, StringComparison.OrdinalIgnoreCase) ?? false))
             .Where(c =>
                 string.IsNullOrWhiteSpace(deporteSeleccionado) ||
                 (c.deportes != null && c.deportes.Any(d =>
@@ -97,5 +126,4 @@
     }
 
     protected void VerTodo() => NavigationManager.NavigateTo("/EncuentraCancha");
-    protected void IniciaSesion() => NavigationManager.NavigateTo("/Login");
 }

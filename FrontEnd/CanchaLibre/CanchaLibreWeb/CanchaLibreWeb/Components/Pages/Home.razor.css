@@ -1,4 +1,3 @@
-
 .hero-cancha {
     min-height: 310px;
     background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.25)), url("hero-cancha.jpg") center/cover no-repeat;
@@ -48,43 +47,102 @@
     left: 50%;
     bottom: -32px;
     transform: translateX(-50%);
-    width: 50%;
+    width: 70%; /* Un ancho inicial cómodo */
     background: white;
     color: #111;
     border-radius: 8px;
     padding: 14px;
     display: grid;
-    grid-template-columns: 2fr auto;
-    gap: 10px;
+    grid-template-columns: 2fr auto; /* Tu distribución nativa */
+    gap: 14px;
     box-shadow: 0 12px 30px rgba(0,0,0,.12);
+    align-items: end;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-    .buscador-cancha label {
-        display: block;
-        color: #16a34a;
-        font-size: 11px;
-        font-weight: 700;
-        margin-bottom: 4px;
+.inputs-inline-container {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    width: 100%;
+}
+
+.seccion-input-home {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+    /* Ajuste de proporciones para que respire el input libre */
+    .seccion-input-home:nth-child(1) {
+        flex-basis: 40%; /* Distrito */
     }
 
-    .buscador-cancha input,
-    .buscador-cancha select {
-        width: 100%;
-        border: none;
-        background: #e5e7eb;
-        border-radius: 4px;
-        padding: 10px;
-        font-size: 12px;
+    .seccion-input-home:nth-child(3) {
+        flex-basis: 60%; /* ¿Qué buscas? */
     }
 
-    .buscador-cancha button {
-        background: #16a34a;
-        color: white;
-        border: none;
-        padding: 0 28px;
-        border-radius: 4px;
-        font-weight: 700;
+/* 2. Unificamos el fondo gris plano, fuentes y alturas exactas */
+.buscador-cancha input,
+.input-contenedor-blazor select,
+.input-contenedor-blazor ::deep select,
+.input-contenedor-blazor ::deep .form-select {
+    width: 100% !important;
+    height: 40px !important; /* Altura idéntica para ambos */
+    background-color: #e5e7eb !important; /* El gris plano exacto de tu captura */
+    color: #1f2937 !important;
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+    border: none !important; /* Eliminamos bordes intrusivos */
+    border-radius: 4px !important;
+    box-shadow: none !important; /* Quitamos sombras por defecto de Bootstrap */
+    outline: none !important;
+    box-sizing: border-box !important;
+    appearance: none; /* Limpia estilos nativos del sistema operativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* 3. El divisor vertical alineado con la nueva altura */
+.divisor-vertical-home {
+    width: 1px;
+    height: 30px;
+    background-color: #d1d5db;
+    margin-bottom: 5px;
+}
+
+/* 4. Sincronizamos el botón verde con la misma altura exacta */
+.buscador-cancha button {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 0 32px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    height: 40px; /* Misma altura exacta que el select e input */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+    box-sizing: border-box;
+}
+
+    .buscador-cancha button:hover {
+        background: #15803d;
     }
+
+
+.buscador-cancha label {
+    display: block;
+    color: #16a34a;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
 
 .contenido-home {
     padding: 90px 90px 70px;
@@ -100,11 +158,13 @@
     .titulo-home h2 {
         font-size: 36px;
         font-weight: 900;
-        margin-bottom: 12px;
+        margin-bottom: 4px;
     }
 
     .titulo-home p {
-        color: #333;
+        color: #555;
+        font-size: 14px;
+        margin: 0;
     }
 
 .btn-ver-todo {
@@ -114,7 +174,14 @@
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s;
 }
+
+    .btn-ver-todo:hover {
+        background-color: #f4fce3;
+    }
 
 .grid-canchas {
     margin-top: 30px;
@@ -181,13 +248,20 @@
     }
 
 .btn-reservar {
+    display: inline-block;
     background: #22c55e;
     color: white;
+    text-decoration: none;
     border: none;
     border-radius: 4px;
     padding: 10px 22px;
     font-weight: 700;
+    transition: background-color 0.2s;
 }
+
+    .btn-reservar:hover {
+        background: #16a34a;
+    }
 
 .publica-cancha {
     background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -213,7 +287,7 @@
 
     .publica-cancha button {
         display: block;
-        margin: 20px auto 0;
+        margin-top: 20px;
         background: white;
         color: #16a34a;
         border: none;
@@ -222,19 +296,44 @@
         font-size: 24px;
         font-weight: 900;
         box-shadow: 0 4px 10px rgba(0,0,0,.18);
+        cursor: pointer;
+        transition: transform 0.2s;
     }
 
-.btn-reservar {
-    display: inline-block;
-    background: #22c55e;
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 22px;
-    font-weight: 700;
-}
-.btn-ver-todo {
-    text-decoration: none;
-    display: inline-block;
+        .publica-cancha button:hover {
+            transform: scale(1.03);
+        }
+
+
+@media (max-width: 1024px) {
+    .buscador-cancha {
+        position: relative; /* Rompe el absoluto para que no flote encima del contenido */
+        bottom: 0;
+        left: 0;
+        transform: none;
+        width: 100%; /* Toma todo el ancho disponible del contenedor */
+        display: flex;
+        flex-direction: column; /* Apila inputs y botón verticalmente */
+        align-items: stretch;
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .inputs-inline-container {
+        display: flex;
+        flex-direction: column; /* Apila Distrito y el campo '¿Qué buscas?' */
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    /* Ocultamos el divisor vertical ya que ahora están uno abajo del otro */
+    .divisor-vertical-home {
+        display: none;
+    }
+
+    /* El botón se vuelve un bloque completo abajo, súper cómodo para dar clic */
+    .buscador-cancha button {
+        width: 100% !important;
+        height: 42px !important;
+    }
 }
