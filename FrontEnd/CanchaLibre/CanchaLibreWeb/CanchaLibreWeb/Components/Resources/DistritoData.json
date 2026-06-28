@@ -1,0 +1,202 @@
+[
+  {
+    "IdOficial": "ANCON",
+    "NombreDisplay": "Ancón"
+  },
+  {
+    "IdOficial": "ATE",
+    "NombreDisplay": "Ate"
+  },
+  {
+    "IdOficial": "BARRANCO",
+    "NombreDisplay": "Barranco"
+  },
+  {
+    "IdOficial": "BELLAVISTA",
+    "NombreDisplay": "Callao - Bellavista"
+  },
+  {
+    "IdOficial": "BRENA",
+    "NombreDisplay": "Breña"
+  },
+  {
+    "IdOficial": "CALLAO",
+    "NombreDisplay": "Callao (Cercado)"
+  },
+  {
+    "IdOficial": "CARABAYLLO",
+    "NombreDisplay": "Carabayllo"
+  },
+  {
+    "IdOficial": "CARMEN DE LA LEGUA",
+    "NombreDisplay": "Callao - Carmen de la Legua"
+  },
+  {
+    "IdOficial": "CHACLACAYO",
+    "NombreDisplay": "Chaclacayo"
+  },
+  {
+    "IdOficial": "CHORRILLOS",
+    "NombreDisplay": "Chorrillos"
+  },
+  {
+    "IdOficial": "CIENEGUILLA",
+    "NombreDisplay": "Cieneguilla"
+  },
+  {
+    "IdOficial": "COMAS",
+    "NombreDisplay": "Comas"
+  },
+  {
+    "IdOficial": "EL AGUSTINO",
+    "NombreDisplay": "El Agustino"
+  },
+  {
+    "IdOficial": "INDEPENDENCIA",
+    "NombreDisplay": "Independencia"
+  },
+  {
+    "IdOficial": "LA PERLA",
+    "NombreDisplay": "Callao - La Perla"
+  },
+  {
+    "IdOficial": "LA PUNTA",
+    "NombreDisplay": "Callao - La Punta"
+  },
+  {
+    "IdOficial": "JESUS MARIA",
+    "NombreDisplay": "Jesús María"
+  },
+  {
+    "IdOficial": "LA MOLINA",
+    "NombreDisplay": "La Molina"
+  },
+  {
+    "IdOficial": "LA VICTORIA",
+    "NombreDisplay": "La Victoria"
+  },
+  {
+    "IdOficial": "LIMA",
+    "NombreDisplay": "Lima (Cercado)"
+  },
+  {
+    "IdOficial": "LINCE",
+    "NombreDisplay": "Lince"
+  },
+  {
+    "IdOficial": "LOS OLIVOS",
+    "NombreDisplay": "Los Olivos"
+  },
+  {
+    "IdOficial": "LURIGANCHO",
+    "NombreDisplay": "Lurigancho-Chosica"
+  },
+  {
+    "IdOficial": "LURIN",
+    "NombreDisplay": "Lurín"
+  },
+  {
+    "IdOficial": "MAGDALENA DEL MAR",
+    "NombreDisplay": "Magdalena del Mar"
+  },
+  {
+    "IdOficial": "MI PERU",
+    "NombreDisplay": "Callao - Mi Perú"
+  },
+  {
+    "IdOficial": "MIRAFLORES",
+    "NombreDisplay": "Miraflores"
+  },
+  {
+    "IdOficial": "PACHACAMAC",
+    "NombreDisplay": "Pachacámac"
+  },
+  {
+    "IdOficial": "PUCUSANA",
+    "NombreDisplay": "Pucusana"
+  },
+  {
+    "IdOficial": "PUEBLO LIBRE",
+    "NombreDisplay": "Pueblo Libre"
+  },
+  {
+    "IdOficial": "PUENTE PIEDRA",
+    "NombreDisplay": "Puente Piedra"
+  },
+  {
+    "IdOficial": "PUNTA HERMOSA",
+    "NombreDisplay": "Punta Hermosa"
+  },
+  {
+    "IdOficial": "PUNTA NEGRA",
+    "NombreDisplay": "Punta Negra"
+  },
+  {
+    "IdOficial": "RIMAC",
+    "NombreDisplay": "Rímac"
+  },
+  {
+    "IdOficial": "SAN BARTOLO",
+    "NombreDisplay": "San Bartolo"
+  },
+  {
+    "IdOficial": "SAN BORJA",
+    "NombreDisplay": "San Borja"
+  },
+  {
+    "IdOficial": "SAN ISIDRO",
+    "NombreDisplay": "San Isidro"
+  },
+  {
+    "IdOficial": "SAN JUAN DE LURIGANCHO",
+    "NombreDisplay": "San Juan de Lurigancho (SJL)"
+  },
+  {
+    "IdOficial": "SAN JUAN DE MIRAFLORES",
+    "NombreDisplay": "San Juan de Miraflores (SJM)"
+  },
+  {
+    "IdOficial": "SAN LUIS",
+    "NombreDisplay": "San Luis"
+  },
+  {
+    "IdOficial": "SAN MARTIN DE PORRES",
+    "NombreDisplay": "San Martín de Porres (SMP)"
+  },
+  {
+    "IdOficial": "SAN MIGUEL",
+    "NombreDisplay": "San Miguel (SM)"
+  },
+  {
+    "IdOficial": "SANTA ANITA",
+    "NombreDisplay": "Santa Anita"
+  },
+  {
+    "IdOficial": "SANTA MARIA DEL MAR",
+    "NombreDisplay": "Santa María del Mar"
+  },
+  {
+    "IdOficial": "SANTA ROSA",
+    "NombreDisplay": "Santa Rosa"
+  },
+  {
+    "IdOficial": "SANTIAGO DE SURCO",
+    "NombreDisplay": "Santiago de Surco (Surco)"
+  },
+  {
+    "IdOficial": "SURQUILLO",
+    "NombreDisplay": "Surquillo"
+  },
+  {
+    "IdOficial": "VENTANILLA",
+    "NombreDisplay": "Callao - Ventanilla"
+  },
+  {
+    "IdOficial": "VILLA EL SALVADOR",
+    "NombreDisplay": "Villa El Salvador (VES)"
+  },
+  {
+    "IdOficial": "VILLA MARIA DEL TRIUNFO",
+    "NombreDisplay": "Villa María del Triunfo (VMT)"
+  }
+]
