@@ -2,7 +2,9 @@
 {
     <div class="bloqueo-overlay">
         <div class="bloqueo-card">
-            <div class="bloqueo-icono">🔒</div>
+            <div class="bloqueo-icono">
+                <img src="candado.png" alt="Cuenta bloqueada" />
+            </div>
             <h3>Cuenta bloqueada temporalmente</h3>
             <p>Has superado el número de intentos permitidos.</p>
             <p>Vuelve a intentarlo en:</p>
@@ -32,9 +34,14 @@
     }
 
     .bloqueo-icono {
-        font-size: 2.5rem;
         margin-bottom: 0.5rem;
     }
+
+        .bloqueo-icono img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+        }
 
     .bloqueo-tiempo {
         font-size: 2rem;
