@@ -8,6 +8,7 @@ DROP PROCEDURE IF EXISTS buscarBloqueHorarioPorId;
 DROP PROCEDURE IF EXISTS listarBloquesHorario;
 
 DROP PROCEDURE IF EXISTS insertarBloqueHorarioReserva;
+DROP PROCEDURE IF EXISTS listarBloquesPorReserva;
 
 DELIMITER //
 CREATE PROCEDURE insertarBloqueHorario(
@@ -109,4 +110,17 @@ BEGIN
     UPDATE BLOQUE_HORARIO
     SET estado = 'RESERVADO'
     WHERE id = p_idBloqueHorario;
+END //
+
+DELIMITER //
+
+CREATE PROCEDURE listarBloquesPorReserva(
+    IN p_idReserva INT
+)
+BEGIN
+    SELECT bh.id, bh.idCancha, bh.dia, bh.horaInicio, bh.horaFin,
+           bh.precio, bh.estado, bh.activo
+    FROM BLOQUE_HORARIO bh
+    INNER JOIN DETALLE_RESERVA dr ON bh.id = dr.idBloqueHorario
+    WHERE dr.idReserva = p_idReserva;
 END //
