@@ -50,7 +50,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
                 Api.Post(ResourcePath, payload);
                 break;
             case Estado.Modificado:
-                Api.Put($"{ResourcePath}/{modelo.idCancha}", payload);
+                Api.Put($"{ResourcePath}/{modelo.id}", payload);
                 break;
             default:
                 throw new InvalidOperationException($"Estado no soportado: {estado}");
@@ -66,13 +66,12 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
 {
     return new CanchaViewModel
     {
-        idCancha = source.idCancha,
+            id = source.id,
         activo = source.activo,
         nombre = source.nombre,
         descripcion = source.descripcion,
         direccion = source.direccion,
         imagenUrl = source.imagenUrl,
-        disponible = source.disponible,
         precioBase = source.precioBase, 
         promedioCalificacion = source.promedioCalificacion, 
         deportes = ParseEnumDeportes(source.deportes),
@@ -161,12 +160,11 @@ private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
     {
         return new CanchaRestDto
         {
-            idCancha = source.idCancha,
+        id = source.id,
             nombre = source.nombre,
             descripcion = source.descripcion,
             direccion = source.direccion,
             imagenUrl = source.imagenUrl,
-            disponible = source.disponible,
             deportes = ParseStringDeportes(source.deportes)
         };
     }

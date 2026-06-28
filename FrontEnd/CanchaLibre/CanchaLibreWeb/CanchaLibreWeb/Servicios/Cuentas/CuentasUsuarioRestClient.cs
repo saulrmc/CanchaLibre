@@ -4,6 +4,7 @@ using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
 using CanchaLibreWeb.ViewModels;
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace CanchaLibreWeb.Servicios.Cuentas;
 
@@ -63,6 +64,29 @@ public class  CuentasUsuarioRestClient : BaseRestServiceClient<CuentaUsuarioView
             string.Equals(actual.UserName, username, StringComparison.OrdinalIgnoreCase));
     }
 
+    public CuentaUsuarioViewModel? CrearConRetorno(CuentaUsuarioViewModel modelo)
+    {
+        var payload = new CuentaUsuarioRestDto
+        {
+            UserName = modelo.UserName.Trim(),
+            Password = modelo.Password,
+            Rol = modelo.Rol.ToString(),
+            Activo = true
+        };
+
+        var httpClient = HttpClientFactory.CreateClient();
+        var baseUrl = Configuration["RestApiBaseUrl"]!.Trim();
+        httpClient.BaseAddress = new Uri(baseUrl.EndsWith('/') ? baseUrl : baseUrl + "/");
+
+        var response = httpClient.PostAsJsonAsync(ResourcePath, payload).GetAwaiter().GetResult();
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        var dto = response.Content.ReadFromJsonAsync<CuentaUsuarioRestDto>().GetAwaiter().GetResult();
+        return dto is null ? null : ToViewModel(dto, includePassword: true);
+    }
+
     public void Guardar(CuentaUsuarioViewModel modelo, Estado estado)
     {
         var fallback = string.Empty;
@@ -116,6 +140,10 @@ public class  CuentasUsuarioRestClient : BaseRestServiceClient<CuentaUsuarioView
             Activo = source.Activo,
             UserName = source.UserName,
             Password = includePassword ? source.Password : string.Empty,
+            Rol = ParseEnum<RolEnum>(source.Rol, RolEnum.NO_ADMITIDO),
+            IntentosFallidos = source.IntentosFallidos,
+            UltimaSesion = source.UltimaSesion ?? DateTime.MinValue,
+            FechaBloqueo = source.FechaBloqueo ?? DateTime.MinValue,
         };
     }
 

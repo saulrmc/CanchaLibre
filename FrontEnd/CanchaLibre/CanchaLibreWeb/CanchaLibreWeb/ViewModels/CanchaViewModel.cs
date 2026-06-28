@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CanchaLibreWeb.ViewModels;
 public class CanchaViewModel
 {
-    public int idCancha {get; set;} 
+    public int id {get; set;} 
 
     [Required(ErrorMessage = "Debe agregar un nombre")]
     public String nombre {get; set;} = string.Empty;
@@ -14,8 +14,6 @@ public class CanchaViewModel
 
     [Required(ErrorMessage = "Debe agregar una imagen")]
     public String imagenUrl {get; set;} = string.Empty;
-    public bool disponible {get; set;} 
-
     [Required(ErrorMessage = "Debe agregar una dirección")]
     public String direccion {get; set;} = string.Empty;
     public PropietarioViewModel? propietario {get; set;} 

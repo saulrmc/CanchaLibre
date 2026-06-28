@@ -119,17 +119,12 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
 
     @Override
     public List<BloqueHorario> leerBloquesPorCancha(Connection conn,
-                                                        Integer idCancha) throws SQLException{
+                                                         Integer idCancha) throws SQLException{
         List<BloqueHorario> bloques = new ArrayList<>();
         try(PreparedStatement cmd = this.comandoLeerBloquesPorCancha(conn, idCancha);
             ResultSet rs = cmd.executeQuery()) {
             while (rs.next()) {
-                try(PreparedStatement cmdLeer = this.comandoLeer(conn, rs.getInt("id"));
-                    ResultSet rsBloque = cmdLeer.executeQuery()){
-                    if(rsBloque.next()) {
-                        bloques.add(this.mapearModelo(rsBloque));
-                    }
-                }
+                bloques.add(this.mapearBloqueHorario(rs));
             }
         }
         return bloques;
@@ -211,6 +206,14 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
         }
     }
 
+    private PreparedStatement comandoLeerBloquesPorReserva(Connection conn,
+                                                           Integer idReserva) throws SQLException{
+        String sql = "{call listarBloquesPorReserva(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idReserva", idReserva);
+        return cmd;
+    }
+
     private PreparedStatement comandoCrearBloqueHorarioReserva(Connection conn, int idReserva, BloqueHorario bloque) throws SQLException {
         String sql = "{call insertarBloqueHorarioReserva(?, ?, ?, ?)}";
 
@@ -224,17 +227,12 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
 
     @Override
     public List<BloqueHorario> leerBloquesPorReserva(Connection conn,
-                                                    Integer idReserva) throws SQLException{
+                                                     Integer idReserva) throws SQLException{
         List<BloqueHorario> bloques = new ArrayList<>();
-        try(PreparedStatement cmd = this.comandoLeerBloquesPorCancha(conn, idReserva);
+        try(PreparedStatement cmd = this.comandoLeerBloquesPorReserva(conn, idReserva);
             ResultSet rs = cmd.executeQuery()) {
             while (rs.next()) {
-                try(PreparedStatement cmdLeer = this.comandoLeer(conn, rs.getInt("id"));
-                    ResultSet rsBloque = cmdLeer.executeQuery()){
-                    if(rsBloque.next()) {
-                        bloques.add(this.mapearModelo(rsBloque));
-                    }
-                }
+                bloques.add(this.mapearBloqueHorario(rs));
             }
         }
         return bloques;

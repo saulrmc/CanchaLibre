@@ -20,6 +20,7 @@ public partial class LoginPage : ComponentBase
     private SolicitudRecuperarContrasenaViewModel RecuperarModel { get; set; } = new();
 
     private bool mostrarRecuperacion = false;
+    private bool mostrarContrasena = false;
     private string mensajeError = string.Empty;
     private string mensajeStatus = string.Empty;
     private bool esErrorStatus = false;
@@ -105,20 +106,21 @@ public partial class LoginPage : ComponentBase
 
     private void RedirigirSegunRol(string rol)
     {
-        switch (rol.ToLower())
-        {
-            case "admin":
-                Nav.NavigateTo("/Admin/Dashboard");
-                break;
-            case "propietario":
-                Nav.NavigateTo("/PortalPropietario/Publicar");
-                break;
-            case "cliente":
-                Nav.NavigateTo("/Portal/MisReservas");
-                break;
-            default:
-                Nav.NavigateTo("/");
-                break;
-        }
+        // switch (rol.ToLower())
+        // {
+        //     case "admin":
+        //         Nav.NavigateTo("/Admin/Dashboard");
+        //         break;
+        //     case "propietario":
+        //         Nav.NavigateTo("/PortalUsuario/Publicar");
+        //         break;
+        //     case "cliente":
+        //         Nav.NavigateTo("/Portal/MisReservas");
+        //         break;
+        //     default:
+        //         Nav.NavigateTo("/");
+        //         break;
+        // }
+        Nav.NavigateTo("/");
     }
 }

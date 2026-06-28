@@ -52,7 +52,7 @@ else
                     </div>
                     <div>
                         <span class="meta-label">Estado</span>
-                        <span class="meta-val text-success">@(cancha.disponible ? "Disponible" : "Mantenimiento")</span>
+                        <span class="meta-val text-success">@(cancha.activo ? "Disponible" : "Mantenimiento")</span>
                     </div>
                     <div>
                         <span class="meta-label">Propietario</span>
@@ -75,7 +75,7 @@ else
                 </div>
 
                 <div class="seccion">
-                    <h2>Comentarios destacados</h2>
+                    <h2>Comentarios </h2>
                     <p class="sub-comentarios">Lo que dicen nuestros clientes</p>
                     <div class="grid-comentarios">
                         @foreach (var c in comentarios)
@@ -131,35 +131,38 @@ else
                                     <small>S/ @bloque.precio</small>
                                 </button>
                             }
+                           
                         }
-                        else
+                        @* else
                         {
                             <div class="col-span-2 text-center text-muted small py-3">
                                 No hay bloques configurados para este día.
                             </div>
-                        }
+                        } *@
+                         
                     </div>
-
+                    <div class="detalle-precio">
+                            <div class="precio-fila">
+                                <span>Subtotal Cancha</span>
+                                <span>S/ @PrecioSubtotal</span>
+                            </div>
+                            <div class="precio-fila">
+                                <span>Recarga por servicio</span>
+                                <span>S/ @CostoServicio</span>
+                            </div>
+                            <div class="precio-fila total">
+                                <strong>Total</strong>
+                                <strong>S/ @PrecioTotal</strong>
+                            </div>
+                        </div>
+                        @if(cancha.activo == true){
+                            <button class="btn-reservar-main" disabled="@(bloqueSeleccionado == null)" @onclick="IrAPagar">
+                                Reservar y Pagar
+                            </button>
+                        }
                     <hr />
 
-                    <div class="detalle-precio">
-                        <div class="precio-fila">
-                            <span>Subtotal Cancha</span>
-                            <span>S/ @PrecioSubtotal</span>
-                        </div>
-                        <div class="precio-fila">
-                            <span>Recarga por servicio</span>
-                            <span>S/ @CostoServicio</span>
-                        </div>
-                        <div class="precio-fila total">
-                            <strong>Total</strong>
-                            <strong>S/ @PrecioTotal</strong>
-                        </div>
-                    </div>
-
-                    <button class="btn-reservar-main" disabled="@(bloqueSeleccionado == null)" @onclick="IrAPagar">
-                        Reservar y Pagar
-                    </button>
+                    
                 </div>
             </div>
         </div>
