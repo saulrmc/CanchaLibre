@@ -87,7 +87,6 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
             distrito = distritoDetectado,
 
             imagenUrl = source.imagenUrl,
-            disponible = source.disponible,
             precioBase = source.precioBase,
             promedioCalificacion = source.promedioCalificacion,
             deportes = ParseEnumDeportes(source.deportes),
@@ -183,7 +182,6 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
             direccion = $"{source.direccion} - {source.distrito}",
 
             imagenUrl = source.imagenUrl,
-            disponible = source.disponible,
             activo = source.activo,
             precioBase = source.precioBase,
             promedioCalificacion = source.promedioCalificacion,

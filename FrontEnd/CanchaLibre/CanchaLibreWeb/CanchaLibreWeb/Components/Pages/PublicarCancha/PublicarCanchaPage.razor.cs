@@ -31,7 +31,6 @@ public partial class PublicarCanchaPage : ComponentBase
             deportes = new List<DeporteEnum>(),
             etiquetas = new List<EtiquetaEnum>(),
             bloques = new List<BloqueHorarioViewModel>(),
-            disponible = true,
             activo = true
         };
         FormContext = new EditContext(Modelo);
