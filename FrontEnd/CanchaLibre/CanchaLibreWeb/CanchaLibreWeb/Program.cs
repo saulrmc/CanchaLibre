@@ -31,6 +31,8 @@ builder.Services.AddScoped<IClientesServiceClient, ClientesServiceRestClient>();
 builder.Services.AddScoped<IReservasServiceClient, ReservasServiceRestClient>();
 builder.Services.AddScoped<ICanchasServiceClient, CanchasServiceRestClient>();
 builder.Services.AddScoped<IAuthServiceClient, AuthServiceRestClient>();
+builder.Services.AddScoped<CanchaLibreWeb.Servicios.Seguridad.ControlIntentosLoginService>();
+builder.Services.AddSingleton<CanchaLibreWeb.Servicios.Notificaciones.NotificacionService>();
 
 //add more RestClient
 
