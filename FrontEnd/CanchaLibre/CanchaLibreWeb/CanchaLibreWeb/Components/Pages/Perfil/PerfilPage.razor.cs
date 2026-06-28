@@ -1,11 +1,19 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.ComponentModel.DataAnnotations;
+using CanchaLibreWeb.ViewModels;
+using CanchaLibreWeb.Servicios.Usuarios;
 
 namespace CanchaLibreWeb.Components.Pages.Perfil;
 
 public partial class PerfilPage : ComponentBase
 {
-    // Modelo para mapear y validar los campos editables del perfil
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+    [Inject] private IClientesServiceClient ClientesService { get; set; } = default!;
+    [Inject] private IPropietariosServiceClient PropietariosService { get; set; } = default!;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
     protected class CambiarDatosModel
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]
@@ -24,22 +32,57 @@ public partial class PerfilPage : ComponentBase
     }
 
     protected CambiarDatosModel Modelo { get; set; } = new();
-    
-    // Estados de la interfaz
     protected string MensajeExito { get; set; } = string.Empty;
+    private bool mostrarContrasenaActual = false;
+    private bool mostrarNuevaContrasena = false;
     protected string MensajeError { get; set; } = string.Empty;
-    protected string FechaRegistro { get; set; } = "15 de Enero, 2026";
-    protected string TipoUsuario { get; set; } = "Cliente Regular";
+    protected string TipoUsuario { get; set; } = string.Empty;
+
+    private string _rol = string.Empty;
+    private int _userId;
+    private ClienteViewModel? _clienteData;
+    private PropietarioViewModel? _propietarioData;
 
     protected override void OnInitialized()
     {
-        
-        Modelo = new CambiarDatosModel
+        var authState = AuthStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
+        var user = authState.User;
+
+        if (user.Identity is not { IsAuthenticated: true })
         {
-            Nombres = "Carlos Mendoza",
-            Correo = "carlos.mendoza@email.com",
-            Telefono = "996852763"
-        };
+            Nav.NavigateTo("/Login");
+            return;
+        }
+
+        _userId = int.Parse(user.FindFirst("IdUsuario")?.Value ?? "0");
+        _rol = user.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+
+        if (_rol.Equals("CLIENTE", StringComparison.OrdinalIgnoreCase))
+        {
+            _clienteData = ClientesService.Obtener(_userId);
+            if (_clienteData != null)
+            {
+                Modelo.Nombres = _clienteData.Nombres;
+                Modelo.Correo = _clienteData.Correo;
+                Modelo.Telefono = _clienteData.Telefono;
+            }
+            TipoUsuario = "Cliente";
+        }
+        else if (_rol.Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase))
+        {
+            _propietarioData = PropietariosService.Obtener(_userId);
+            if (_propietarioData != null)
+            {
+                Modelo.Nombres = _propietarioData.Nombres;
+                Modelo.Correo = _propietarioData.Correo;
+                Modelo.Telefono = _propietarioData.Telefono;
+            }
+            TipoUsuario = "Propietario";
+        }
+        else
+        {
+            Nav.NavigateTo("/");
+        }
     }
 
     protected void GuardarCambios()
@@ -47,16 +90,48 @@ public partial class PerfilPage : ComponentBase
         MensajeExito = string.Empty;
         MensajeError = string.Empty;
 
-        
         if (!string.IsNullOrEmpty(Modelo.NuevaContrasena) && string.IsNullOrEmpty(Modelo.ContrasenaActual))
         {
             MensajeError = "Debe ingresar su contraseña actual para establecer una nueva.";
             return;
         }
 
-        
-        // await Http.PutAsJsonAsync($"api/usuarios/{Id}", Modelo);
+        try
+        {
+            if (_rol.Equals("CLIENTE", StringComparison.OrdinalIgnoreCase) && _clienteData != null)
+            {
+                _clienteData.Nombres = Modelo.Nombres.Trim();
+                _clienteData.Correo = Modelo.Correo.Trim();
+                _clienteData.Telefono = Modelo.Telefono.Trim();
 
-        MensajeExito = "¡Perfil actualizado correctamente!";
+                if (!string.IsNullOrEmpty(Modelo.NuevaContrasena))
+                {
+                    _clienteData.Cuenta ??= new CuentaUsuarioViewModel();
+                    _clienteData.Cuenta.Password = Modelo.NuevaContrasena;
+                }
+
+                ClientesService.Guardar(_clienteData, Estado.Modificado);
+            }
+            else if (_rol.Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase) && _propietarioData != null)
+            {
+                _propietarioData.Nombres = Modelo.Nombres.Trim();
+                _propietarioData.Correo = Modelo.Correo.Trim();
+                _propietarioData.Telefono = Modelo.Telefono.Trim();
+
+                if (!string.IsNullOrEmpty(Modelo.NuevaContrasena))
+                {
+                    _propietarioData.Cuenta ??= new CuentaUsuarioViewModel();
+                    _propietarioData.Cuenta.Password = Modelo.NuevaContrasena;
+                }
+
+                PropietariosService.Guardar(_propietarioData, Estado.Modificado);
+            }
+
+            MensajeExito = "¡Perfil actualizado correctamente!";
+        }
+        catch (Exception ex)
+        {
+            MensajeError = $"Error al guardar los cambios: {ex.Message}";
+        }
     }
 }
