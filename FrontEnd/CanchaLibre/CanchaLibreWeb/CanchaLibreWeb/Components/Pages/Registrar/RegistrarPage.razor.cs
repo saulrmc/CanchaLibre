@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using CanchaLibreWeb.ViewModels;
 using CanchaLibreWeb.Servicios.Usuarios;
+using CanchaLibreWeb.Servicios.Cuentas;
 using CanchaLibreWeb.Servicios.Base;
 
 namespace CanchaLibreWeb.Components.Pages.Registrar;
@@ -10,6 +11,7 @@ public partial class RegistrarPage : ComponentBase
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IClientesServiceClient ClientesService { get; set; } = default!;
     [Inject] private IPropietariosServiceClient PropietariosService { get; set; } = default!;
+    [Inject] private ICuentasUsuarioServiceClient CuentasUsuarioService { get; set; } = default!;
 
     private int pasoActual = 1;
     private string rolSeleccionado = string.Empty;
@@ -41,11 +43,14 @@ public partial class RegistrarPage : ComponentBase
         try
         {
             mensajeError = string.Empty;
-            
-            // Consumo directo de tu ClientesServiceRestClient inyectado
+
+            var cuentaCreada = CuentasUsuarioService.CrearConRetorno(ClienteModel.Cuenta!);
+            if (cuentaCreada == null)
+                throw new Exception("No se pudo crear la cuenta de usuario");
+
+            ClienteModel.Cuenta = cuentaCreada;
             ClientesService.Guardar(ClienteModel, Estado.Nuevo);
-            
-            // Una vez registrado con éxito en Java, lo mandamos al Login para que inicie sesión limpiamente
+
             Nav.NavigateTo("/Login");
         }
         catch (Exception ex)
@@ -60,7 +65,11 @@ public partial class RegistrarPage : ComponentBase
         {
             mensajeError = string.Empty;
 
-            // Consumo directo de tu PropietariosServiceRestClient inyectado
+            var cuentaCreada = CuentasUsuarioService.CrearConRetorno(PropietarioModel.Cuenta!);
+            if (cuentaCreada == null)
+                throw new Exception("No se pudo crear la cuenta de usuario");
+
+            PropietarioModel.Cuenta = cuentaCreada;
             PropietariosService.Guardar(PropietarioModel, Estado.Nuevo);
 
             Nav.NavigateTo("/Login");

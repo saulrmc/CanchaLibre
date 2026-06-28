@@ -88,7 +88,7 @@ public partial class LoginPage : ComponentBase
                 Nav.NavigateTo("/Admin/Dashboard");
                 break;
             case "propietario":
-                Nav.NavigateTo("/PortalPropietario/Publicar");
+                Nav.NavigateTo("/PortalPropietario");
                 break;
             case "cliente":
                 Nav.NavigateTo("/Portal/MisReservas");
@@ -99,3 +99,4 @@ public partial class LoginPage : ComponentBase
         }
     }
 }
+

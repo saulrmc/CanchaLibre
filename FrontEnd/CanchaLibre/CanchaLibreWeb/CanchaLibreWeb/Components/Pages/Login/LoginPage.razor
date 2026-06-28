@@ -15,8 +15,8 @@
             <DataAnnotationsValidator />
 
             <div class="mb-3">
-                <label class="form-label-custom">Correo electrónico</label>
-                <InputText type="email" class="form-input-custom" @bind-Value="LoginModel.Correo" placeholder="correo@gmail.com" />
+                <label class="form-label-custom">Usuario o correo electrónico</label>
+                <InputText class="form-input-custom" @bind-Value="LoginModel.Correo" placeholder="usuario o correo@gmail.com" />
                 <ValidationMessage For="@(() => LoginModel.Correo)" class="text-danger small mt-1" />
             </div>
 

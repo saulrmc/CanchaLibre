@@ -8,4 +8,5 @@ public interface ICuentasUsuarioServiceClient : IServiceClient<CuentaUsuarioView
 {
     bool? Login(string username, string password);
     CuentaUsuarioViewModel? ObtenerPorUsername(string username);
+    CuentaUsuarioViewModel? CrearConRetorno(CuentaUsuarioViewModel modelo);
 }
