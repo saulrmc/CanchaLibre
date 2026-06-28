@@ -5,6 +5,8 @@
 @using CanchaLibreWeb.Servicios.Canchas
 @inject ICanchasServiceClient CanchasService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims
 
 <section class="hero-cancha">
 
@@ -84,7 +86,7 @@
         <h2>¿Tienes un<br>complejo deportivo?</h2>
         <p>Regístralo en CanchaLibre y gestiona tus reservas de forma rápida y sencilla.</p>
     </div>
-    <button @onclick='() => NavigationManager.NavigateTo("/PortalUsuario/Publicar")'>Publicar ahora</button>
+    <button @onclick="IrAPublicarCancha">Publicar ahora</button>
 </section>
 
 @code {
@@ -126,4 +128,30 @@
     }
 
     protected void VerTodo() => NavigationManager.NavigateTo("/EncuentraCancha");
+ private async Task IrAPublicarCancha()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var usuario = authState.User;
+
+        if (usuario.Identity is null || !usuario.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/Registrar");
+            return;
+        }
+
+        var valorRolClaim = usuario.FindFirst("Rol")?.Value 
+                        ?? usuario.FindFirst("rol")?.Value;
+
+        if (!string.IsNullOrEmpty(valorRolClaim))
+        {
+            string limpio = valorRolClaim.Trim().ToUpperInvariant();
+
+            if (limpio == "PROPIETARIO" || limpio == "2")
+            {
+                NavigationManager.NavigateTo("/PortalPropietario/Publicar");
+                return;
+            }
+        }
+
+    }
 }

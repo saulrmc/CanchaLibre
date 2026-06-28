@@ -1,4 +1,4 @@
-@page "/PortalUsuario/Publicar"
+@page "/PortalPropietario/Publicar"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using CanchaLibreWeb.ViewModels
@@ -22,7 +22,7 @@
                 </div>
                 <div class="text-center z-index-1">
                     <div class="step-number @(PasoActual >= 3 ? "step-active" : "")">3</div>
-                    <span class="small fw-bold text-secondary d-none d-md-block mt-2">Reglas y Pago</span>
+                    <span class="small fw-bold text-secondary d-none d-md-block mt-2">Disponibilidad</span>
                 </div>
                 <div class="text-center z-index-1 user-select-none">
                     <div class="step-number @(PasoActual >= 4 ? "step-active" : "")">4</div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="form-container-card">
-            <EditForm Model="@Modelo" OnValidSubmit="@FinalizarPublicacion" FormName="PublicarCanchaForm">
+            <EditForm EditContext="@FormContext" FormName="PublicarCanchaForm">
                 <DataAnnotationsValidator />
 
                 @if (PasoActual == 1)
@@ -84,7 +84,10 @@
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             <label class="form-label small fw-bold text-secondary">Distrito</label>
-                            <SelectorDistrito @bind-DistritoSeleccionado="Modelo.distrito" />
+                            <div @onchange="RefrescarValidacionDistrito" @onclick="RefrescarValidacionDistrito">
+                                <SelectorDistrito @bind-DistritoSeleccionado="Modelo.distrito" />
+                            </div>                            
+        
                             <ValidationMessage For="@(() => Modelo.distrito)" class="text-danger small mt-1" />
                         </div>
                         <div class="col-md-8">
@@ -132,7 +135,7 @@
                             </div>
                         </div>
 
-                        <p class="text-muted small mt-2 mb-4 bg-light p-2 rounded border-start border-sucess border-3">
+                        <p class="text-muted small mt-2 mb-4 bg-light p-2 rounded border-start border-success border-3">
                             ⚽ <strong>Tip pro:</strong> Por defecto se aplica tu precio base. Puedes usar bloques individuales para ajustar tarifas especiales en horarios nocturnos (por costos de iluminación) o fines de semana.
                         </p>
 
@@ -220,12 +223,39 @@
                 {
                     <h4 class="fw-bold text-dark mb-4">Paso 4: Normas y confirmación</h4>
 
-                    <div class="mb-4 p-4 rounded-4 bg-light border border-dashed text-center">
-                        <span class="display-4 text-success d-block mb-2">📸</span>
-                        <h6 class="fw-bold text-dark mb-1">Sube las fotos de tus campos deportivos</h6>
-                        <p class="text-secondary small mb-0">Arrastra tus archivos aquí o haz clic para buscarlos (.jpg, .png)</p>
-                        <ValidationMessage For="@(() => Modelo.imagenUrl)" class="text-danger small fw-semibold" />
-                    </div>
+                    <label class="upload-zone mb-4 p-4 rounded-4 bg-light border border-dashed text-center d-block position-relative" style="cursor: pointer;">
+        
+                            <InputFile class="upload-input d-none"
+                                       OnChange="CargarImagen"
+                                       accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+
+                            @if (string.IsNullOrWhiteSpace(VistaPreviaImagenUrl))
+                            {
+                                <div class="py-3">
+                                    <span class="display-4 text-success d-block mb-2">📸</span>
+                                    <h6 class="fw-bold text-dark mb-1">Sube las fotos de tus campos deportivos</h6>
+                                    <p class="text-secondary small mb-0">Haz clic aquí para subir una imagen (.jpg, .png)</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="py-2">
+                                    <img src="@VistaPreviaImagenUrl" class="upload-preview rounded-3 img-fluid mb-2 shadow-sm" style="max-height: 200px; object-fit: cover;" alt="Vista previa de la cancha" />
+                                    <p class="text-success small fw-bold mt-2 mb-0">✓ Imagen cargada correctamente</p>
+                                </div>
+                            }
+                        </label>
+
+                        @if (!string.IsNullOrWhiteSpace(MensajeImagen))
+                        {
+                            <div class="alert alert-warning py-2 px-3 small rounded-3 mb-3 fw-bold" role="alert">
+                                ⚠️ @MensajeImagen
+                            </div>
+                        }
+
+                        <div class="mb-4">
+                            <ValidationMessage For="@(() => Modelo.imagenUrl)" class="text-danger small fw-semibold" />
+                        </div>
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Reglas internas del Complejo</label>
@@ -288,7 +318,7 @@
                         }
                         else
                         {
-                            <button type="submit" class="btn text-white py-2 px-4 rounded-3 fw-bold" style="background-color: #10B981; border: none;" disabled="@IsLoading">
+                            <button type="button" class="btn text-white py-2 px-4 rounded-3 fw-bold" style="background-color: #10B981; border: none;" @onclick="ProcesarPublicacionFinal" disabled="@IsLoading">
                                 @if (IsLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

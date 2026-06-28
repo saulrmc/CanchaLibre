@@ -2,7 +2,7 @@ using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Linq;
 
 namespace CanchaLibreWeb.Components.Pages.PublicarCancha;
 
@@ -15,6 +15,7 @@ public partial class PublicarCanchaPage : ComponentBase
     [SupplyParameterFromForm(FormName = "PublicarCanchaForm")]
     public CanchaViewModel Modelo { get; set; } = default!;
     protected EditContext FormContext { get; set; } = default!;
+    private ValidationMessageStore mensajeStore = null!;
     protected string DeporteSeleccionado { get; set; } = "Fútbol";
     protected string ReglasInternas { get; set; } = "Llega 10 minutos antes de la hora de la reserva.";
     protected List<string> CaracteristicasCopia { get; set; } = new();
@@ -34,6 +35,8 @@ public partial class PublicarCanchaPage : ComponentBase
             activo = true
         };
         FormContext = new EditContext(Modelo);
+        mensajeStore = new ValidationMessageStore(FormContext);
+
     }
 
     protected List<string> DeportesDisponibles = new() { "Fútbol", "Voley", "Basquet", "Tenis" };
@@ -48,12 +51,16 @@ public partial class PublicarCanchaPage : ComponentBase
         new() { Nombre = "BAÑOS", Icono = "🚽" }
     };
 
-    protected void SiguientePaso()
+    protected async Task SiguientePaso()
     {
-        FormContext.Validate();
-
         if (PasoActual == 1)
         {
+            //FormContext.Validate();
+
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.nombre));
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.precioBase));
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.descripcion));
+
             bool tieneErroresPaso1 = FormContext.GetValidationMessages(() => Modelo.nombre).Any() ||
                                     FormContext.GetValidationMessages(() => Modelo.precioBase).Any() ||
                                     FormContext.GetValidationMessages(() => Modelo.descripcion).Any();
@@ -62,38 +69,138 @@ public partial class PublicarCanchaPage : ComponentBase
         }
         else if (PasoActual == 2)
         {
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.distrito));
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.direccion));
+
+
             bool tieneErroresPaso2 = FormContext.GetValidationMessages(() => Modelo.distrito).Any() ||
                                     FormContext.GetValidationMessages(() => Modelo.direccion).Any();
 
             if (tieneErroresPaso2) return;
         }
-        else if (PasoActual ==3)
+        else if (PasoActual == 3)
         {
-            bool tieneErroresPaso3 = FormContext.GetValidationMessages(() => HorariosSeleccionados).Any();
-            if (tieneErroresPaso3 || HorariosSeleccionados == null) return;
+            mensajeStore.Clear(FieldIdentifier.Create(() => HorariosSeleccionados));
+            if (HorariosSeleccionados == null || !HorariosSeleccionados.Any())
+            {
+                mensajeStore.Add(FieldIdentifier.Create(() => HorariosSeleccionados), "Debe seleccionar al menos un bloque horario para la disponibilidad.");
+                FormContext.NotifyValidationStateChanged();
+                return;
+            }
         }
-        else if(PasoActual == 4)
+        else if (PasoActual == 4)
         {
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.imagenUrl));
             bool tieneErroresPaso4 = FormContext.GetValidationMessages(() => Modelo.imagenUrl).Any();
             if (tieneErroresPaso4) return;
+
+            await FinalizarPublicacion();
+            return;
         }
+
         if (PasoActual < 4)
         {
+            if (PasoActual == 1)
+            {
+                mensajeStore.Clear();
+
+                FormContext.MarkAsUnmodified(FieldIdentifier.Create(() => Modelo.distrito));
+                FormContext.MarkAsUnmodified(FieldIdentifier.Create(() => Modelo.direccion));
+                FormContext.NotifyValidationStateChanged();
+            }
             PasoActual++;
             StateHasChanged();
         }
+    }
+
+    protected void RefrescarValidacionDistrito()
+    {
+        if (!string.IsNullOrEmpty(Modelo.distrito))
+        {
+            FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.distrito));
+            StateHasChanged();
+        }
+    }
+
+
+    // Asegúrate de tener estas variables de estado declaradas arriba en tu componente
+    protected string VistaPreviaImagenUrl { get; set; } = string.Empty;
+    protected string MensajeImagen { get; set; } = string.Empty;
+    private const long MaxImageSize = 5 * 1024 * 1024; // 5 MB
+
+    protected async Task CargarImagen(InputFileChangeEventArgs e)
+    {
+        MensajeImagen = string.Empty;
+        var archivo = e.File;
+
+        if (archivo == null) return;
+
+        if (archivo.Size > MaxImageSize)
+        {
+            MensajeImagen = "La imagen excede el límite permitido de 5 MB.";
+            VistaPreviaImagenUrl = string.Empty;
+            Modelo.imagenUrl = string.Empty; // Limpiamos el modelo si ya había una previa
+            return;
+        }
+
+        var tipoArchivo = archivo.ContentType.ToLower();
+        if (tipoArchivo != "image/jpeg" && tipoArchivo != "image/jpg" && tipoArchivo != "image/png")
+        {
+            MensajeImagen = "Formato no soportado. Solo se permiten imágenes .jpg, .jpeg o .png";
+            VistaPreviaImagenUrl = string.Empty;
+            Modelo.imagenUrl = string.Empty;
+            return;
+        }
+
+        try
+        {
+            using var stream = archivo.OpenReadStream(MaxImageSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var bytes = memoryStream.ToArray();
+
+            string base64String = Convert.ToBase64String(bytes);
+            VistaPreviaImagenUrl = $"data:{archivo.ContentType};base64,{base64String}";
+
+            Modelo.imagenUrl = VistaPreviaImagenUrl;
+
+            mensajeStore.Clear(FieldIdentifier.Create(() => Modelo.imagenUrl));
+        }
+        catch (Exception)
+        {
+            MensajeImagen = "Ocurrió un error inesperado al procesar la imagen. Inténtalo de nuevo.";
+            VistaPreviaImagenUrl = string.Empty;
+            Modelo.imagenUrl = string.Empty;
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+    protected async Task ProcesarPublicacionFinal()
+    {
+        //FormContext.Validate();
+
+        FormContext.NotifyFieldChanged(FieldIdentifier.Create(() => Modelo.imagenUrl));
+
+        bool tieneErroresPaso4 = FormContext.GetValidationMessages(() => Modelo.imagenUrl).Any();
+        if (tieneErroresPaso4) return;
+
+        await FinalizarPublicacion();
     }
 
     protected void PasoAnterior()
     {
         if (PasoActual > 1)
         {
+            mensajeStore.Clear(FieldIdentifier.Create(() => HorariosSeleccionados));
             PasoActual--;
             StateHasChanged();
         }
     }
 
     protected List<BloqueHorarioViewModel> HorariosSeleccionados { get; set; } = new();
+
     private BloqueHorarioViewModel? ObtenerBloque(DiaSemanaEnum dia, TimeOnly hora)
     {
         return HorariosSeleccionados.FirstOrDefault(b => b.diaSemana == dia && b.horaInicio == hora);
@@ -102,6 +209,7 @@ public partial class PublicarCanchaPage : ComponentBase
     private bool mostrarModalPrecio = false;
     private BloqueHorarioViewModel? bloqueAEditar;
     private double nuevoPrecioInput;
+
     private void ToggleSlot(DiaSemanaEnum dia, TimeOnly hora)
     {
         var bloque = ObtenerBloque(dia, hora);
@@ -119,10 +227,13 @@ public partial class PublicarCanchaPage : ComponentBase
             {
                 diaSemana = dia,
                 horaInicio = hora,
-                horaFin = hora.AddHours(1), // Bloques fijos estándar de 1 hora de duración
+                horaFin = hora.AddHours(1),
                 precio = precioActual,
-                estadoBloque = EstadoBloqueEnum.DISPONIBLE // Tu estado inicial por defecto
+                estadoBloque = EstadoBloqueEnum.DISPONIBLE
             });
+
+            // Si ya marcaron una hora, limpiamos el error en caliente
+            mensajeStore.Clear(FieldIdentifier.Create(() => HorariosSeleccionados));
         }
 
         StateHasChanged();
@@ -153,7 +264,6 @@ public partial class PublicarCanchaPage : ComponentBase
         StateHasChanged();
     }
 
-
     protected bool IsLoading { get; set; } = false;
     protected string? MensajeError { get; set; }
 
@@ -165,7 +275,6 @@ public partial class PublicarCanchaPage : ComponentBase
             MensajeError = null;
             StateHasChanged();
 
-            // Sincronizamos las variables del formulario con los Enums del Backend en Java
             if (Enum.TryParse<DeporteEnum>(DeporteSeleccionado, true, out var deporteEnum))
             {
                 Modelo.deportes = new List<DeporteEnum> { deporteEnum };
@@ -180,13 +289,15 @@ public partial class PublicarCanchaPage : ComponentBase
                 }
             }
 
-            // Ejecutamos la inserción en el hilo de fondo
+            // Sincronizamos la grilla con los bloques del modelo antes de enviar
+            Modelo.bloques = HorariosSeleccionados;
+
             await Task.Run(() =>
             {
                 RestClient.Guardar(Modelo, Estado.Nuevo);
             });
 
-            await Task.Delay(500); // Pequeño respiro táctico visual
+            await Task.Delay(500);
             PasoActual = 5;
         }
         catch (Exception)

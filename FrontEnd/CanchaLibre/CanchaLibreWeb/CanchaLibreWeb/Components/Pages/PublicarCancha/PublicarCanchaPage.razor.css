@@ -405,6 +405,19 @@
     font-size: 10px;
 }
 
+.upload-zone {
+    border: 2px dashed #10B981 !important; /* Línea discontinua verde */
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .upload-zone:hover {
+        background-color: #F0FDF4 !important; /* Fondo sutilmente verde al hacer hover */
+    }
+
+.upload-preview {
+    border: 3px solid #ffffff;
+}
+
 /* Animación sutil de entrada */
 @keyframes modalScaleIn {
     from {

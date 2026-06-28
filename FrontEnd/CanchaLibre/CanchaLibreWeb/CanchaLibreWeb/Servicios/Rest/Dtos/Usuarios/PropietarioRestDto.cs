@@ -26,6 +26,6 @@ public sealed class PropietarioRestDto
     [JsonPropertyName("calificacion")]
     public double Calificacion { get; set; }
 
-    [JsonPropertyName("ruc")]
+    [JsonPropertyName("RUC")]
     public string Ruc { get; set; } = string.Empty;
 }

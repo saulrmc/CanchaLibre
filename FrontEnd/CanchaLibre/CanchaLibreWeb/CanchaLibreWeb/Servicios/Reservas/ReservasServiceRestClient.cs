@@ -78,7 +78,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
             bloques = ParseBloques(source.bloques),
             cancha = ParseCancha(source.cancha),
             cliente = ParseCliente(source.cliente),
-            estado = ParseEnum<EstadoReservaEnum>(source.estado, EstadoReservaEnum.ESPERA),
+            estado = ParseEnum<EstadoReservaEnum>(source.estado, EstadoReservaEnum.PENDIENTE_PAGO),
             idReserva = source.idReserva,
             pago = ParsePago(source.pago)
         };
