@@ -1,3 +1,4 @@
+using CanchaLibreWeb.Servicios.Notificaciones;
 using Microsoft.AspNetCore.Components;
 
 namespace CanchaLibreWeb.Components.Pages.Admin;
@@ -6,6 +7,7 @@ public partial class DashboardAdminPage : ComponentBase
 {
     
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private NotificacionService Notificaciones { get; set; } = default!;//
     protected class RegistroHorario
     {
         public string Hora { get; set; } = string.Empty;
@@ -13,6 +15,9 @@ public partial class DashboardAdminPage : ComponentBase
     }
 
     protected List<RegistroHorario> DatosGrafico { get; set; } = new();
+
+    private bool mostrarToastReserva = false;
+    private string mensajeToastReserva = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -31,5 +36,21 @@ public partial class DashboardAdminPage : ComponentBase
             new() { Hora = "17:00", Porcentaje = 140 },
             new() { Hora = "18:00", Porcentaje = 100 }
         };
+        Notificaciones.ReservaConfirmada += OnReservaConfirmada;
+    }
+    private async void OnReservaConfirmada(ReservaExitosaInfo info)
+    {
+        mensajeToastReserva = $"{info.NombreCliente} reservó {info.NombreCancha}.";
+        mostrarToastReserva = true;
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(10_000);
+        mostrarToastReserva = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Notificaciones.ReservaConfirmada -= OnReservaConfirmada;
     }
 }
