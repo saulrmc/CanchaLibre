@@ -117,4 +117,7 @@ public class CanchaBOImpl extends BaseBO implements CanchaBO {
     public List<Cancha> listarCanchasPorCuenta(String cuenta){
         return this.canchaDao.listarCanchasPorCuenta(cuenta);
     }
+
+    @Override
+    public List<Cancha> listarCanchasPorDistrito(String distritoOficial){return this.canchaDao.listarCanchasPorDistrito(distritoOficial);}
 }

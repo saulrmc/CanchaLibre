@@ -27,7 +27,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
     {
         if (string.IsNullOrWhiteSpace(metodoPago))
         {
-            return MetodoPagoEnum.EFECTIVO; // Valor por defecto si viene nulo
+            return MetodoPagoEnum.YAPE; // Valor por defecto si viene nulo
         }
 
         // El parámetro true ignora mayúsculas/minúsculas ("yape" o "YAPE" funcionarán igual)
@@ -37,7 +37,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         }
 
         // Opcional: Si el texto no coincide con ningún Enum, puedes retornar un default o manejar el error
-        return MetodoPagoEnum.EFECTIVO;
+        return MetodoPagoEnum.YAPE;
     }
 
     public void Eliminar(int id)
@@ -78,7 +78,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
             bloques = ParseBloques(source.bloques),
             cancha = ParseCancha(source.cancha),
             cliente = ParseCliente(source.cliente),
-            estado = ParseEnum<EstadoReservaEnum>(source.estado, EstadoReservaEnum.ESPERA),
+            estado = ParseEnum<EstadoReservaEnum>(source.estado, EstadoReservaEnum.PENDIENTE_PAGO),
             idReserva = source.idReserva,
             pago = ParsePago(source.pago)
         };

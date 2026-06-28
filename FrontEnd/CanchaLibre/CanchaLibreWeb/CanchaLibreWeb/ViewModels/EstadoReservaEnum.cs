@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CanchaLibreWeb.ViewModels;
 public enum EstadoReservaEnum{
-	ESPERA = 1, 
-    PAGADO = 2,
-    CANCELADO = 3,
-    COMPLETADO = 4
+	PENDIENTE_PAGO = 1, 
+    CONFIRMADA = 2,
+    CANCELADA = 3,
+    RECHAZADA = 4
 }

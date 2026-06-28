@@ -13,7 +13,7 @@ public partial class LoginPage : ComponentBase
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
     [Inject] private ControlIntentosLoginService ControlIntentos { get; set; } = default!;//
 
-    private bool mostrarBloqueo = false;// 
+    private bool mostrarBloqueo = false;//
     private int segundosBloqueo = 0;//
 
     private SolicitudLoginViewModel LoginModel { get; set; } = new();
@@ -106,21 +106,20 @@ public partial class LoginPage : ComponentBase
 
     private void RedirigirSegunRol(string rol)
     {
-        // switch (rol.ToLower())
-        // {
-        //     case "admin":
-        //         Nav.NavigateTo("/Admin/Dashboard");
-        //         break;
-        //     case "propietario":
-        //         Nav.NavigateTo("/PortalUsuario/Publicar");
-        //         break;
-        //     case "cliente":
-        //         Nav.NavigateTo("/Portal/MisReservas");
-        //         break;
-        //     default:
-        //         Nav.NavigateTo("/");
-        //         break;
-        // }
-        Nav.NavigateTo("/");
+        switch (rol.ToLower())
+        {
+            case "admin":
+                Nav.NavigateTo("/Admin/Dashboard");
+                break;
+            case "propietario":
+                Nav.NavigateTo("/PortalPropietario");
+                break;
+            case "cliente":
+                Nav.NavigateTo("/Portal/MisReservas");
+                break;
+            default:
+                Nav.NavigateTo("/");
+                break;
+        }
     }
 }

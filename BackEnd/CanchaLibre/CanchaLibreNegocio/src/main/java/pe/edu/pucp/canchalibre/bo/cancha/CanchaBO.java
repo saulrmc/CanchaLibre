@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CanchaBO extends Gestionable<Cancha> {
     List<Cancha> listarCanchasPorCuenta(String cuenta); //canchas por propietario, conectado al userName
+    List<Cancha> listarCanchasPorDistrito(String distritoOficial);
 }

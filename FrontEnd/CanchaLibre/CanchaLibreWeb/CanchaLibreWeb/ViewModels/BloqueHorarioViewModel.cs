@@ -17,7 +17,4 @@ public class BloqueHorarioViewModel
     public double precio {get; set;}
     public EstadoBloqueEnum estadoBloque {get; set;}
 
-
-
-
 }

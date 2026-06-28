@@ -240,4 +240,32 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
         });
     }
+
+    protected PreparedStatement comandoListarCanchasPorDistrito(Connection conn,
+                                                              String cuenta) throws SQLException{
+        String sql = "{call listarCanchasPorDistrito(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setString("p_distrito", cuenta);
+        return cmd;
+    }
+
+    @Override
+    public List<Cancha> listarCanchasPorDistrito(String distritoOficial){
+        return ejecutarComando(conn -> {
+            try (PreparedStatement cmd =
+                         this.comandoListarCanchasPorDistrito(conn, distritoOficial)) {
+                ResultSet rs = cmd.executeQuery();
+
+                List<Cancha> modelos = new ArrayList<>();
+                while (rs.next()) {
+                    Cancha cancha = this.mapearModelo(rs);
+                    this.llenarDeportes(conn, cancha);
+                    this.llenarEtiquetas(conn, cancha);
+                    modelos.add(cancha);
+                }
+
+                return modelos;
+            }
+        });
+    }
 }
