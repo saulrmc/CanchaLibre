@@ -1,3 +1,5 @@
+using Blazorise;
+using Blazorise.Bootstrap5;
 using CanchaLibreWeb.Components;
 using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.Servicios.Cuentas;
@@ -6,6 +8,7 @@ using CanchaLibreWeb.Servicios.Transacciones;
 using CanchaLibreWeb.Servicios.Usuarios;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +39,18 @@ builder.Services.AddScoped<ICanchasServiceClient, CanchasServiceRestClient>();
 builder.Services.AddScoped<IAuthServiceClient, AuthServiceRestClient>();
 builder.Services.AddScoped<IComprobantesServiceClient, ComprobantesServiceRestClient>();
 builder.Services.AddScoped<IPagosServiceClient, PagosServiceRestClient>();
+builder.Services.AddScoped<CanchaLibreWeb.Servicios.Seguridad.ControlIntentosLoginService>();
+builder.Services.AddSingleton<CanchaLibreWeb.Servicios.Notificaciones.NotificacionService>();
 
-//add more RestClient
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<CanchaLibreWeb.Components.Common.DistritoData>();
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrap5Providers();
 
 var app = builder.Build();
 

@@ -66,6 +66,7 @@ public partial class ReservaConfirmadaPage : ComponentBase
         }
     }
 
+    private bool mostrarToast = false;
     public class ItemPago
     {
         public string Concepto { get; set; } = string.Empty;

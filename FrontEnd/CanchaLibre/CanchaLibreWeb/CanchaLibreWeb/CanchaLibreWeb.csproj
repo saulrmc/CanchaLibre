@@ -7,4 +7,17 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Components\Resources\DistritoData.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Components\Resources\DistritoData.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazorise.Bootstrap5" Version="2.2.1" />
+    <PackageReference Include="Blazorise.Components" Version="2.2.1" />
+  </ItemGroup>
+
 </Project>

@@ -61,31 +61,47 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     {
         Api.Delete($"{ResourcePath}/{id}");
     }
-
     protected override CanchaViewModel ToViewModel(CanchaRestDto source)
-{
-    return new CanchaViewModel
     {
+        string direccionLimpia = source.direccion ?? string.Empty;
+        string distritoDetectado = string.Empty;
+
+        if (direccionLimpia.Contains(" - "))
+        {
+            var partes = direccionLimpia.Split(new[] { " - " }, StringSplitOptions.None);
+            if (partes.Length >= 2)
+            {
+                direccionLimpia = partes[0];
+                distritoDetectado = partes[1]; // Rescatamos el distrito para tu <SelectorDistrito />
+            }
+        }
+
+        return new CanchaViewModel
+        {
             id = source.id,
-        activo = source.activo,
-        nombre = source.nombre,
-        descripcion = source.descripcion,
-        direccion = source.direccion,
-        imagenUrl = source.imagenUrl,
-        precioBase = source.precioBase, 
-        promedioCalificacion = source.promedioCalificacion, 
-        deportes = ParseEnumDeportes(source.deportes),
-        bloques = ParseBloques(source.bloques),
-        etiquetas = ParseEnumEtiquetas(source.etiquetas), 
-        propietario = source.propietario != null ? new PropietarioViewModel {
-            Id = source.propietario.Id,
-            Nombres = source.propietario.Nombres,
-            Correo = source.propietario.Correo,
-            Telefono = source.propietario.Telefono
-        } : null
-    };
-}
-private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
+            activo = source.activo,
+            nombre = source.nombre,
+            descripcion = source.descripcion,
+
+            direccion = direccionLimpia,
+            distrito = distritoDetectado,
+
+            imagenUrl = source.imagenUrl,
+            precioBase = source.precioBase,
+            promedioCalificacion = source.promedioCalificacion,
+            deportes = ParseEnumDeportes(source.deportes),
+            bloques = ParseBloques(source.bloques),
+            etiquetas = ParseEnumEtiquetas(source.etiquetas),
+            propietario = source.propietario != null ? new PropietarioViewModel
+            {
+                Id = source.propietario.Id,
+                Nombres = source.propietario.Nombres,
+                Correo = source.propietario.Correo,
+                Telefono = source.propietario.Telefono
+            } : null
+        };
+    }
+    private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
 {
     if (etiquetas == null || !etiquetas.Any()) return new List<EtiquetaEnum>();
     var result = new List<EtiquetaEnum>();
@@ -161,15 +177,30 @@ private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
     {
         return new CanchaRestDto
         {
-        id = source.id,
+            id = source.id,
             nombre = source.nombre,
             descripcion = source.descripcion,
-            direccion = source.direccion,
+
+            direccion = $"{source.direccion} - {source.distrito}",
+
             imagenUrl = source.imagenUrl,
-            deportes = ParseStringDeportes(source.deportes)
+            activo = source.activo,
+            precioBase = source.precioBase,
+            promedioCalificacion = source.promedioCalificacion,
+
+            deportes = ParseStringDeportes(source.deportes),
+            etiquetas = ParseStringEtiquetas(source.etiquetas),
+
+            bloques = source.bloques?.Select(b => new BloqueHorarioRestDto
+            {
+                diaSemana = b.diaSemana.ToString(),
+                estadoBloque = b.estadoBloque.ToString(),
+                horaInicio = b.horaInicio,
+                horaFin = b.horaFin,
+                precio = b.precio
+            }).ToList()
         };
     }
-
     private List<string> ParseStringDeportes(List<DeporteEnum>? deportes)
     {
         if (deportes == null)
@@ -180,6 +211,20 @@ private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
         foreach (var deporte in deportes)
         {
             result.Add(deporte.ToString());
+        }
+        return result;
+    }
+
+    private List<string> ParseStringEtiquetas(List<EtiquetaEnum>? etiquetas)
+    {
+        if (etiquetas == null)
+        {
+            return new List<string>();
+        }
+        var result = new List<string>();
+        foreach (var etiqueta in etiquetas)
+        {
+            result.Add(etiqueta.ToString());
         }
         return result;
     }

@@ -1,4 +1,4 @@
-﻿@page "/PortalUsuario"
+﻿@page "/PortalPropietario"
 @rendermode InteractiveServer
 @using CanchaLibreWeb.Components.Pages.PortalPropietario
 @using CanchaLibreWeb.ViewModels
@@ -6,11 +6,11 @@
 
 
 <div class="dashboard-shell">
-    
+
     <h1 class="dashboard-title">Estadísticas</h1>
 
     <div class="grid-estadisticas">
-        
+
         <div class="card-est">
             <div class="card-est-info">
                 <span class="est-label">Búsquedas totales</span>
@@ -36,7 +36,7 @@
                     <strong class="est-valor valor-utilidad">s/. @(UtilidadNeta / 1000) mil</strong>
                     <div class="card-est-icono-text">$</div>
                 </div>
-                
+
                 <span class="est-comparacion">+@UtilidadPorcentaje% Respecto al mes anterior</span>
 
             </div>
@@ -76,7 +76,7 @@
     </div>
 
     <div class="dashboard-body">
-        
+
         <div class="col-body">
             <h2 class="seccion-title">Reservas recientes</h2>
             <div class="lista-reservas-recientes">
@@ -104,7 +104,7 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <span class="badge-estado @(r.Estado == "Cobrado" ? "badge-cobrado" : "badge-por-cobrar")">
                             @r.Estado
                         </span>
@@ -116,7 +116,7 @@
         <div class="col-body">
             <h2 class="seccion-title">Estado de cobranzas</h2>
             <div>
-                
+
                 <div class="cobranza-header">
                     <span>Completado</span>
                     <strong>@PorcentajeCompletado%</strong>

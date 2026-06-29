@@ -1,7 +1,8 @@
+using CanchaLibreWeb.Servicios.Seguridad;
+using CanchaLibreWeb.Servicios.Usuarios;
+using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using CanchaLibreWeb.ViewModels;
-using CanchaLibreWeb.Servicios.Usuarios;
 
 namespace CanchaLibreWeb.Components.Pages.Login;
 
@@ -10,6 +11,10 @@ public partial class LoginPage : ComponentBase
     [Inject] private NavigationManager Nav { get; set; } = default!;
     [Inject] private IAuthServiceClient AuthService { get; set; } = default!;
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+    [Inject] private ControlIntentosLoginService ControlIntentos { get; set; } = default!;//
+
+    private bool mostrarBloqueo = false;//
+    private int segundosBloqueo = 0;//
 
     private SolicitudLoginViewModel LoginModel { get; set; } = new();
     private SolicitudRecuperarContrasenaViewModel RecuperarModel { get; set; } = new();
@@ -26,13 +31,31 @@ public partial class LoginPage : ComponentBase
         {
             mensajeError = string.Empty;
 
+            if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosRestantes))//
+            {
+                segundosBloqueo = segundosRestantes;
+                mostrarBloqueo = true;
+                return;
+            }//
+
             var (id, nombres, correo, rolDetectado) = AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena);
 
             if (string.IsNullOrEmpty(rolDetectado))
             {
+                ControlIntentos.RegistrarFallo(LoginModel.Correo);
+
+                if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosTrasFallo))
+                {
+                    segundosBloqueo = segundosTrasFallo;
+                    mostrarBloqueo = true;
+                    return;
+                }
+
                 mensajeError = "El correo electrónico o la contraseña son incorrectos.";
                 return;
             }
+
+            ControlIntentos.RegistrarExito(LoginModel.Correo);
 
             if (AuthStateProvider is CustomAuthStateProvider customAuthStateProvider)
             {
@@ -83,21 +106,20 @@ public partial class LoginPage : ComponentBase
 
     private void RedirigirSegunRol(string rol)
     {
-        // switch (rol.ToLower())
-        // {
-        //     case "admin":
-        //         Nav.NavigateTo("/Admin/Dashboard");
-        //         break;
-        //     case "propietario":
-        //         Nav.NavigateTo("/PortalUsuario/Publicar");
-        //         break;
-        //     case "cliente":
-        //         Nav.NavigateTo("/Portal/MisReservas");
-        //         break;
-        //     default:
-        //         Nav.NavigateTo("/");
-        //         break;
-        // }
-        Nav.NavigateTo("/");
+        switch (rol.ToLower())
+        {
+            case "admin":
+                Nav.NavigateTo("/Admin/Dashboard");
+                break;
+            case "propietario":
+                Nav.NavigateTo("/PortalPropietario");
+                break;
+            case "cliente":
+                Nav.NavigateTo("/Portal/MisReservas");
+                break;
+            default:
+                Nav.NavigateTo("/");
+                break;
+        }
     }
 }

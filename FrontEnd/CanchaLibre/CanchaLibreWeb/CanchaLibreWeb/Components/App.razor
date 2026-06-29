@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="@Assets["CanchaLibreWeb.styles.css"]" />
     <ImportMap />
     <link rel="icon" type="image/png" href="Logo.svg" />
-    <HeadOutlet />
+    <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer" />
     <ReconnectModal />
+    <script src="_content/Blazorise/blazorise.js"></script>
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 

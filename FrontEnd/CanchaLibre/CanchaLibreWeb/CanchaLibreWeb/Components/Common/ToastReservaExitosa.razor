@@ -1,0 +1,38 @@
+﻿@if (Mostrar)
+{
+    <div class="toast-reserva">
+        <div class="toast-icono">✅</div>
+        <div class="toast-texto">
+            <strong>@Titulo</strong>
+            <p>@Mensaje</p>
+        </div>
+    </div>
+}
+
+<style>
+    .toast-reserva {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #fff;
+        border-left: 5px solid #16a34a;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        padding: 1rem 1.25rem;
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        max-width: 320px;
+        z-index: 1500;
+        animation: toast-in 0.3s ease-out;
+    }
+
+    .toast-icono { font-size: 1.5rem; }
+    .toast-texto strong { display: block; margin-bottom: 0.2rem; }
+    .toast-texto p { margin: 0; font-size: 0.9rem; color: #555; }
+
+    @@keyframes toast-in {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+</style>

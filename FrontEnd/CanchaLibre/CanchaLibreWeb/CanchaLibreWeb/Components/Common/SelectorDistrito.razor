@@ -1,0 +1,84 @@
+﻿@using Blazorise
+@using Blazorise.Components
+
+<div class="cancha-selector-container">
+    <DropdownList TItem="Distrito" TValue="string"
+                  Data="@distritos"
+                  TextField="@(( item ) => item.NombreDisplay)"
+                  ValueField="@(( item ) => item.IdOficial)"
+                  Value="@DistritoSeleccionado"
+                  ValueChanged="@OnDistritoChanged"
+                  MaxMenuHeight="200px"
+                  Color="Color.Light"
+                  Class="w-100"
+                  Filterable>
+        @(distritos.FirstOrDefault(d => d.IdOficial == DistritoSeleccionado)?.NombreDisplay ?? "Selecciona un distrito...")
+    </DropdownList>
+</div>
+
+<style>
+    /* Estilizamos el botón nativo que genera el DropdownList dentro de nuestro contenedor */
+    .cancha-selector-container .dropdown-toggle,
+    .cancha-selector-container .btn-light {
+        background-color: #F8FAFC !important; /* bg-light */
+        color: #1E293B !important; /* text-dark */
+        border: 1px solid #E2E8F0 !important;
+        padding: 0.5rem 0.75rem !important;
+        border-radius: 0.5rem !important; /* rounded-3 / rounded-4 */
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        font-size: 0.95rem !important;
+        box-shadow: none !important;
+    }
+
+    /* Rediseñamos el menú desplegable flotante para que no mueva el contenido de la página */
+    .cancha-selector-container .dropdown-menu {
+        position: absolute !important;
+        background-color: #ffffff !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+        width: 100% !important;
+        z-index: 1050 !important;
+    }
+
+    /* Estilo para cada fila de la lista de distritos */
+    .cancha-selector-container .dropdown-item {
+        color: #334155 !important;
+        padding: 0.6rem 1rem !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+    }
+
+        /* Hover con el color verde oficial de CanchaLibre */
+        .cancha-selector-container .dropdown-item:hover {
+            background-color: #F1F5F9 !important;
+            color: #10B981 !important;
+        }
+</style>
+
+@code {
+    [Inject] public DistritoData DistritoService { get; set; } = default!;
+    public IEnumerable<Distrito> distritos = Enumerable.Empty<Distrito>();
+
+    private string _distritoSeleccionado = string.Empty;
+
+    [Parameter] public string DistritoSeleccionado { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> DistritoSeleccionadoChanged { get; set; }
+
+    public string TextoMostrar { get; set; } = "Selecciona un distrito...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        distritos = await DistritoService.GetDistritosAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnDistritoChanged(string nuevoValor)
+    {
+        DistritoSeleccionado = nuevoValor;
+        await DistritoSeleccionadoChanged.InvokeAsync(nuevoValor);
+    }
+}
