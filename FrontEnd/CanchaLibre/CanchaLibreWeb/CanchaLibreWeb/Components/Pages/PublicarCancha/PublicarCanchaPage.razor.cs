@@ -3,6 +3,7 @@ using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq;
+//using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 
 namespace CanchaLibreWeb.Components.Pages.PublicarCancha;
 
@@ -38,11 +39,11 @@ public partial class PublicarCanchaPage : ComponentBase
 
     }
 
-    protected List<string> DeportesDisponibles = new() { "Fútbol", "Voley", "Basquet", "Tenis" };
+    protected List<string> DeportesDisponibles = new() { "Fútbol", "Basquet", "Voley", "Tenis" };
 
     protected List<CaracteristicaItem> CaracteristicasDisponibles = new()
     {
-        new() { Nombre = "ILUMINACION", Icono = "💡" },
+        new() { Nombre = "ILUMINACIÓN", Icono = "💡" },
         new() { Nombre = "PARKING", Icono = "🚗" },
         new() { Nombre = "WIFI", Icono = "📶" },
         new() { Nombre = "VESTIDORES", Icono = "👕" },
@@ -105,6 +106,8 @@ public partial class PublicarCanchaPage : ComponentBase
 
                 FormContext.MarkAsUnmodified(FieldIdentifier.Create(() => Modelo.distrito));
                 FormContext.MarkAsUnmodified(FieldIdentifier.Create(() => Modelo.direccion));
+
+                FormContext.MarkAsUnmodified(FieldIdentifier.Create(() => Modelo.imagenUrl));
                 FormContext.NotifyValidationStateChanged();
             }
             PasoActual++;
@@ -122,7 +125,6 @@ public partial class PublicarCanchaPage : ComponentBase
     }
 
 
-    // Asegúrate de tener estas variables de estado declaradas arriba en tu componente
     protected string VistaPreviaImagenUrl { get; set; } = string.Empty;
     protected string MensajeImagen { get; set; } = string.Empty;
     private const long MaxImageSize = 5 * 1024 * 1024; // 5 MB
@@ -199,7 +201,6 @@ public partial class PublicarCanchaPage : ComponentBase
     }
 
     protected List<BloqueHorarioViewModel> HorariosSeleccionados { get; set; } = new();
-
     private BloqueHorarioViewModel? ObtenerBloque(DiaSemanaEnum dia, TimeOnly hora)
     {
         return HorariosSeleccionados.FirstOrDefault(b => b.diaSemana == dia && b.horaInicio == hora);
@@ -231,7 +232,6 @@ public partial class PublicarCanchaPage : ComponentBase
                 estadoBloque = EstadoBloqueEnum.DISPONIBLE
             });
 
-            // Si ya marcaron una hora, limpiamos el error en caliente
             mensajeStore.Clear(FieldIdentifier.Create(() => HorariosSeleccionados));
         }
 
@@ -240,6 +240,7 @@ public partial class PublicarCanchaPage : ComponentBase
 
     private void GuardarPrecioIndividual()
     {
+        if(nuevoPrecioInput <= 0){nuevoPrecioInput=Modelo.precioBase;}
         if (bloqueAEditar != null)
         {
             bloqueAEditar.precio = nuevoPrecioInput;
@@ -274,34 +275,95 @@ public partial class PublicarCanchaPage : ComponentBase
             MensajeError = null;
             StateHasChanged();
 
-            if (Enum.TryParse<DeporteEnum>(DeporteSeleccionado, true, out var deporteEnum))
+            string deporteLimpio = DeporteSeleccionado;
+            if (!string.IsNullOrEmpty(deporteLimpio))
+            {
+                deporteLimpio = deporteLimpio.ToUpper() switch
+                {
+                    "FÚTBOL" => "FUTBOL",
+                    _ => deporteLimpio.ToUpper()
+                };
+            }
+
+            if (Enum.TryParse<DeporteEnum>(deporteLimpio, true, out var deporteEnum))
             {
                 Modelo.deportes = new List<DeporteEnum> { deporteEnum };
             }
 
             Modelo.etiquetas = new List<EtiquetaEnum>();
+
             foreach (var caracteristica in CaracteristicasCopia)
             {
-                if (Enum.TryParse<EtiquetaEnum>(caracteristica, true, out var etiquetaEnum))
+
+                string caracteristicaLimpia = caracteristica.ToUpper() switch
+                {
+                    "ILUMINACIÓN" => "ILUMINACION",
+                    "BAÑOS" => "BANOS",
+                    _ => caracteristica.ToUpper() // PARKING, WIFI, VESTIDORES, DUCHAS
+                };
+
+                if (Enum.TryParse<EtiquetaEnum>(caracteristicaLimpia, true, out var etiquetaEnum))
                 {
                     Modelo.etiquetas.Add(etiquetaEnum);
                 }
             }
 
-            // Sincronizamos la grilla con los bloques del modelo antes de enviar
+            //Modelo.bloques = new List<BloqueHorarioViewModel>();
             Modelo.bloques = HorariosSeleccionados;
 
-            await Task.Run(() =>
+
+
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var usuario = authState.User;
+            var idPropietarioClaim = usuario.FindFirst("IdUsuario")?.Value;
+
+            if (string.IsNullOrEmpty(idPropietarioClaim))
             {
-                RestClient.Guardar(Modelo, Estado.Nuevo);
-            });
+                throw new NullReferenceException("El Claim 'IdUsuario' no existe en la sesión actual del ClaimsPrincipal.");
+            }
+
+            if (!int.TryParse(idPropietarioClaim, out var idPropietario))
+            {
+                throw new FormatException($"El valor del Claim 'IdUsuario' ('{idPropietarioClaim}') no tiene un formato numérico entero (int) válido.");
+            }
+
+            var propietarioReal = PropietariosClient.Obtener(idPropietario);
+            if (propietarioReal == null)
+            {
+                throw new KeyNotFoundException($"El Propietario con ID {idPropietario} se leyó de la sesión pero no existe en la base de datos de Java (GlassFish devolvió 404/Null).");
+            }
+
+            Modelo.propietario = propietarioReal;
+            if (string.IsNullOrEmpty(Modelo.distrito)) Modelo.distrito = "Por definir";
+
+            if (!string.IsNullOrWhiteSpace(ReglasInternas))
+            {
+                Modelo.descripcion = $"{Modelo.descripcion}\n\n{ReglasInternas}";
+            }
+
+            RestClient.Guardar(Modelo, Estado.Nuevo);
 
             await Task.Delay(500);
             PasoActual = 5;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            MensajeError = "Hubo un problema al registrar la cancha en el servidor. Por favor, inténtalo de nuevo.";
+        //    MensajeError = "Hubo un problema al registrar la cancha en el servidor. Por favor, inténtalo de nuevo.";
+            string mensajeCompleto = $"{ex.Message} -> {ex.InnerException?.Message}";
+
+            // Si el error viene empaquetado en el HTML pesado de GlassFish, extraemos el pre
+            var match = System.Text.RegularExpressions.Regex.Match(mensajeCompleto, @"<pre>(.*?)</pre>", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (match.Success)
+            {
+                // Muestra la traza exacta de Java (ej: NullPointerException, SQLException, etc.)
+                MensajeError = $"Falla en Java: {match.Groups[1].Value.Trim()}";
+            }
+            else
+            {
+                // Muestra el error técnico real de C# (ej: El nombre del tipo de excepción y su mensaje interno)
+                MensajeError = $"Falla en C#: [{ex.GetType().Name}] {ex.Message}";
+            }
         }
         finally
         {

@@ -53,7 +53,7 @@
     border-radius: 8px;
     padding: 14px;
     display: grid;
-    grid-template-columns: 2fr auto; /* Tu distribución nativa */
+    grid-template-columns: 2fr auto;
     gap: 14px;
     box-shadow: 0 12px 30px rgba(0,0,0,.12);
     align-items: end;
@@ -74,12 +74,11 @@
     flex: 1;
 }
 
-    /* Ajuste de proporciones para que respire el input libre */
     .seccion-input-home:nth-child(1) {
         flex-basis: 40%; /* Distrito */
     }
 
-    .seccion-input-home:nth-child(3) {
+    .seccion-input-home:nth-child(2) {
         flex-basis: 60%; /* ¿Qué buscas? */
     }
 

@@ -204,26 +204,40 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
 
     private List<EtiquetaEnum> ParseEtiquetas(List<string>? etiquetas)
     {
-        if(etiquetas is null) return new List<EtiquetaEnum>();
+        if (etiquetas is null) return new List<EtiquetaEnum>();
         var list = new List<EtiquetaEnum>();
+
         foreach (var etiqueta in etiquetas)
         {
-            list.Add(ParseEnum<EtiquetaEnum>(etiqueta, EtiquetaEnum.ILUMINACION));
+            var etiquetaNormalizada = etiqueta.ToUpper() switch
+            {
+                "ILUMINACION" => "ILUMINACIÓN",
+                "BANOS" => "BAÑOS",
+                _ => etiqueta
+            };
+
+            list.Add(ParseEnum<EtiquetaEnum>(etiquetaNormalizada, EtiquetaEnum.ILUMINACION));
         }
         return list;
     }
 
     private List<DeporteEnum> ParseDeportes(List<string>? deportes)
     {
-        if(deportes is null) return new List<DeporteEnum>();
-        List<DeporteEnum> list = new List<DeporteEnum>();
-        foreach(var deporte in deportes)
+        if (deportes is null) return new List<DeporteEnum>();
+        var list = new List<DeporteEnum>();
+
+        foreach (var deporte in deportes)
         {
-            list.Add(ParseEnum<DeporteEnum>(deporte, DeporteEnum.FUTBOL));
+            var deporteNormalizado = deporte.ToUpper() switch
+            {
+                "FUTBOL" => "Fútbol",
+                _ => deporte
+            };
+
+            list.Add(ParseEnum<DeporteEnum>(deporteNormalizado, DeporteEnum.FUTBOL));
         }
         return list;
     }
-
     private List<BloqueHorarioViewModel> ParseBloques(List<Rest.Dtos.Canchas.BloqueHorarioRestDto>? bloques)
     {
         if(bloques is null) return new List<BloqueHorarioViewModel>();

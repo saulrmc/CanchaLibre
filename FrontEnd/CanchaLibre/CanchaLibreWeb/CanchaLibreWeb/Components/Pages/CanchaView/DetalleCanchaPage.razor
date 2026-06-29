@@ -36,12 +36,20 @@ else
                         <h1>@cancha.nombre</h1>
                         <p class="ubicacion"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i> @cancha.direccion</p>
                     </div>
+
                     <div class="d-flex gap-1">
                         @if (cancha.deportes != null)
                         {
                             @foreach (var deporte in cancha.deportes)
                             {
-                                <span class="badge-deporte">@deporte.ToString()</span>
+                                var nombreDeporte = deporte.ToString();
+
+                                <span class="badge mb-1 @(nombreDeporte == "Fútbol" ? "bg-purple-badge" :
+                                                          nombreDeporte == "Voley" ? "bg-blue-badge" :
+                                                          nombreDeporte == "Basquet" ? "bg-pink-badge" :
+                                                          "bg-orange-badge")">
+                                    @nombreDeporte
+                                </span>
                             }
                         }
                     </div>
@@ -76,9 +84,19 @@ else
                 <div class="seccion">
                     <h3>Reglas del Complejo</h3>
                     <ul class="reglas-lista">
-                        <li><i class="fa-solid fa-circle-check me-2" aria-hidden="true"></i>Llegue 10 minutos antes de la hora de su reserva.</li>
-                        <li><i class="fa-solid fa-circle-check me-2" aria-hidden="true"></i>Se requiere vestimenta y calzado deportivo adecuados.</li>
-                        <li><i class="fa-solid fa-circle-check me-2" aria-hidden="true"></i>No se permite fumar ni consumir alcohol en las instalaciones.</li>
+                        @if (ReglasSeparadas != null && ReglasSeparadas.Any())
+                                {
+                                    @foreach (var regla in ReglasSeparadas)
+                                    {
+                                        <li>✅ @regla</li>
+                                    }
+                                }
+                        else
+                        {
+                        <li>✅ Llegue 10 minutos antes de la hora de su reserva.</li>
+                        <li>✅ Se requiere vestimenta y calzado deportivo adecuados.</li>
+                        <li>✅ No se permite fumar ni consumir alcohol en las instalaciones.</li>
+                        }
                     </ul>
                 </div>
 

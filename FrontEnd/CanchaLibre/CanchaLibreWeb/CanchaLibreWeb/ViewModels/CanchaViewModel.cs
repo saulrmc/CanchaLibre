@@ -28,7 +28,7 @@ public class CanchaViewModel
     public List<BloqueHorarioViewModel>? bloques {get; set;}
 
     [Required(ErrorMessage = "Debe agregar un precio base")]
-    [Range(1, 500, ErrorMessage = "El precio debe ser mayor a 0.")]
+    [Range(1, 500, ErrorMessage = "El precio debe ser mayor a 0 y menor a 500")]
     public double precioBase {get; set;}
     public double promedioCalificacion{get; set;}
     public bool activo {get; set;}

@@ -28,4 +28,9 @@ public sealed class PropietarioRestDto
 
     [JsonPropertyName("RUC")]
     public string Ruc { get; set; } = string.Empty;
+
+    [JsonPropertyName("saldo")]
+    public double Saldo { get; set; }
+
+
 }

@@ -1,6 +1,8 @@
 using System.Net;
 using CanchaLibreWeb.Servicios.Base;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Canchas;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Cuentas;
+using CanchaLibreWeb.Servicios.Rest.Dtos.Usuarios;
 using CanchaLibreWeb.ViewModels;
 
 namespace CanchaLibreWeb.Servicios.Canchas;
@@ -10,10 +12,9 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     public CanchasServiceRestClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         : base(configuration, httpClientFactory)
     {
-        // IConfiguration e IHttpClientFactory son inyectados por el contenedor de DI.
     }
-    private const string ResourcePath = "canchas";
 
+    private const string ResourcePath = "canchas";
 
     public List<CanchaViewModel> Listar()
     {
@@ -61,6 +62,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
     {
         Api.Delete($"{ResourcePath}/{id}");
     }
+
     protected override CanchaViewModel ToViewModel(CanchaRestDto source)
     {
         string direccionLimpia = source.direccion ?? string.Empty;
@@ -72,7 +74,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
             if (partes.Length >= 2)
             {
                 direccionLimpia = partes[0];
-                distritoDetectado = partes[1]; // Rescatamos el distrito para tu <SelectorDistrito />
+                distritoDetectado = partes[1];
             }
         }
 
@@ -95,34 +97,35 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
             propietario = source.propietario != null ? new PropietarioViewModel
             {
                 Id = source.propietario.Id,
-                Nombres = source.propietario.Nombres,
-                Correo = source.propietario.Correo,
-                Telefono = source.propietario.Telefono
+                Nombres = source.propietario.Nombres ?? string.Empty,
+                Correo = source.propietario.Correo ?? string.Empty,
+                Telefono = source.propietario.Telefono ?? string.Empty,
+                Cuenta = source.propietario.Cuenta != null ? new CuentaUsuarioViewModel
+                {
+                    UserName = source.propietario.Cuenta.UserName ?? string.Empty,
+                    Password = source.propietario.Cuenta.Password ?? string.Empty,
+                    Activo = source.propietario.Cuenta.Activo,
+                    Rol = RolEnum.PROPIETARIO,
+                    IntentosFallidos = source.propietario.Cuenta.IntentosFallidos,
+                    UltimaSesion = source.propietario.Cuenta.UltimaSesion ?? DateTime.MinValue,
+                    FechaBloqueo = source.propietario.Cuenta.FechaBloqueo ?? DateTime.MinValue
+                } : null,
+                Calificacion = source.propietario.Calificacion,
+                Ruc = source.propietario.Ruc ?? string.Empty,
+                Saldo = source.propietario.Saldo
             } : null
         };
     }
-    private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
-{
-    if (etiquetas == null || !etiquetas.Any()) return new List<EtiquetaEnum>();
-    var result = new List<EtiquetaEnum>();
-    foreach (var etiqueta in etiquetas)
-    {
-        if (Enum.TryParse<EtiquetaEnum>(etiqueta, true, out var parsed))
-        {
-            result.Add(parsed);
-        }
-    }
-    return result;
-}
 
     private List<BloqueHorarioViewModel> ParseBloques(List<BloqueHorarioRestDto>? bloques)
     {
-        if(bloques == null || !bloques.Any())  return new List<BloqueHorarioViewModel>();
+        if (bloques == null || !bloques.Any()) return new List<BloqueHorarioViewModel>();
         List<BloqueHorarioViewModel> bloquesView = new List<BloqueHorarioViewModel>();
-        foreach(var bloque in bloques)
+        foreach (var bloque in bloques)
         {
             bloquesView.Add(
-                new BloqueHorarioViewModel{
+                new BloqueHorarioViewModel
+                {
                     id = bloque.id,
                     diaSemana = toDiaSemana(bloque.diaSemana),
                     estadoBloque = toEstadoBloque(bloque.estadoBloque),
@@ -141,10 +144,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         {
             return estadoConvertido;
         }
-        else
-        {
-            return EstadoBloqueEnum.NO_VALIDO;
-        }
+        return EstadoBloqueEnum.NO_VALIDO;
     }
 
     private DiaSemanaEnum toDiaSemana(string diaSemana)
@@ -153,19 +153,45 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         {
             return diaConvertido;
         }
-        else
-        {
-            return DiaSemanaEnum.NO_VALIDO;
-        }
+        return DiaSemanaEnum.NO_VALIDO;
     }
 
     private List<DeporteEnum> ParseEnumDeportes(List<string>? deportes)
     {
-        if(deportes == null || !deportes.Any()) return new List<DeporteEnum>();
+        if (deportes == null || !deportes.Any()) return new List<DeporteEnum>();
         var result = new List<DeporteEnum>();
+
         foreach (var deporte in deportes)
         {
-            if (Enum.TryParse<DeporteEnum>(deporte, true, out var parsed))
+            var deporteNormalizado = deporte.ToUpper() switch
+            {
+                "FUTBOL" => "Fútbol",
+                _ => deporte
+            };
+
+            if (Enum.TryParse<DeporteEnum>(deporteNormalizado, true, out var parsed))
+            {
+                result.Add(parsed);
+            }
+        }
+        return result;
+    }
+
+    private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
+    {
+        if (etiquetas == null || !etiquetas.Any()) return new List<EtiquetaEnum>();
+        var result = new List<EtiquetaEnum>();
+
+        foreach (var etiqueta in etiquetas)
+        {
+            var etiquetaNormalizada = etiqueta.ToUpper() switch
+            {
+                "ILUMINACION" => "ILUMINACIÓN",
+                "BANOS" => "BAÑOS",
+                _ => etiqueta
+            };
+
+            if (Enum.TryParse<EtiquetaEnum>(etiquetaNormalizada, true, out var parsed))
             {
                 result.Add(parsed);
             }
@@ -178,13 +204,13 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         return new CanchaRestDto
         {
             id = source.id,
+            activo = source.activo,
             nombre = source.nombre,
             descripcion = source.descripcion,
 
             direccion = $"{source.direccion} - {source.distrito}",
 
             imagenUrl = source.imagenUrl,
-            activo = source.activo,
             precioBase = source.precioBase,
             promedioCalificacion = source.promedioCalificacion,
 
@@ -193,39 +219,63 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
 
             bloques = source.bloques?.Select(b => new BloqueHorarioRestDto
             {
+                id = b.id,
                 diaSemana = b.diaSemana.ToString(),
                 estadoBloque = b.estadoBloque.ToString(),
                 horaInicio = b.horaInicio,
                 horaFin = b.horaFin,
-                precio = b.precio
-            }).ToList()
+                precio = b.precio,
+            }).ToList(),
+
+            propietario = source.propietario != null ? new PropietarioRestDto
+            {
+                Id = source.propietario.Id,
+                Nombres = source.propietario.Nombres,
+                Correo = source.propietario.Correo,
+                Telefono = source.propietario.Telefono,
+                Calificacion = source.propietario.Calificacion,
+                Ruc = source.propietario.Ruc,
+                Saldo = source.propietario.Saldo,
+                Cuenta = source.propietario.Cuenta != null ? new CuentaUsuarioRestDto
+                {
+                    UserName = source.propietario.Cuenta.UserName,
+                    Password = source.propietario.Cuenta.Password,
+                    Activo = source.propietario.Cuenta.Activo,
+                    Rol = "PROPIETARIO",
+                    IntentosFallidos = source.propietario.Cuenta.IntentosFallidos,
+                    UltimaSesion = source.propietario.Cuenta.UltimaSesion,
+                    FechaBloqueo = source.propietario.Cuenta.FechaBloqueo
+                } : null
+            } : null
         };
     }
+
     private List<string> ParseStringDeportes(List<DeporteEnum>? deportes)
     {
-        if (deportes == null)
+        if (deportes == null) return new List<string>();
+        return deportes.Select(d =>
         {
-            return new List<string>();
-        }
-        var result = new List<string>();
-        foreach (var deporte in deportes)
-        {
-            result.Add(deporte.ToString());
-        }
-        return result;
+            var nombreLimpio = d.ToString().ToUpper();
+            return nombreLimpio switch
+            {
+                "FÚTBOL" => "FUTBOL",
+                _ => nombreLimpio
+            };
+        }).ToList();
     }
 
     private List<string> ParseStringEtiquetas(List<EtiquetaEnum>? etiquetas)
     {
-        if (etiquetas == null)
-        {
-            return new List<string>();
+        if (etiquetas == null) return new List<string>();
+        return etiquetas.Select(e =>
+            {
+                var nombreLimpio = e.ToString().ToUpper();
+                return nombreLimpio switch
+                {
+                    "ILUMINACIÓN" => "ILUMINACION",
+                    "BAÑOS" => "BANOS",
+                    _ => nombreLimpio
+                };
+            }).ToList();
         }
-        var result = new List<string>();
-        foreach (var etiqueta in etiquetas)
-        {
-            result.Add(etiqueta.ToString());
-        }
-        return result;
     }
-}
