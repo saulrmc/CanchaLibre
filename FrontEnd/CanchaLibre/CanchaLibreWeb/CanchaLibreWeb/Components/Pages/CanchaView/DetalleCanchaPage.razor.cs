@@ -61,10 +61,29 @@ public partial class DetalleCanchaPage : ComponentBase
         new("Carlos García", "Muy puntuales con la entrega de chalecos.")
     };
 
+    protected string DescripcionCorta { get; set; } = string.Empty;
+    protected List<string> ReglasSeparadas { get; set; } = new();
+
     protected override void OnInitialized()
     {
-        // Consumo directo de la API mediante tu ServiceRestClient sin datos mock
         cancha = CanchasService.Obtener(Id);
+        if (cancha != null && !string.IsNullOrEmpty(cancha.descripcion))
+            {
+                var partes = cancha.descripcion.Split(new[] { "\n\n" }, StringSplitOptions.None);
+
+                if (partes.Length > 1)
+                {
+                    DescripcionCorta = partes[0];
+
+                    ReglasSeparadas = partes[1].Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(r => r.Trim())
+                                               .ToList();
+                }
+                else
+                {
+                    DescripcionCorta = cancha.descripcion;
+                }
+            }
     }
 
     private void SeleccionarBloque(BloqueHorarioViewModel bloque)
@@ -141,7 +160,6 @@ public partial class DetalleCanchaPage : ComponentBase
     public record ComentarioItem(string Nombre, string Texto);
 }
 
-// Método de extensión helper útil para mejorar las etiquetas de texto visuales
 public static class StringExtensions
 {
     public static string ToLowerCapitalized(this string input)

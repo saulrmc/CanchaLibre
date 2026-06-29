@@ -68,7 +68,8 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Nombres = source.Nombres,
             Ruc = source.Ruc,
             Telefono = source.Telefono,
-            Calificacion = source.Calificacion
+            Calificacion = source.Calificacion,
+            Saldo = source.Saldo
         };
     }
 
@@ -111,7 +112,8 @@ public class PropietariosServiceRestClient : BaseRestServiceClient<PropietarioVi
             Cuenta = ParseCuenta(source.Cuenta),
             Nombres = source.Nombres,
             Ruc = source.Ruc,
-            Telefono = source.Telefono
+            Telefono = source.Telefono,
+            Saldo = source.Saldo
         };  
     }
 
