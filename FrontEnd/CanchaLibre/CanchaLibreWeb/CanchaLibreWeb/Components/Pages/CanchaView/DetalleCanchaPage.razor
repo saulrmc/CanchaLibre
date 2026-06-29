@@ -133,7 +133,7 @@ else
                             @foreach (var bloque in BloquesFiltrados)
                             {
                                 var etiquetaHora = $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm}";
-                                <button type="button" class="btn-horario @(bloqueSeleccionado == bloque ? "activo" : "")"
+                                <button type="button" class="btn-horario @(bloquesSeleccionados.Contains(bloque) ? "activo" : "")"
                                         @onclick="() => SeleccionarBloque(bloque)">
                                     <span>@etiquetaHora</span>
                                     <small>S/ @bloque.precio</small>
@@ -164,7 +164,7 @@ else
                             </div>
                         </div>
                         @if(cancha.activo == true){
-                            <button class="btn-reservar-main" disabled="@(bloqueSeleccionado == null)" @onclick="IrAPagar">
+                            <button class="btn-reservar-main" disabled="@(!bloquesSeleccionados.Any())" @onclick="IrAPagar">
                                 Reservar y Pagar
                             </button>
                         }

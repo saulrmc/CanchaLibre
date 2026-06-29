@@ -499,3 +499,9 @@
 .btn-ojo:hover {
     color: #333;
 }
+
+.pago-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

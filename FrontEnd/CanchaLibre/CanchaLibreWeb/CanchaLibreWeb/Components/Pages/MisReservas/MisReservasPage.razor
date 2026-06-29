@@ -199,7 +199,6 @@ else
                 {
                     <div class="pago-exitoso-modal">
                         <p>✅ Pago realizado con éxito.</p>
-                        <button class="btn-cerrar-modal" @onclick="CerrarModal">Cerrar</button>
                     </div>
                 }
                 else
@@ -213,7 +212,6 @@ else
                     {
                         <button class="btn-cancelar" @onclick="() => CancelarReserva(reservaDetalle.idReserva)">Eliminar reserva</button>
                     }
-                    <button class="btn-cerrar-modal" @onclick="CerrarModal">Cerrar</button>
                 }
             </div>
         </div>

@@ -18,7 +18,7 @@ public partial class DetalleCanchaPage : ComponentBase
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     private CanchaViewModel? cancha;
-    private BloqueHorarioViewModel? bloqueSeleccionado;
+    private List<BloqueHorarioViewModel> bloquesSeleccionados = new();
     private DateTime fechaSeleccionada = DateTime.Today;
     private string? mensajeError;
 
@@ -31,7 +31,7 @@ public partial class DetalleCanchaPage : ComponentBase
             if (fechaSeleccionada != value)
             {
                 fechaSeleccionada = value;
-                bloqueSeleccionado = null; // Reiniciar selección al cambiar de fecha
+                bloquesSeleccionados.Clear(); // Reiniciar selección al cambiar de fecha
             }
         }
     }
@@ -50,8 +50,8 @@ public partial class DetalleCanchaPage : ComponentBase
     private string DiaSeleccionadoTexto => ConvertirADiaSemanaEnum(fechaSeleccionada.DayOfWeek).ToString().ToLowerCapitalized();
 
     // Cálculos económicos dinámicos
-    private double PrecioSubtotal => bloqueSeleccionado?.precio ?? 0;
-    private double CostoServicio => bloqueSeleccionado != null ? 5.0 : 0; // Comisión fija si selecciona horario
+    private double PrecioSubtotal => bloquesSeleccionados.Sum(b => b.precio);
+    private double CostoServicio => bloquesSeleccionados.Any() ? 5.0 : 0; // Comisión fija si selecciona horario
     private double PrecioTotal => PrecioSubtotal + CostoServicio;
 
     private List<ComentarioItem> comentarios = new()
@@ -69,7 +69,10 @@ public partial class DetalleCanchaPage : ComponentBase
 
     private void SeleccionarBloque(BloqueHorarioViewModel bloque)
     {
-        bloqueSeleccionado = bloque;
+        if (bloquesSeleccionados.Contains(bloque))
+            bloquesSeleccionados.Remove(bloque);
+        else
+            bloquesSeleccionados.Add(bloque);
     }
 
     private DiaSemanaEnum ConvertirADiaSemanaEnum(DayOfWeek day)
@@ -89,7 +92,7 @@ public partial class DetalleCanchaPage : ComponentBase
 
     private async Task IrAPagar()
     {
-        if (bloqueSeleccionado == null || cancha == null) return;
+        if (!bloquesSeleccionados.Any() || cancha == null) return;
 
         try
         {
@@ -122,7 +125,7 @@ public partial class DetalleCanchaPage : ComponentBase
                 cliente = cliente,
                 cancha = cancha,
                 pago = null,
-                bloques = new List<BloqueHorarioViewModel> { bloqueSeleccionado }
+                bloques = bloquesSeleccionados.ToList()
             };
 
             ReservasService.Guardar(reserva, Estado.Nuevo);
