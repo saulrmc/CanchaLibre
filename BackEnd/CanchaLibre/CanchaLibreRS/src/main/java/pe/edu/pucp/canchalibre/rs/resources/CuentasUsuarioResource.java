@@ -21,11 +21,13 @@ import java.util.List;
 public class CuentasUsuarioResource {
 
     private final CuentaUsuarioBO cuentaUsuarioBO;
+    private final CorreoResource correoResource;
     @Context
     private UriInfo uriInfo;
 
     public CuentasUsuarioResource() {
         cuentaUsuarioBO = new CuentaUsuarioBOImpl();
+        correoResource = new CorreoResource();
     }
 
     @GET
