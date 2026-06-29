@@ -23,12 +23,9 @@ public partial class EncontraCanchaPage : ComponentBase
     private List<CanchaViewModel> todasLasCanchas = new();
     private List<CanchaViewModel>? canchasFiltradas;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Traemos las canchas en tiempo real de tu backend Java
-        todasLasCanchas = CanchasService.Listar() ?? new List<CanchaViewModel>();
-        
-        // Filtrar inicialmente solo las que estén marcadas como activas
+        todasLasCanchas = await Task.Run(() => CanchasService.Listar()) ?? new List<CanchaViewModel>();
         AplicarFiltros();
     }
 

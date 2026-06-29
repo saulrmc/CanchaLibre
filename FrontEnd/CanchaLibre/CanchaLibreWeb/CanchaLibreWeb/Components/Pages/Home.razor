@@ -81,6 +81,8 @@
     </div>
 </section>
 
+@if (mostrarPublicaCancha)
+{
 <section class="publica-cancha">
     <div>
         <h2>¿Tienes un<br>complejo deportivo?</h2>
@@ -88,6 +90,7 @@
     </div>
     <button @onclick="IrAPublicarCancha">Publicar ahora</button>
 </section>
+}
 
 @code {
     protected string filtroDistrito { get; set; } = string.Empty;
@@ -96,11 +99,27 @@
 
     private List<CanchaViewModel> _canchasMaestras = new();
     private List<CanchaViewModel> canchasFiltradas = new();
+    private bool mostrarPublicaCancha;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var usuario = authState.User;
+
+            if (!usuario.Identity?.IsAuthenticated ?? true)
+            {
+                mostrarPublicaCancha = true;
+            }
+            else
+            {
+                var rol = usuario.FindFirst("Rol")?.Value
+                       ?? usuario.FindFirst(ClaimTypes.Role)?.Value
+                       ?? string.Empty;
+                mostrarPublicaCancha = rol.Trim().Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase);
+            }
+
             _canchasMaestras = await Task.Run(() => CanchasService.Listar());
             canchasFiltradas = _canchasMaestras;
         }

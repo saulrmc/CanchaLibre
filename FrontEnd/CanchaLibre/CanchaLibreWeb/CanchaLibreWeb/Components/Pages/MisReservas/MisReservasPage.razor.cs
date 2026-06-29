@@ -20,6 +20,7 @@ public partial class MisReservasPage : ComponentBase
 
     protected List<ReservaViewModel> reservasUsuario { get; set; } = new();
     protected string? mensajeError;
+    protected bool cargando = true;
 
     protected bool mostrarModalDetalle;
     protected ReservaViewModel? reservaDetalle;
@@ -30,11 +31,11 @@ public partial class MisReservasPage : ComponentBase
     protected bool pagoExitoso;
     protected string? mensajePago;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         try
         {
-            var authState = AuthStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             if (!user.Identity?.IsAuthenticated ?? true)
@@ -50,18 +51,22 @@ public partial class MisReservasPage : ComponentBase
                 return;
             }
 
-            var cliente = ClientesService.BuscarPorNombre(nombreCliente);
+            var cliente = await Task.Run(() => ClientesService.BuscarPorNombre(nombreCliente));
             if (cliente == null)
             {
                 mensajeError = "No se encontró el cliente asociado a su cuenta.";
                 return;
             }
 
-            reservasUsuario = ReservasService.ListarPorCliente(cliente.Id);
+            reservasUsuario = await Task.Run(() => ReservasService.ListarPorCliente(cliente.Id));
         }
         catch (Exception ex)
         {
             mensajeError = $"Error al cargar las reservas: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
         }
     }
 
@@ -160,6 +165,18 @@ public partial class MisReservasPage : ComponentBase
             procesandoPago = false;
         }
     }
+
+    private string FormatearDia(DiaSemanaEnum dia) => dia switch
+    {
+        DiaSemanaEnum.LUNES => "Lunes",
+        DiaSemanaEnum.MARTES => "Martes",
+        DiaSemanaEnum.MIERCOLES => "Miércoles",
+        DiaSemanaEnum.JUEVES => "Jueves",
+        DiaSemanaEnum.VIERNES => "Viernes",
+        DiaSemanaEnum.SABADO => "Sábado",
+        DiaSemanaEnum.DOMINGO => "Domingo",
+        _ => "---"
+    };
 
     protected void CancelarReserva(int reservaId)
     {

@@ -46,31 +46,55 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
 //    }
 
     @Override
-    public boolean login(String username, String password) {
+    public Persona login(String username, String password) {
         List<PersonaDAO<?>> daosDeSeguridad = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);
         CuentaUsuario cuenta = null;
+        Persona personaEncontrada = null;
 
-        for (PersonaDAO<?> dao : daosDeSeguridad) {
-            Persona persona = dao.buscarPorCuenta(username);
-            if (persona != null) {
-                cuenta = persona.getCuentaUsuario();
-                validarCuentaUsuario(cuenta);
-                break;
+        if (username != null && username.contains("@")) {
+            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
+            if (cuenta != null) validarCuentaUsuario(cuenta);
+        }
+
+        if (cuenta == null) {
+            for (PersonaDAO<?> dao : daosDeSeguridad) {
+                Persona persona = dao.buscarPorCuenta(username);
+                if (persona != null) {
+                    personaEncontrada = persona;
+                    cuenta = persona.getCuentaUsuario();
+                    validarCuentaUsuario(cuenta);
+                    break;
+                }
             }
         }
 
-//        if (cuenta == null) {
-//            cuenta = this.cuentaUsuarioDao.buscarPorUsernameOCorreo(username);
-//            if (cuenta != null) validarCuentaUsuario(cuenta);
-//        }
+        // Si encontramos por correo, resolvemos la Persona a partir del userName
+        if (personaEncontrada == null && cuenta != null) {
+            String userName = cuenta.getUserName();
+            for (PersonaDAO<?> dao : daosDeSeguridad) {
+                Persona p = dao.buscarPorCuenta(userName);
+                if (p != null) { personaEncontrada = p; break; }
+            }
+        }
+
+        if (cuenta == null && username != null && !username.contains("@")) {
+            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
+            if (cuenta != null) {
+                validarCuentaUsuario(cuenta);
+                for (PersonaDAO<?> dao : daosDeSeguridad) {
+                    Persona p = dao.buscarPorCuenta(cuenta.getUserName());
+                    if (p != null) { personaEncontrada = p; break; }
+                }
+            }
+        }
 
         if (cuenta == null) {
             System.out.println("[LOGIN FAILED] El nombre de usuario '" + username + "' no existe.");
-            return false;
+            return null;
         }
 
-        if (estaBajoCooldown(cuenta)) {return false;}
-        return verificarCredenciales(cuenta,password);
+        if (estaBajoCooldown(cuenta)) {return null;}
+        return verificarCredenciales(cuenta, password) ? personaEncontrada : null;
     }
 
     private boolean estaBajoCooldown(CuentaUsuario cuenta) {

@@ -5,10 +5,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
-import pe.edu.pucp.canchalibre.bo.PersonaBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBO;
 import pe.edu.pucp.canchalibre.bo.cuentas.CuentaUsuarioBOImpl;
-import pe.edu.pucp.canchalibre.bo.usuario.*;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.Persona;
 import pe.edu.pucp.canchalibre.modelo.usuario.*;
@@ -23,17 +21,11 @@ import java.util.List;
 public class CuentasUsuarioResource {
 
     private final CuentaUsuarioBO cuentaUsuarioBO;
-    private final ClienteBO clienteBO;
-    private final PropietarioBO  propietarioBO;
-    private final AdministradorBO administradorBO;
     @Context
     private UriInfo uriInfo;
 
     public CuentasUsuarioResource() {
         cuentaUsuarioBO = new CuentaUsuarioBOImpl();
-        propietarioBO = new PropietarioBOImpl();
-        clienteBO = new ClienteBOImpl();
-        administradorBO = new AdministradorBOImpl();
     }
 
     @GET
@@ -93,25 +85,12 @@ public class CuentasUsuarioResource {
     @POST
     @Path("login")
     public Response login(CuentaUsuario cuenta) {
-        boolean success =
-                this.cuentaUsuarioBO.login(
-                        cuenta.getUserName(),
-                        cuenta.getPassword());
+        Persona persona = this.cuentaUsuarioBO.login(
+                cuenta.getUserName(), cuenta.getPassword());
 
-        if (!success) {
+        if (persona == null) {
             return Response.status(401)
                     .entity(Map.of("error", "Credenciales inválidas"))
-                    .build();
-        }
-
-        Persona persona;
-        if(cuenta.getRol() == Rol.PROPIETARIO) persona = propietarioBO.buscarPorCuenta(cuenta.getUserName());
-        else if(cuenta.getRol() == Rol.ADMINISTRADOR) persona = administradorBO.buscarPorCuenta(cuenta.getUserName());
-        else if(cuenta.getRol() == Rol.CLIENTE) persona = clienteBO.buscarPorCuenta(cuenta.getUserName());
-        else persona = null;
-        if (persona == null || persona.getCuentaUsuario() == null) {
-            return Response.status(500)
-                    .entity(Map.of("error", "Usuario autenticado pero no encontrado"))
                     .build();
         }
 

@@ -127,13 +127,25 @@ CREATE PROCEDURE buscarPagoPorId(
     IN p_id INT
 )
 BEGIN
-SELECT id AS idPago, idReserva, idComprobante, metodoPago, monto, fechaPago
-FROM PAGO
-WHERE id = p_id;
+SELECT
+    p.id AS idPago, p.idReserva, p.idComprobante, p.metodoPago, p.monto, p.fechaPago,
+    c.id AS comp_id, c.serie AS comp_serie, c.numero AS comp_numero,
+    c.fechaEmision AS comp_fechaEmision, c.montoBloques AS comp_montoBloques,
+    c.comisionPlataforma AS comp_comision, c.valorVenta AS comp_valorVenta,
+    c.montoIgv AS comp_montoIgv
+FROM PAGO p
+LEFT JOIN COMPROBANTE c ON p.idComprobante = c.id
+WHERE p.id = p_id;
 END //
 
 CREATE PROCEDURE listarPagos()
 BEGIN
-SELECT id AS idPago, idReserva, idComprobante, metodoPago, monto, fechaPago
-FROM PAGO;
+SELECT
+    p.id AS idPago, p.idReserva, p.idComprobante, p.metodoPago, p.monto, p.fechaPago,
+    c.id AS comp_id, c.serie AS comp_serie, c.numero AS comp_numero,
+    c.fechaEmision AS comp_fechaEmision, c.montoBloques AS comp_montoBloques,
+    c.comisionPlataforma AS comp_comision, c.valorVenta AS comp_valorVenta,
+    c.montoIgv AS comp_montoIgv
+FROM PAGO p
+LEFT JOIN COMPROBANTE c ON p.idComprobante = c.id;
 END //
