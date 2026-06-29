@@ -28,6 +28,12 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
             modelo.setId(idOrden);
             this.bloqueDao.crearBloquesPorCancha(conn, idOrden, modelo.getBloques());
+            if (modelo.getDeportes() != null && !modelo.getDeportes().isEmpty()) {
+                this.insertarDeportesPorCancha(conn, idOrden, modelo.getDeportes());
+            }
+            if (modelo.getEtiquetas() != null && !modelo.getEtiquetas().isEmpty()) {
+                this.insertarEtiquetasPorCancha(conn, idOrden, modelo.getEtiquetas());
+            }
             return idOrden;
         });
     }
@@ -41,6 +47,15 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
             this.bloqueDao.eliminarBloquePorCancha(conn, modelo.getId());
             this.bloqueDao.crearBloquesPorCancha(conn, modelo.getId(), modelo.getBloques());
+            this.eliminarDeportesPorCancha(conn, modelo.getId());
+            if (modelo.getDeportes() != null && !modelo.getDeportes().isEmpty()) {
+                this.insertarDeportesPorCancha(conn, modelo.getId(), modelo.getDeportes());
+            }
+
+            this.eliminarEtiquetasPorCancha(conn, modelo.getId());
+            if (modelo.getEtiquetas() != null && !modelo.getEtiquetas().isEmpty()) {
+                this.insertarEtiquetasPorCancha(conn, modelo.getId(), modelo.getEtiquetas());
+            }
             return true;
         });
     }
@@ -49,6 +64,8 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     public boolean eliminar(Integer id) {
         return ejecutarComando(conn -> {
             this.bloqueDao.eliminarBloquePorCancha(conn, id);
+            this.eliminarDeportesPorCancha(conn, id);
+            this.eliminarEtiquetasPorCancha(conn, id);
             return this.ejecutarComandoEliminar(conn, id);
         });
     }
@@ -122,8 +139,6 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         });
     }
 
-
-
     protected PreparedStatement comandoCrear(Connection conn,
                                              Cancha modelo) throws SQLException{
 
@@ -133,10 +148,12 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString("p_nombre",modelo.getNombre());
         cmd.setString("p_descripcion",modelo.getDescripcion());
         cmd.setString("p_direccion",modelo.getDireccion());
-        if(modelo.getImagenUrl()!=null){
-            cmd.setString("p_imagenUrl",modelo.getImagenUrl());
-        }else{
-            cmd.setNull("p_imagenUrl",Types.VARCHAR);
+        if (modelo.getImagenUrl() != null) {
+            // En lugar de cmd.setString, usamos un StringReader para transferir texto masivo de forma segura
+            java.io.StringReader reader = new java.io.StringReader(modelo.getImagenUrl());
+            cmd.setCharacterStream("p_imagenUrl", reader, modelo.getImagenUrl().length());
+        } else {
+            cmd.setNull("p_imagenUrl", java.sql.Types.LONGVARCHAR);
         }
         cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
         cmd.setDouble("p_precioBase",modelo.getPrecioBase());
@@ -154,10 +171,12 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString("p_nombre",modelo.getNombre());
         cmd.setString("p_descripcion",modelo.getDescripcion());
         cmd.setString("p_direccion",modelo.getDireccion());
-        if(modelo.getImagenUrl()!=null){
-            cmd.setString("p_imagenUrl",modelo.getImagenUrl());
-        }else{
-            cmd.setNull("p_imagenUrl",Types.VARCHAR);
+        if (modelo.getImagenUrl() != null) {
+            // En lugar de cmd.setString, usamos un StringReader para transferir texto masivo de forma segura
+            java.io.StringReader reader = new java.io.StringReader(modelo.getImagenUrl());
+            cmd.setCharacterStream("p_imagenUrl", reader, modelo.getImagenUrl().length());
+        } else {
+            cmd.setNull("p_imagenUrl", java.sql.Types.LONGVARCHAR);
         }
         cmd.setInt("p_idPropietario", modelo.getPropietario().getId());
         cmd.setDouble("p_precioBase",modelo.getPrecioBase());
@@ -188,16 +207,10 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         return conn.prepareCall(sql);
     }
 
+    // DEPORTES ----------------------------------------------------------------------------------------------
 
     protected PreparedStatement comandoListarDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
         String sql = "{call listarDeportesCancha(?)}";
-        CallableStatement cmd = conn.prepareCall(sql);
-        cmd.setInt("p_id", idCancha);
-        return cmd;
-    }
-
-    protected PreparedStatement comandoListarEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
-        String sql = "{call listarEtiquetasCancha(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_id", idCancha);
         return cmd;
@@ -220,6 +233,44 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }
     }
 
+    protected PreparedStatement comandoEliminarDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "{call eliminarDeportesPorCancha(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha", idCancha);
+        return cmd;
+    }
+
+    private void eliminarDeportesPorCancha(Connection conn, Integer idCancha) throws SQLException {
+        try (PreparedStatement cmd = this.comandoEliminarDeportesPorCancha(conn, idCancha)) {
+            cmd.executeUpdate();
+        }
+    }
+
+    protected PreparedStatement comandoInsertarDeportesPorCancha(Connection conn, int idCancha, Deporte deporte) throws SQLException {
+        String sql = "{call insertarDeportesPorCancha(?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha", idCancha);
+        cmd.setString("p_deporte", deporte.name());
+        return cmd;
+    }
+
+    private void insertarDeportesPorCancha(Connection conn, Integer idCancha, List<Deporte> deportes) throws SQLException {
+        for (Deporte deporte : deportes) {
+            try (PreparedStatement cmd = this.comandoInsertarDeportesPorCancha(conn, idCancha, deporte)) {
+                cmd.executeUpdate();
+            }
+        }
+    }
+
+    // ETIQUETAS ----------------------------------------------------------------------------------------------
+
+    protected PreparedStatement comandoListarEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "{call listarEtiquetasCancha(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_id", idCancha);
+        return cmd;
+    }
+
     private void llenarEtiquetas(Connection conn, Cancha cancha) {
         try (PreparedStatement ps = comandoListarEtiquetasPorCancha(conn, cancha.getId());
              ResultSet rs = ps.executeQuery()) {
@@ -234,6 +285,35 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
             }
         } catch (SQLException e) {
             System.err.println("Error al cargar etiquetas: " + e.getMessage());
+        }
+    }
+
+    protected PreparedStatement comandoEliminarEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "{call eliminarEtiquetasPorCancha(?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha", idCancha);
+        return cmd;
+    }
+
+    private void eliminarEtiquetasPorCancha(Connection conn, Integer idCancha) throws SQLException {
+        try (PreparedStatement cmd = this.comandoEliminarEtiquetasPorCancha(conn, idCancha)) {
+            cmd.executeUpdate();
+        }
+    }
+
+    protected PreparedStatement comandoInsertarEtiquetasPorCancha(Connection conn, int idCancha, Etiqueta etiqueta) throws SQLException {
+        String sql = "{call insertarEtiquetasPorCancha(?, ?)}";
+        CallableStatement cmd = conn.prepareCall(sql);
+        cmd.setInt("p_idCancha", idCancha);
+        cmd.setString("p_etiqueta", etiqueta.name());
+        return cmd;
+    }
+
+    private void insertarEtiquetasPorCancha(Connection conn, Integer idCancha, List<Etiqueta> etiquetas) throws SQLException {
+        for (Etiqueta etiqueta : etiquetas) {
+            try (PreparedStatement cmd = this.comandoInsertarEtiquetasPorCancha(conn, idCancha, etiqueta)) {
+                cmd.executeUpdate();
+            }
         }
     }
 
