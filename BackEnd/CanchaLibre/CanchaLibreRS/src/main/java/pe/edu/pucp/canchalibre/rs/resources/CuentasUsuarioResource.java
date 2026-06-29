@@ -125,7 +125,7 @@ public class CuentasUsuarioResource {
 
     @POST
     public Response crear(CuentaUsuario cuenta) {
-        if (cuenta == null || cuenta.getUserName()== null ||
+        if (cuenta == null || cuenta.getUserName() == null ||
                 cuenta.getUserName().isBlank() ||
                 cuenta.getPassword() == null ||
                 cuenta.getPassword().isBlank()) {
@@ -135,6 +135,30 @@ public class CuentasUsuarioResource {
         }
 
         this.cuentaUsuarioBO.guardar(cuenta, Estado.NUEVO);
+
+        try {
+            if (cuenta.getRol() == Rol.CLIENTE || cuenta.getRol() == Rol.PROPIETARIO) {
+                String correoDestino = cuenta.getUserName();
+
+                if (correoDestino != null &&
+                        !correoDestino.isBlank() &&
+                        correoDestino.contains("@")) {
+
+                    String nombreUsuario = cuenta.getRol() == Rol.CLIENTE
+                            ? "cliente"
+                            : "propietario";
+
+                    correoResource.enviarCorreoBienvenida(
+                            correoDestino,
+                            nombreUsuario
+                    );
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("La cuenta se creó, pero no se pudo enviar el correo de bienvenida.");
+            e.printStackTrace();
+        }
+
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(cuenta.getId()))
                 .build();

@@ -5,12 +5,16 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import pe.edu.pucp.canchalibre.bo.reserva.ReservaBO;
+import pe.edu.pucp.canchalibre.bo.reserva.ReservaBOImpl;
 import pe.edu.pucp.canchalibre.bo.transaccion.PagoBO;
 import pe.edu.pucp.canchalibre.bo.transaccion.PagoBOImpl;
 import pe.edu.pucp.canchalibre.modelo.Estado;
+import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -18,13 +22,18 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PagosResource {
+
     private final PagoBO pagoBO;
+    private final ReservaBO reservaBO;
+    private final CorreoResource correoService;
 
     @Context
     private UriInfo uriInfo;
 
     public PagosResource() {
         pagoBO = new PagoBOImpl();
+        reservaBO = new ReservaBOImpl();
+        correoService = new CorreoResource();
     }
 
     @GET
@@ -42,6 +51,7 @@ public class PagosResource {
         }
 
         Pago pago = pagoBO.obtener(idPago);
+
         if (pago == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(Map.of("error", "El pago con id: " + idPago + ", no existe"))
@@ -59,7 +69,10 @@ public class PagosResource {
                     .build();
         }
 
+        pago.setFechaPago(LocalDateTime.now());
+
         pagoBO.guardar(pago, Estado.NUEVO);
+
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(pago.getIdPago()))
                 .build();
@@ -78,13 +91,17 @@ public class PagosResource {
                     .build();
         }
 
-        if (pago == null || pago.getMetodoPago() == null || pago.getMonto() <= 0) {
+        if (payloadInvalido(pago)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(Map.of("error", "El payload para crear el pago es inválido"))
                     .build();
         }
 
+        pago.setFechaPago(LocalDateTime.now());
+        pago.setIdReservaTransitorio(idReserva);
+
         int id = pagoBO.insertarPago(pago, idReserva);
+
         if (id <= 0) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(Map.of("error", "No se pudo crear el pago"))
@@ -92,6 +109,30 @@ public class PagosResource {
         }
 
         pago.setIdPago(id);
+
+        try {
+            Reserva reserva = reservaBO.obtener(idReserva);
+
+            if (reserva != null
+                    && reserva.getCliente() != null
+                    && reserva.getCliente().getCorreo() != null
+                    && !reserva.getCliente().getCorreo().isBlank()) {
+
+                String correoCliente = reserva.getCliente().getCorreo();
+                String nombreCliente = reserva.getCliente().getNombres();
+
+                correoService.enviarCorreoPago(
+                        correoCliente,
+                        nombreCliente,
+                        pago.getMonto()
+                );
+            }
+
+        } catch (Exception e) {
+            System.out.println("El pago se registró, pero no se pudo enviar el correo.");
+            e.printStackTrace();
+        }
+
         URI location = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(id))
                 .build();
@@ -138,6 +179,7 @@ public class PagosResource {
         }
 
         Pago pago = pagoBO.obtener(idPago);
+
         if (pago == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(Map.of("error", "El pago con id: " + idPago + ", no existe"))
@@ -150,8 +192,8 @@ public class PagosResource {
     }
 
     private boolean payloadInvalido(Pago pago) {
-        return pago == null ||
-                pago.getMetodoPago() == null ||
-                pago.getMonto() <= 0;
+        return pago == null
+                || pago.getMetodoPago() == null
+                || pago.getMonto() <= 0;
     }
 }

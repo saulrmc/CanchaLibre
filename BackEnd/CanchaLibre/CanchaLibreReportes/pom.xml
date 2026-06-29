@@ -17,6 +17,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>pe.edu.pucp.canchalibre</groupId>
+            <artifactId>CanchaLibreDBManager</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- Motor principal de JasperReports -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -33,11 +38,6 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
             <version>7.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>pe.edu.pucp.canchalibre</groupId>
-            <artifactId>CanchaLibreRS</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

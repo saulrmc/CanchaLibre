@@ -1,11 +1,5 @@
 package pe.edu.pucp.canchalibre.reportes;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,10 +11,19 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 
-@WebServlet(name = "ServletAdminUsuarios", urlPatterns = {"/reportes/usuarios"})
-public class ReporteAdminUsuarios extends HttpServlet {
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
-    private final String NOMBRE_REPORTE = "reportes/ReporteAdminUsuarios.jasper";
+
+@WebServlet(name = "ServletAdminCanchas", urlPatterns = {"/reportes/canchas"})
+public class ReporteAdminCanchas extends HttpServlet {
+
+    private final String NOMBRE_REPORTE = "reportes/ReporteAdminCanchas.jasper";
     private final String NOMBRE_LOGO = "imagenes/Logo.png";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

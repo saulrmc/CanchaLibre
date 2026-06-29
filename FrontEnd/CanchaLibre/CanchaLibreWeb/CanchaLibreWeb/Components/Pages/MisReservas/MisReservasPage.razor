@@ -54,10 +54,10 @@ else
 
                         <div class="reserva-info">
                             <h3>@(reserva.cancha?.nombre ?? "---")</h3>
-                            <p class="reserva-ubicacion">📍 @(reserva.cancha?.direccion ?? "---")</p>
+                            <p class="reserva-ubicacion"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i> @(reserva.cancha?.direccion ?? "---")</p>
                             <p class="reserva-fecha-hora">
                                 <strong>
-                                    📅 @fechaStr — ⏰ @horario
+                                    <i class="fa-solid fa-calendar-days me-1" aria-hidden="true"></i> @fechaStr — <i class="fa-solid fa-clock me-1" aria-hidden="true"></i>@horario
                                 </strong>
                             </p>
                             <p class="reserva-precio"><strong>S/ @totalPrecio.ToString("F2")</strong></p>
@@ -124,7 +124,7 @@ else
 
                 <div class="modal-info">
                     <h2>@(reservaDetalle.cancha?.nombre ?? "---")</h2>
-                    <p class="modal-ubicacion">📍 @(reservaDetalle.cancha?.direccion ?? "---")</p>
+                    <p class="modal-ubicacion"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i> @(reservaDetalle.cancha?.direccion ?? "---")</p>
 
                     <div class="modal-seccion">
                         <h3>Detalles de la cancha</h3>
@@ -178,7 +178,7 @@ else
                                 <input type="radio" name="mp" value="PLIN"
                                        checked="@(metodoPagoSeleccionado == MetodoPagoEnum.PLIN)"
                                        @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.PLIN" />
-                                <span class="pago-icono">💳</span> PLIN
+                                <span class="pago-icono"><i class="fa-light fa-credit-card"></i></span> PLIN
                             </label>
                         </div>
 
