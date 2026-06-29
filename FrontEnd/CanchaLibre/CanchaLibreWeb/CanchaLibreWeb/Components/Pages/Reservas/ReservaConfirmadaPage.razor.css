@@ -188,3 +188,130 @@
     .btn-inicio:hover {
         background: #f9fafb;
     }
+
+/* BOTÓN PAGAR AHORA */
+.btn-pagar-ahora {
+    width: 100%;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+}
+
+    .btn-pagar-ahora:hover {
+        background: #15803d;
+    }
+
+/* SELECTOR DE PAGO */
+.selector-pago {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 14px;
+    text-align: left;
+}
+
+    .selector-pago h3 {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #111;
+    }
+
+.opciones-pago {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.pago-opcion {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+    .pago-opcion input {
+        display: none;
+    }
+
+    .pago-opcion.activo {
+        border-color: #16a34a;
+        background: #f0fdf4;
+    }
+
+    .pago-opcion:hover {
+        border-color: #9ca3af;
+    }
+
+.pago-icono {
+    font-size: 20px;
+}
+
+.pago-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-confirmar-pago {
+    flex: 1;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .btn-confirmar-pago:hover:not(:disabled) {
+        background: #15803d;
+    }
+
+    .btn-confirmar-pago:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.btn-cancelar-pago {
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .btn-cancelar-pago:hover:not(:disabled) {
+        background: #f9fafb;
+    }
+
+/* PAGO EXITOSO */
+.pago-exitoso {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px;
+    background: #f0fdf4;
+    border: 1px solid #16a34a;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #15803d;
+}

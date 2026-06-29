@@ -123,6 +123,7 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         {
             bloquesView.Add(
                 new BloqueHorarioViewModel{
+                    id = bloque.id,
                     diaSemana = toDiaSemana(bloque.diaSemana),
                     estadoBloque = toEstadoBloque(bloque.estadoBloque),
                     horaFin = bloque.horaFin,

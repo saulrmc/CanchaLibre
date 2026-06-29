@@ -51,6 +51,15 @@ public sealed class RestClient {
         EnsureSuccess(response);
     }
 
+    public TResponse Post<TRequest, TResponse>(string path, TRequest payload) {
+        var requestPath = BuildRequestPath(path, queryParams: null);
+        using var client = CreateHttpClient();
+        using var response = client.PostAsJsonAsync(requestPath, payload).GetAwaiter().GetResult();
+        EnsureSuccess(response);
+        return response.Content.ReadFromJsonAsync<TResponse>().GetAwaiter().GetResult()
+            ?? throw new InvalidOperationException("La respuesta REST devolvió un cuerpo vacío.");
+    }
+
     public void Put<TRequest>(string path, TRequest payload) {
         var requestPath = BuildRequestPath(path, queryParams: null);
         using var client = CreateHttpClient();

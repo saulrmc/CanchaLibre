@@ -15,6 +15,7 @@ public class ReservaViewModel
     [Required(ErrorMessage = "Debe tener un metodo de pago")]
     public PagoViewModel? pago {get; set;}
     public List<BloqueHorarioViewModel>? bloques {get; set;}
+    public DateTime? fecha {get; set;}
 
 /*
     public String getResumenBloquesTexto(Reserva reserva) {

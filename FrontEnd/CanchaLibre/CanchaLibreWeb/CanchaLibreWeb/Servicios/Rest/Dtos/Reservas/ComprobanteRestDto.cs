@@ -6,4 +6,5 @@ public sealed class ComprobanteRestDto
 	public String serie {get; set;} = String.Empty;
     public String numero {get; set;} = String.Empty;
 	public DateTime FechaEmision {get; set;}
+    public double montoBloques {get; set;}
 }
