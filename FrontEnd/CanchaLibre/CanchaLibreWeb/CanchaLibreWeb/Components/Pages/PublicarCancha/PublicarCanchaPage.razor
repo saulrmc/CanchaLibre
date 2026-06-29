@@ -2,7 +2,9 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using CanchaLibreWeb.ViewModels
-
+@inject AuthenticationStateProvider AuthStateProvider
+@using CanchaLibreWeb.Servicios.Usuarios
+@inject IPropietariosServiceClient PropietariosClient
 @*@attribute [AllowAnonymous]*@
 @attribute [Authorize(Roles = "Propietario")]
 
@@ -203,7 +205,7 @@
                                 </div>
                                 <div class="modal-body-custom my-3">
                                     <label class="form-label small text-secondary fw-semibold">Precio para este bloque (S/.):</label>
-                                    <input type="number" class="form-control form-control-sm" @bind="nuevoPrecioInput" autofocus />
+                                    <input type="number" min="0" max="500" class="form-control form-control-sm" @bind="nuevoPrecioInput" autofocus />
                                 </div>
                                 <div class="d-flex justify-content-between gap-2 mt-4">
                                     <button type="button" class="btn btn-sm btn-outline-danger" @onclick="EliminarBloqueIndividual">
@@ -248,8 +250,8 @@
 
                         @if (!string.IsNullOrWhiteSpace(MensajeImagen))
                         {
-                            <div class="alert alert-warning py-2 px-3 small rounded-3 mb-3 fw-bold" role="alert">
-                                ⚠️ @MensajeImagen
+                            <div class="text-danger small mt-1" role="alert">
+                                @MensajeImagen
                             </div>
                         }
 
@@ -275,15 +277,16 @@
                                     @DeporteSeleccionado
                                 </span>
                                 <h5 class="fw-bold text-dark mb-1">@(string.IsNullOrEmpty(Modelo.nombre) ? "Nombre de tu Complejo" : Modelo.nombre)</h5>
-                                <p class="text-secondary small mb-0">📍 @(string.IsNullOrEmpty(Modelo.direccion) ? "Dirección" : Modelo.direccion) - @(string.IsNullOrEmpty(Modelo.distrito) ? "Ubicación" : Modelo.distrito) • <span class="text-success fw-bold">S/ @Modelo.precioBase por hora</span></p>
+                                <p class="text-secondary small mb-0">
+                                    📍 @(string.IsNullOrEmpty(Modelo.direccion) ? "Dirección" : Modelo.direccion) - @(string.IsNullOrEmpty(Modelo.distrito) ? "Ubicación" : Modelo.distrito) • <span class="text-success fw-bold">S/ @Modelo.precioBase por hora</span></p>
                             </div>
                         </div>
                     </div>
 
                     @if (!string.IsNullOrEmpty(MensajeError))
                     {
-                        <div class="alert alert-danger small rounded-3 p-2 mb-3" role="alert">
-                            ⚠️ @MensajeError
+                        <div class="text-danger small mt-1" role="alert">
+                            @MensajeError
                         </div>
                     }
                 }
