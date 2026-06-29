@@ -196,4 +196,15 @@ BEGIN
     ORDER BY r.fechaCreacion DESC;
 END //
 
+DROP PROCEDURE IF EXISTS listarBloquesTodasReservas;
+
+CREATE PROCEDURE listarBloquesTodasReservas()
+BEGIN
+    SELECT dr.idReserva, bh.id, bh.idCancha, bh.dia, bh.horaInicio, bh.horaFin, bh.precio, bh.estado, bh.activo
+    FROM DETALLE_RESERVA dr
+    INNER JOIN BLOQUE_HORARIO bh ON dr.idBloqueHorario = bh.id
+    INNER JOIN RESERVA r ON dr.idReserva = r.id
+    WHERE r.activo = TRUE;
+END //
+
 DELIMITER ;

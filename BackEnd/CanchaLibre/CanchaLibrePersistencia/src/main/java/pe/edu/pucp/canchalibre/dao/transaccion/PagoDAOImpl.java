@@ -1,8 +1,9 @@
 package pe.edu.pucp.canchalibre.dao.transaccion;
 
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
-import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
 import pe.edu.pucp.canchalibre.modelo.transaccion.MetodoPago;
+import pe.edu.pucp.canchalibre.modelo.transaccion.Pago;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -87,11 +88,29 @@ public class PagoDAOImpl extends DefaultBaseDAO<Pago> implements PagoDAO {
         pago.setMetodoPago(MetodoPago.valueOf(rs.getString("metodoPago")));
         pago.setMonto(rs.getDouble("monto"));
         pago.setFechaPago(rs.getObject("fechaPago", LocalDateTime.class));
-        int idComprobante = rs.getInt("idComprobante");
-        if(!rs.wasNull()){
-            pago.setComprobante(new ComprobanteDAOImpl().leer(idComprobante));
-        }
+        pago.setComprobante(leerComprobante(rs));
         return pago;
+    }
+
+    private Comprobante leerComprobante(ResultSet rs) throws SQLException {
+        try {
+            int idComp = rs.getInt("comp_id");
+            if (rs.wasNull()) return null;
+
+            Comprobante c = new Comprobante();
+            c.setIdComprobante(idComp);
+            c.setSerie(rs.getString("comp_serie"));
+            c.setNumero(rs.getString("comp_numero"));
+            c.setFechaEmision(rs.getObject("comp_fechaEmision", LocalDateTime.class));
+            c.setMontoBloques(rs.getDouble("comp_montoBloques"));
+            c.setValorVenta(rs.getDouble("comp_valorVenta"));
+            c.setMontoIgv(rs.getDouble("comp_montoIgv"));
+            return c;
+        } catch (SQLException e) {
+            int idComprobante = rs.getInt("idComprobante");
+            if (rs.wasNull()) return null;
+            return new ComprobanteDAOImpl().leer(idComprobante);
+        }
     }
 
 }

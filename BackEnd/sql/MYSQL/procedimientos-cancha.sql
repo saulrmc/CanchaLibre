@@ -13,6 +13,9 @@ DROP PROCEDURE IF EXISTS listarEtiquetasCancha;
 DROP PROCEDURE IF EXISTS listarCanchasPorCuenta;
 
 DROP PROCEDURE IF EXISTS listarCanchasPorDistrito;
+DROP PROCEDURE IF EXISTS listarDeportesTodasCanchas;
+DROP PROCEDURE IF EXISTS listarEtiquetasTodasCanchas;
+DROP PROCEDURE IF EXISTS listarBloquesTodasCanchas;
 
 DELIMITER //
 
@@ -76,16 +79,28 @@ CREATE PROCEDURE buscarCanchaPorId(
     IN p_id INT
 )
 BEGIN
-SELECT id, nombre, descripcion, direccion, imagenUrl, idPropietario, precioBase, promedioCalificacion, activo
-FROM CANCHA
-WHERE id = p_id;
+SELECT
+    c.id, c.nombre, c.descripcion, c.direccion, c.imagenUrl, c.idPropietario, c.precioBase, c.promedioCalificacion, c.activo,
+    p.id AS prop_id, p.nombres AS prop_nombres, p.correo AS prop_correo, p.telefono AS prop_telefono,
+    p.calificacion AS prop_calificacion, p.RUC AS prop_ruc, p.saldo AS prop_saldo, p.activo AS prop_activo,
+    cu.id AS cuenta_id, cu.userName AS cuenta_userName
+FROM CANCHA c
+LEFT JOIN PROPIETARIO p ON c.idPropietario = p.id
+LEFT JOIN CUENTA_USUARIO cu ON p.idCuentaUsuario = cu.id
+WHERE c.id = p_id;
 END //
 
 CREATE PROCEDURE listarCanchas()
 BEGIN
-SELECT id, nombre, descripcion, direccion, imagenUrl, idPropietario, precioBase, promedioCalificacion, activo
-FROM CANCHA
-WHERE activo = TRUE;
+SELECT
+    c.id, c.nombre, c.descripcion, c.direccion, c.imagenUrl, c.idPropietario, c.precioBase, c.promedioCalificacion, c.activo,
+    p.id AS prop_id, p.nombres AS prop_nombres, p.correo AS prop_correo, p.telefono AS prop_telefono,
+    p.calificacion AS prop_calificacion, p.RUC AS prop_ruc, p.saldo AS prop_saldo, p.activo AS prop_activo,
+    cu.id AS cuenta_id, cu.userName AS cuenta_userName
+FROM CANCHA c
+LEFT JOIN PROPIETARIO p ON c.idPropietario = p.id
+LEFT JOIN CUENTA_USUARIO cu ON p.idCuentaUsuario = cu.id
+WHERE c.activo = TRUE;
 END //
 
 CREATE PROCEDURE listarDeportesCancha(
@@ -187,4 +202,28 @@ BEGIN
     SELECT * FROM CANCHA
     WHERE activo = TRUE
       AND direccion LIKE CONCAT('% - ', p_distrito);
+END //
+
+CREATE PROCEDURE listarDeportesTodasCanchas()
+BEGIN
+    SELECT cd.idCancha, cd.deporte
+    FROM CANCHA_DEPORTE cd
+    INNER JOIN CANCHA c ON c.id = cd.idCancha
+    WHERE c.activo = TRUE;
+END //
+
+CREATE PROCEDURE listarEtiquetasTodasCanchas()
+BEGIN
+    SELECT ce.idCancha, ce.etiqueta
+    FROM CANCHA_ETIQUETA ce
+    INNER JOIN CANCHA c ON c.id = ce.idCancha
+    WHERE c.activo = TRUE;
+END //
+
+CREATE PROCEDURE listarBloquesTodasCanchas()
+BEGIN
+    SELECT bh.id, bh.idCancha, bh.dia, bh.horaInicio, bh.horaFin, bh.precio, bh.estado, bh.activo
+    FROM BLOQUE_HORARIO bh
+    INNER JOIN CANCHA c ON c.id = bh.idCancha
+    WHERE c.activo = TRUE AND bh.activo = TRUE;
 END //

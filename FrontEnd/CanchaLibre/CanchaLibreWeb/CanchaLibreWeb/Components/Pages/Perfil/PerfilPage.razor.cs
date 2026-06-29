@@ -37,51 +37,59 @@ public partial class PerfilPage : ComponentBase
     private bool mostrarNuevaContrasena = false;
     protected string MensajeError { get; set; } = string.Empty;
     protected string TipoUsuario { get; set; } = string.Empty;
+    protected bool cargando = true;
 
     private string _rol = string.Empty;
     private int _userId;
     private ClienteViewModel? _clienteData;
     private PropietarioViewModel? _propietarioData;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var authState = AuthStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult();
-        var user = authState.User;
-
-        if (user.Identity is not { IsAuthenticated: true })
+        try
         {
-            Nav.NavigateTo("/Login");
-            return;
-        }
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
 
-        _userId = int.Parse(user.FindFirst("IdUsuario")?.Value ?? "0");
-        _rol = user.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
-
-        if (_rol.Equals("CLIENTE", StringComparison.OrdinalIgnoreCase))
-        {
-            _clienteData = ClientesService.Obtener(_userId);
-            if (_clienteData != null)
+            if (user.Identity is not { IsAuthenticated: true })
             {
-                Modelo.Nombres = _clienteData.Nombres;
-                Modelo.Correo = _clienteData.Correo;
-                Modelo.Telefono = _clienteData.Telefono;
+                Nav.NavigateTo("/Login");
+                return;
             }
-            TipoUsuario = "Cliente";
-        }
-        else if (_rol.Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase))
-        {
-            _propietarioData = PropietariosService.Obtener(_userId);
-            if (_propietarioData != null)
+
+            _userId = int.Parse(user.FindFirst("IdUsuario")?.Value ?? "0");
+            _rol = user.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+
+            if (_rol.Equals("CLIENTE", StringComparison.OrdinalIgnoreCase))
             {
-                Modelo.Nombres = _propietarioData.Nombres;
-                Modelo.Correo = _propietarioData.Correo;
-                Modelo.Telefono = _propietarioData.Telefono;
+                _clienteData = await Task.Run(() => ClientesService.Obtener(_userId));
+                if (_clienteData != null)
+                {
+                    Modelo.Nombres = _clienteData.Nombres;
+                    Modelo.Correo = _clienteData.Correo;
+                    Modelo.Telefono = _clienteData.Telefono;
+                }
+                TipoUsuario = "Cliente";
             }
-            TipoUsuario = "Propietario";
+            else if (_rol.Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase))
+            {
+                _propietarioData = await Task.Run(() => PropietariosService.Obtener(_userId));
+                if (_propietarioData != null)
+                {
+                    Modelo.Nombres = _propietarioData.Nombres;
+                    Modelo.Correo = _propietarioData.Correo;
+                    Modelo.Telefono = _propietarioData.Telefono;
+                }
+                TipoUsuario = "Propietario";
+            }
+            else
+            {
+                Nav.NavigateTo("/");
+            }
         }
-        else
+        finally
         {
-            Nav.NavigateTo("/");
+            cargando = false;
         }
     }
 

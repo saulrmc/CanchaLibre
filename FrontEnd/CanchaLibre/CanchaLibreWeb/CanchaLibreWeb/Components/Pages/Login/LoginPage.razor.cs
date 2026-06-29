@@ -25,20 +25,21 @@ public partial class LoginPage : ComponentBase
     private string mensajeStatus = string.Empty;
     private bool esErrorStatus = false;
 
-    private void ProcesarLogin()
+    private async Task ProcesarLogin()
     {
         try
         {
             mensajeError = string.Empty;
 
-            if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosRestantes))//
+            if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosRestantes))
             {
                 segundosBloqueo = segundosRestantes;
                 mostrarBloqueo = true;
                 return;
-            }//
+            }
 
-            var (id, nombres, correo, rolDetectado) = AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena);
+            var (id, nombres, correo, rolDetectado) = await Task.Run(() =>
+                AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena));
 
             if (string.IsNullOrEmpty(rolDetectado))
             {
@@ -69,13 +70,13 @@ public partial class LoginPage : ComponentBase
         }
     }
 
-    private void ProcesarRecuperacion()
+    private async Task ProcesarRecuperacion()
     {
         try
         {
             mensajeStatus = string.Empty;
 
-            bool existeUsuario = AuthService.SolicitarRecuperacion(RecuperarModel.Correo);
+            bool existeUsuario = await Task.Run(() => AuthService.SolicitarRecuperacion(RecuperarModel.Correo));
 
             if (existeUsuario)
             {
@@ -121,5 +122,6 @@ public partial class LoginPage : ComponentBase
                 Nav.NavigateTo("/");
                 break;
         }
+        Nav.NavigateTo("/");
     }
 }

@@ -3,6 +3,15 @@
 @attribute [Authorize(Roles = "Cliente,Propietario")]
 
 
+@if (cargando)
+{
+    <div class="text-center p-5" style="min-height: 90vh;">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-2 text-muted">Cargando perfil...</p>
+    </div>
+}
+else
+{
 <div class="bg-light py-5" style="min-height: 90vh;">
     <div class="container py-5">
         
@@ -147,6 +156,7 @@
 
     </div>
 </div>
+}
 
 <style>
     

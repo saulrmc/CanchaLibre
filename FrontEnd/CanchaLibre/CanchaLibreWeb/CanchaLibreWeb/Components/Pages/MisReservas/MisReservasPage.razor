@@ -5,6 +5,16 @@
 @attribute [Authorize(Roles = "Cliente")]
 
 @layout Layout.OnlyNavMenu
+
+@if (cargando)
+{
+    <div class="text-center p-5 w-100">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-2 text-muted">Cargando tus reservas...</p>
+    </div>
+}
+else
+{
 <div class="reservas-shell-global">
 
     <div class="reservas-contenido py-4">
@@ -35,7 +45,7 @@
                     var bloque = reserva.bloques?.FirstOrDefault();
                     var totalPrecio = reserva.bloques?.Sum(b => b.precio) ?? 0;
                     var horario = bloque != null ? $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm}" : "---";
-                    var fechaStr = reserva.fecha.HasValue ? reserva.fecha.Value.ToString("dd/MM/yyyy") : "---";
+                    var fechaStr = bloque != null ? FormatearDia(bloque.diaSemana) : "---";
 
                     <div class="card-reserva-item">
                         <div class="reserva-imagen">
@@ -88,12 +98,13 @@
         </div>
     </div>
 </div>
+}
 
 @if (mostrarModalDetalle && reservaDetalle != null)
 {
     var bloqueModal = reservaDetalle.bloques?.FirstOrDefault();
     var horarioModal = bloqueModal != null ? $"{bloqueModal.horaInicio:HH:mm} - {bloqueModal.horaFin:HH:mm} hrs" : "---";
-    var fechaModal = reservaDetalle.fecha.HasValue ? reservaDetalle.fecha.Value.ToString("dd/MM/yyyy") : "---";
+    var fechaModal = bloqueModal != null ? FormatearDia(bloqueModal.diaSemana) : "---";
     var precioModal = reservaDetalle.bloques?.Sum(b => b.precio) ?? 0;
     var deportesStr = reservaDetalle.cancha?.deportes != null
         ? string.Join(", ", reservaDetalle.cancha.deportes.Select(d => d.ToString()))
