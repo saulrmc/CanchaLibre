@@ -8,8 +8,15 @@ DROP PROCEDURE IF EXISTS modificarCancha;
 DROP PROCEDURE IF EXISTS eliminarCancha;
 DROP PROCEDURE IF EXISTS buscarCanchaPorId;
 DROP PROCEDURE IF EXISTS listarCanchas;
+
+DROP PROCEDURE IF EXISTS insertarDeportesCancha;
+DROP PROCEDURE IF EXISTS eliminarDeportesCancha;
 DROP PROCEDURE IF EXISTS listarDeportesCancha;
+
+DROP PROCEDURE IF EXISTS insertarEtiquetasCancha;
+DROP PROCEDURE IF EXISTS eliminarEtiquetasCancha;
 DROP PROCEDURE IF EXISTS listarEtiquetasCancha;
+
 DROP PROCEDURE IF EXISTS listarCanchasPorCuenta;
 
 DROP PROCEDURE IF EXISTS listarCanchasPorDistrito;
@@ -103,6 +110,21 @@ LEFT JOIN CUENTA_USUARIO cu ON p.idCuentaUsuario = cu.id
 WHERE c.activo = TRUE;
 END //
 
+CREATE PROCEDURE insertarDeportesCancha(
+    IN p_idCancha INT,
+    IN p_deporte VARCHAR(50)
+)
+BEGIN
+    INSERT INTO CANCHA_DEPORTE (idCancha, deporte) VALUES (p_idCancha, p_deporte);
+END//
+
+CREATE PROCEDURE eliminarDeportesCancha(
+    IN p_idCancha INT
+)
+BEGIN
+    DELETE FROM CANCHA_DEPORTE WHERE idCancha = p_idCancha;
+END//
+
 CREATE PROCEDURE listarDeportesCancha(
     IN p_id INT
 )
@@ -111,6 +133,21 @@ SELECT deporte
 FROM CANCHA_DEPORTE
 WHERE idCancha = p_id;
 END //
+
+CREATE PROCEDURE insertarEtiquetasCancha(
+    IN p_idCancha INT,
+    IN p_etiqueta VARCHAR(50)
+)
+BEGIN
+    INSERT INTO CANCHA_ETIQUETA (idCancha, etiqueta) VALUES (p_idCancha, p_etiqueta);
+END//
+
+CREATE PROCEDURE eliminarEtiquetasCancha(
+    IN p_idCancha INT
+)
+BEGIN
+    DELETE FROM CANCHA_ETIQUETA WHERE idCancha = p_idCancha;
+END//
 
 CREATE PROCEDURE listarEtiquetasCancha(
     IN p_id INT
