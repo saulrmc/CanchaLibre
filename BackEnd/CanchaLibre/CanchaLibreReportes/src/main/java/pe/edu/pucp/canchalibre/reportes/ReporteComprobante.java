@@ -1,4 +1,5 @@
 package pe.edu.pucp.canchalibre.reportes;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -6,6 +7,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.awt.Image;
+import javax.imageio.ImageIO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,8 +38,16 @@ public class ReporteComprobante extends HttpServlet {
         Map<String, Object> parametros = new HashMap<>();
         int idComprobante = Integer.parseInt(request.getParameter("id"));
         parametros.put("ID_COMPROBANTE", idComprobante);
-        parametros.put("LOGO_STREAM", NOMBRE_LOGO);
 
+        InputStream logoStream = getClass().getClassLoader().getResourceAsStream(NOMBRE_LOGO);
+        if (logoStream != null) {
+            Image imagenLogo = ImageIO.read(logoStream);
+            parametros.put("LOGO_STREAM", imagenLogo);
+        } else {
+            // Si el logo no existe o falló en cargarse, se envía null para evitar que rompa el llenado
+            parametros.put("LOGO_STREAM", null);
+        }
+        
         try (Connection conn = DBFactoryProvider.getManager().getConnection()) {
             JasperPrint jp = JasperFillManager.fillReport(reporte, parametros, conn);
             JasperExportManager.exportReportToPdfStream(jp, response.getOutputStream());
