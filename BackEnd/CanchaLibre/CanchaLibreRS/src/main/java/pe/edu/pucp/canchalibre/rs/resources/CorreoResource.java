@@ -60,15 +60,13 @@ public class CorreoResource {
         enviarCorreo(destinatario, asunto, contenido);
     }
 
-    public void enviarCorreoPago(String destinatario, String nombre, String cancha, String detalleHorario, double monto) {
+    public void enviarCorreoPago(String destinatario, String nombre, double monto) {
         String asunto = "Confirmación de pago - CanchaLibre";
 
         String contenido =
                 "Hola " + nombre + ",\n\n" +
                         "Tu pago fue registrado correctamente.\n\n" +
                         "Detalle de la reserva:\n" +
-                        "Cancha: " + cancha + "\n" +
-                        "Horario: " + detalleHorario + "\n" +
                         "Monto pagado: S/ " + monto + "\n\n" +
                         "Gracias por usar CanchaLibre.\n\n" +
                         "Saludos,\n" +
