@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS CANCHA (
     nombre VARCHAR(150) NOT NULL,
     descripcion TEXT NULL,
     direccion VARCHAR(255) NOT NULL,
-    imagenUrl VARCHAR(255) NULL,
+    imagenUrl LONGTEXT NULL,
     idPropietario INT NOT NULL,
     precioBase DECIMAL(10,2) NOT NULL,
     promedioCalificacion DECIMAL(3,2) NOT NULL DEFAULT 0.00,
