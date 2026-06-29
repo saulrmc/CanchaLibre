@@ -133,7 +133,9 @@ else
                             @foreach (var bloque in BloquesFiltrados)
                             {
                                 var etiquetaHora = $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm}";
-                                <button type="button" class="btn-horario @(bloquesSeleccionados.Contains(bloque) ? "activo" : "")"
+                                <button type="button"
+                                        class="btn-horario @(bloquesSeleccionados.Contains(bloque) ? "activo" : "") @(bloque.estadoBloque != EstadoBloqueEnum.DISPONIBLE ? "no-disponible" : "")"
+                                        disabled="@(bloque.estadoBloque != EstadoBloqueEnum.DISPONIBLE)"
                                         @onclick="() => SeleccionarBloque(bloque)">
                                     <span>@etiquetaHora</span>
                                     <small>S/ @bloque.precio</small>

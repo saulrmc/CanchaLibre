@@ -6,6 +6,7 @@ public partial class BloqueoCuentaModal : ComponentBase, IDisposable
 {
     [Parameter] public bool Mostrar { get; set; }
     [Parameter] public int SegundosIniciales { get; set; }
+    [Parameter] public string HoraDesbloqueo { get; set; } = string.Empty;
     [Parameter] public EventCallback OnFinalizado { get; set; }
 
     private int _segundosRestantes;

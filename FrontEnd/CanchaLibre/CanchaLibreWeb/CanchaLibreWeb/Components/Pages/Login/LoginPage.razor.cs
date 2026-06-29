@@ -15,6 +15,7 @@ public partial class LoginPage : ComponentBase
 
     private bool mostrarBloqueo = false;//
     private int segundosBloqueo = 0;//
+    private string horaDesbloqueo = string.Empty;
 
     private SolicitudLoginViewModel LoginModel { get; set; } = new();
     private SolicitudRecuperarContrasenaViewModel RecuperarModel { get; set; } = new();
@@ -31,15 +32,16 @@ public partial class LoginPage : ComponentBase
         {
             mensajeError = string.Empty;
 
-            if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosRestantes))
+            var (id, nombres, correo, rolDetectado, cuentaBloqueada, segundosBloqueoResp) = await Task.Run(() =>
+                AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena));
+
+            if (cuentaBloqueada)
             {
-                segundosBloqueo = segundosRestantes;
+                segundosBloqueo = segundosBloqueoResp;
+                horaDesbloqueo = DateTime.Now.AddSeconds(segundosBloqueoResp).ToString("HH:mm");
                 mostrarBloqueo = true;
                 return;
             }
-
-            var (id, nombres, correo, rolDetectado) = await Task.Run(() =>
-                AuthService.ValidarCredenciales(LoginModel.Correo, LoginModel.Contrasena));
 
             if (string.IsNullOrEmpty(rolDetectado))
             {
@@ -48,6 +50,7 @@ public partial class LoginPage : ComponentBase
                 if (ControlIntentos.EstaBloqueado(LoginModel.Correo, out var segundosTrasFallo))
                 {
                     segundosBloqueo = segundosTrasFallo;
+                    horaDesbloqueo = DateTime.Now.AddSeconds(segundosTrasFallo).ToString("HH:mm");
                     mostrarBloqueo = true;
                     return;
                 }

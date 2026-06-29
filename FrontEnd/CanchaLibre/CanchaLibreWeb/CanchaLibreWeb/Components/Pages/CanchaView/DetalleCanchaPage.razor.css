@@ -291,6 +291,17 @@
         background: #f0fdf4;
     }
 
+.btn-horario.no-disponible {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f9f9f9;
+    border-color: #e5e7eb;
+}
+
+    .btn-horario.no-disponible:hover {
+        background: #f9f9f9;
+    }
+
 .detalle-precio {
     margin-bottom: 16px;
 }

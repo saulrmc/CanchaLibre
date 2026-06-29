@@ -9,6 +9,10 @@
             <p>Has superado el número de intentos permitidos.</p>
             <p>Vuelve a intentarlo en:</p>
             <div class="bloqueo-tiempo">@TiempoFormateado</div>
+            @if (!string.IsNullOrEmpty(HoraDesbloqueo))
+            {
+                <p class="text-muted small mt-2 mb-0">Cuenta desbloqueada aproximadamente a las @HoraDesbloqueo</p>
+            }
         </div>
     </div>
 }
