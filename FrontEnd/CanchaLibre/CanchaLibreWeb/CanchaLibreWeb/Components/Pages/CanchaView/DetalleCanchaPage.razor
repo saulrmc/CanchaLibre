@@ -2,13 +2,21 @@
 @rendermode InteractiveServer
 @using CanchaLibreWeb.ViewModels
 @using CanchaLibreWeb.Servicios.Canchas
+@using CanchaLibreWeb.Servicios.Reservas
+@using CanchaLibreWeb.Servicios.Usuarios
+@using Microsoft.AspNetCore.Components.Authorization
 @attribute [AllowAnonymous]
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger m-3">@mensajeError</div>
+}
 
 @if (cancha == null)
 {
     <div class="text-center p-5">
         <div class="spinner-border text-success" role="status"></div>
-        <p class="mt-2 text-muted">Cargando información de la cancha...</p>
+        <p class="mt-2 text-muted">Cargando cancha...</p>
     </div>
 }
 else

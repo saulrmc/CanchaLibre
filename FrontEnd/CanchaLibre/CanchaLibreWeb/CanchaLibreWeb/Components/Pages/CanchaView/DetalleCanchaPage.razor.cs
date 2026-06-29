@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using CanchaLibreWeb.ViewModels;
 using CanchaLibreWeb.Servicios.Canchas;
+using CanchaLibreWeb.Servicios.Reservas;
+using CanchaLibreWeb.Servicios.Usuarios;
+using System.Security.Claims;
 
 namespace CanchaLibreWeb.Components.Pages.CanchaView;
 
@@ -9,10 +13,14 @@ public partial class DetalleCanchaPage : ComponentBase
     [Parameter] public int Id { get; set; }
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     [Inject] private ICanchasServiceClient CanchasService { get; set; } = default!;
+    [Inject] private IReservasServiceClient ReservasService { get; set; } = default!;
+    [Inject] private IClientesServiceClient ClientesService { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     private CanchaViewModel? cancha;
     private BloqueHorarioViewModel? bloqueSeleccionado;
     private DateTime fechaSeleccionada = DateTime.Today;
+    private string? mensajeError;
 
     // Propiedad calculada para capturar el cambio de fecha y forzar el refresco de horarios
     private DateTime FechaSeleccionada
@@ -79,12 +87,51 @@ public partial class DetalleCanchaPage : ComponentBase
         };
     }
 
-    private void IrAPagar()
+    private async Task IrAPagar()
     {
-        if (bloqueSeleccionado != null)
+        if (bloqueSeleccionado == null || cancha == null) return;
+
+        try
         {
-            
-            NavigationManager.NavigateTo("/ReservaConfirmada");
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (!user.Identity?.IsAuthenticated ?? true)
+            {
+                NavigationManager.NavigateTo("/Login", forceLoad: true);
+                return;
+            }
+
+            var nombreCliente = user.FindFirst(ClaimTypes.Name)?.Value;
+            if (string.IsNullOrEmpty(nombreCliente))
+            {
+                NavigationManager.NavigateTo("/Login", forceLoad: true);
+                return;
+            }
+
+            var cliente = ClientesService.BuscarPorNombre(nombreCliente);
+            if (cliente == null)
+            {
+                NavigationManager.NavigateTo("/Login", forceLoad: true);
+                return;
+            }
+
+            var reserva = new ReservaViewModel
+            {
+                estado = EstadoReservaEnum.PENDIENTE_PAGO,
+                cliente = cliente,
+                cancha = cancha,
+                pago = null,
+                bloques = new List<BloqueHorarioViewModel> { bloqueSeleccionado }
+            };
+
+            ReservasService.Guardar(reserva, Estado.Nuevo);
+
+            NavigationManager.NavigateTo($"/ReservaConfirmada/{reserva.idReserva}?fecha={fechaSeleccionada:yyyy-MM-dd}");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al procesar la reserva: {ex.Message}";
         }
     }
 

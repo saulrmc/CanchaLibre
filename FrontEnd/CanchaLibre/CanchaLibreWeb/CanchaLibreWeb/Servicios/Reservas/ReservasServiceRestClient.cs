@@ -69,7 +69,19 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
     }
     public void Guardar(ReservaViewModel modelo, Estado estado)
     {
-        
+        var payload = ToRest(modelo);
+        switch (estado)
+        {
+            case Estado.Nuevo:
+                var result = Api.Post<ReservaRestDto, ReservaRestDto>(ResourcePath, payload);
+                modelo.idReserva = result.idReserva;
+                break;
+            case Estado.Modificado:
+                Api.Put($"{ResourcePath}/{modelo.idReserva}", payload);
+                break;
+            default:
+                throw new InvalidOperationException($"Estado no soportado: {estado}");
+        }
     }
     protected override ReservaViewModel ToViewModel(ReservaRestDto source)
     {
@@ -80,7 +92,10 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
             cliente = ParseCliente(source.cliente),
             estado = ParseEnum<EstadoReservaEnum>(source.estado, EstadoReservaEnum.PENDIENTE_PAGO),
             idReserva = source.idReserva,
-            pago = ParsePago(source.pago)
+            pago = ParsePago(source.pago),
+            fecha = source.FechaCreacion.HasValue && source.FechaCreacion.Value > DateTime.MinValue
+                ? source.FechaCreacion.Value
+                : null
         };
     }
 
@@ -217,6 +232,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         {
             list.Add(new BloqueHorarioViewModel
             {
+                id = bloque.id,
                 diaSemana = ParseEnum<DiaSemanaEnum>(bloque.diaSemana, DiaSemanaEnum.NO_VALIDO),
                 estadoBloque = ParseEnum<EstadoBloqueEnum>(bloque.estadoBloque, EstadoBloqueEnum.NO_VALIDO),
                 horaFin = bloque.horaFin,
@@ -236,8 +252,10 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         {
             idReserva = source.idReserva,
             estado = source.estado.ToString(),
+            activo = true,
             bloques = source.bloques?.Select(b => new Rest.Dtos.Canchas.BloqueHorarioRestDto
             {
+                id = b.id,
                 diaSemana = b.diaSemana.ToString(),
                 estadoBloque = b.estadoBloque.ToString(),
                 horaInicio = b.horaInicio,

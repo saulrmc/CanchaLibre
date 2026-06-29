@@ -39,7 +39,13 @@ public class AuthServiceRestClient : IAuthServiceClient
                 int id = json.GetProperty("id").GetInt32();
                 string nombres = json.GetProperty("nombres").GetString() ?? string.Empty;
                 string correoResp = json.GetProperty("correo").GetString() ?? string.Empty;
-                string rolResp = json.GetProperty("rol").GetString() ?? string.Empty;
+                string rolResp = (json.GetProperty("rol").GetString() ?? string.Empty) switch
+                {
+                    "CLIENTE" => "Cliente",
+                    "PROPIETARIO" => "Propietario",
+                    "ADMINISTRADOR" => "Admin",
+                    _ => string.Empty
+                };
 
                 return (id, nombres, correoResp, rolResp);
             }

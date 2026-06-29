@@ -4,7 +4,6 @@
 @using CanchaLibreWeb.Components.Pages.MisReservas
 @attribute [Authorize(Roles = "Cliente")]
 
-
 @layout Layout.OnlyNavMenu
 <div class="reservas-shell-global">
 
@@ -16,38 +15,72 @@
             </div>
         </div>
 
+        @if (!string.IsNullOrEmpty(mensajeError))
+        {
+            <div class="alert alert-danger">@mensajeError</div>
+        }
+
         <div class="lista-reservas">
             @if (reservasUsuario == null || !reservasUsuario.Any())
             {
                 <div class="sin-reservas">
                     <p>No tienes ninguna reserva registrada actualmente.</p>
-                    <a href="/encuentra-cancha" class="btn-buscar">Buscar Canchas</a>
+                    <a href="/EncuentraCancha" class="btn-buscar">Buscar Canchas</a>
                 </div>
             }
             else
             {
                 @foreach (var reserva in reservasUsuario)
                 {
+                    var bloque = reserva.bloques?.FirstOrDefault();
+                    var totalPrecio = reserva.bloques?.Sum(b => b.precio) ?? 0;
+                    var horario = bloque != null ? $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm}" : "---";
+                    var fechaStr = reserva.fecha.HasValue ? reserva.fecha.Value.ToString("dd/MM/yyyy") : "---";
+
                     <div class="card-reserva-item">
                         <div class="reserva-imagen">
-                            <img src="@reserva.ImagenUrl" alt="@reserva.CanchaNombre" />
+                            <img src="@(reserva.cancha?.imagenUrl ?? "cancha1.jpg")" alt="@reserva.cancha?.nombre" />
                         </div>
-                        
+
                         <div class="reserva-info">
-                            <h3>@reserva.CanchaNombre</h3>
-                            <p class="reserva-ubicacion">📍 @reserva.Distrito</p>
-                            <p class="reserva-fecha-hora"><strong>📅 @reserva.Fecha.ToString("dd/MM/yyyy") — ⏰ @reserva.Horario</strong></p>
-                            <p class="reserva-precio">S/. @reserva.PrecioTotal</p>
+                            <h3>@(reserva.cancha?.nombre ?? "---")</h3>
+                            <p class="reserva-ubicacion">📍 @(reserva.cancha?.direccion ?? "---")</p>
+                            <p class="reserva-fecha-hora">
+                                <strong>
+                                    📅 @fechaStr — ⏰ @horario
+                                </strong>
+                            </p>
+                            <p class="reserva-precio"><strong>S/ @totalPrecio.ToString("F2")</strong></p>
                         </div>
 
                         <div class="reserva-meta">
-                            <span><strong>Booking ID:</strong> @reserva.BookingId</span>
-                            <span><strong>Transaction:</strong> @reserva.TransactionId</span>
+                            <span><strong>Booking ID:</strong> RES-@reserva.idReserva.ToString("D6")</span>
+                            @if (reserva.pago?.idPago > 0)
+                            {
+                                <span><strong>Transaction:</strong> @reserva.pago.idPago</span>
+                            }
+                            <span class="estado-badge estado-@reserva.estado.ToString().ToLower()">
+                                @(reserva.estado switch
+                                {
+                                    EstadoReservaEnum.PENDIENTE_PAGO => "Pendiente de pago",
+                                    EstadoReservaEnum.CONFIRMADA => "Confirmada",
+                                    EstadoReservaEnum.CANCELADA => "Cancelada",
+                                    EstadoReservaEnum.RECHAZADA => "Rechazada",
+                                    _ => reserva.estado.ToString()
+                                })
+                            </span>
                         </div>
 
                         <div class="reserva-acciones">
-                            <button class="btn-modificar" @onclick="() => ModificarReserva(reserva.BookingId)">Modificar</button>
-                            <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.BookingId)">Cancelar</button>
+                            <button class="btn-detalle" @onclick="() => VerDetalle(reserva.idReserva)">Ver detalle</button>
+                            @if (reserva.estado == EstadoReservaEnum.PENDIENTE_PAGO)
+                            {
+                                <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.idReserva)">Cancelar</button>
+                            }
+                            else
+                            {
+                                <button class="btn-cancelar" @onclick="() => CancelarReserva(reserva.idReserva)">Eliminar</button>
+                            }
                         </div>
                     </div>
                 }
@@ -55,3 +88,123 @@
         </div>
     </div>
 </div>
+
+@if (mostrarModalDetalle && reservaDetalle != null)
+{
+    var bloqueModal = reservaDetalle.bloques?.FirstOrDefault();
+    var horarioModal = bloqueModal != null ? $"{bloqueModal.horaInicio:HH:mm} - {bloqueModal.horaFin:HH:mm} hrs" : "---";
+    var fechaModal = reservaDetalle.fecha.HasValue ? reservaDetalle.fecha.Value.ToString("dd/MM/yyyy") : "---";
+    var precioModal = reservaDetalle.bloques?.Sum(b => b.precio) ?? 0;
+    var deportesStr = reservaDetalle.cancha?.deportes != null
+        ? string.Join(", ", reservaDetalle.cancha.deportes.Select(d => d.ToString()))
+        : "---";
+    var etiquetasStr = reservaDetalle.cancha?.etiquetas != null
+        ? string.Join(", ", reservaDetalle.cancha.etiquetas.Select(e => e.ToString()))
+        : "---";
+
+    <div class="modal-overlay" @onclick="CerrarModal">
+        <div class="modal-contenido" @onclick:stopPropagation>
+            <button class="modal-cerrar" @onclick="CerrarModal">&times;</button>
+
+            <div class="modal-grid">
+                <div class="modal-imagen">
+                    <img src="@(reservaDetalle.cancha?.imagenUrl ?? "cancha1.jpg")" alt="@reservaDetalle.cancha?.nombre" />
+                </div>
+
+                <div class="modal-info">
+                    <h2>@(reservaDetalle.cancha?.nombre ?? "---")</h2>
+                    <p class="modal-ubicacion">📍 @(reservaDetalle.cancha?.direccion ?? "---")</p>
+
+                    <div class="modal-seccion">
+                        <h3>Detalles de la cancha</h3>
+                        <p><strong>Descripción:</strong> @(reservaDetalle.cancha?.descripcion ?? "---")</p>
+                        <p><strong>Deportes:</strong> @deportesStr</p>
+                        <p><strong>Etiquetas:</strong> @etiquetasStr</p>
+                        <p><strong>Calificación:</strong> ⭐ @(reservaDetalle.cancha?.promedioCalificacion.ToString("F1") ?? "---")</p>
+                        <p><strong>Precio base:</strong> S/ @(reservaDetalle.cancha?.precioBase.ToString("F2") ?? "---")</p>
+                    </div>
+
+                    <div class="modal-seccion">
+                        <h3>Detalles de la reserva</h3>
+                        <p><strong>Booking ID:</strong> RES-@reservaDetalle.idReserva.ToString("D6")</p>
+                        <p><strong>Estado:</strong>
+                            <span class="estado-badge estado-@reservaDetalle.estado.ToString().ToLower()">
+                                @(reservaDetalle.estado switch
+                                {
+                                    EstadoReservaEnum.PENDIENTE_PAGO => "Pendiente de pago",
+                                    EstadoReservaEnum.CONFIRMADA => "Confirmada",
+                                    EstadoReservaEnum.CANCELADA => "Cancelada",
+                                    EstadoReservaEnum.RECHAZADA => "Rechazada",
+                                    _ => reservaDetalle.estado.ToString()
+                                })
+                            </span>
+                        </p>
+                        <p><strong>Fecha:</strong> @fechaModal</p>
+                        <p><strong>Horario:</strong> @horarioModal</p>
+                        <p><strong>Monto:</strong> S/ @precioModal.ToString("F2")</p>
+                        @if (reservaDetalle.pago?.idPago > 0)
+                        {
+                            <p><strong>Transacción:</strong> @reservaDetalle.pago.idPago</p>
+                            <p><strong>Método de pago:</strong> @reservaDetalle.pago.metodoPago</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-acciones">
+                @if (mostrarPagoEnModal)
+                {
+                    <div class="pago-modal-contenido">
+                        <h3>Selecciona método de pago</h3>
+                        <div class="opciones-pago">
+                            <label class="pago-opcion @(metodoPagoSeleccionado == MetodoPagoEnum.YAPE ? "activo" : "")">
+                                <input type="radio" name="mp" value="YAPE"
+                                       checked="@(metodoPagoSeleccionado == MetodoPagoEnum.YAPE)"
+                                       @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.YAPE" />
+                                <span class="pago-icono">📱</span> YAPE
+                            </label>
+                            <label class="pago-opcion @(metodoPagoSeleccionado == MetodoPagoEnum.PLIN ? "activo" : "")">
+                                <input type="radio" name="mp" value="PLIN"
+                                       checked="@(metodoPagoSeleccionado == MetodoPagoEnum.PLIN)"
+                                       @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.PLIN" />
+                                <span class="pago-icono">💳</span> PLIN
+                            </label>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(mensajePago))
+                        {
+                            <div class="alert alert-danger mt-2">@mensajePago</div>
+                        }
+
+                        <div class="pago-acciones">
+                            <button class="btn-pagar-modal" @onclick="PagarReservaEnModal" disabled="@procesandoPago">
+                                @(procesandoPago ? "Procesando..." : $"Pagar S/ {(reservaDetalle.bloques?.Sum(b => b.precio) + 5.00 ?? 0):F2}")
+                            </button>
+                            <button class="btn-cancelar-pago" @onclick="CancelarPagoEnModal" disabled="@procesandoPago">Volver</button>
+                        </div>
+                    </div>
+                }
+                else if (pagoExitoso)
+                {
+                    <div class="pago-exitoso-modal">
+                        <p>✅ Pago realizado con éxito.</p>
+                        <button class="btn-cerrar-modal" @onclick="CerrarModal">Cerrar</button>
+                    </div>
+                }
+                else
+                {
+                    @if (reservaDetalle.estado == EstadoReservaEnum.PENDIENTE_PAGO)
+                    {
+                        <button class="btn-pagar-modal" @onclick="MostrarPagoEnModal">Pagar ahora</button>
+                        <button class="btn-cancelar" @onclick="() => CancelarReserva(reservaDetalle.idReserva)">Cancelar reserva</button>
+                    }
+                    else
+                    {
+                        <button class="btn-cancelar" @onclick="() => CancelarReserva(reservaDetalle.idReserva)">Eliminar reserva</button>
+                    }
+                    <button class="btn-cerrar-modal" @onclick="CerrarModal">Cerrar</button>
+                }
+            </div>
+        </div>
+    </div>
+}
