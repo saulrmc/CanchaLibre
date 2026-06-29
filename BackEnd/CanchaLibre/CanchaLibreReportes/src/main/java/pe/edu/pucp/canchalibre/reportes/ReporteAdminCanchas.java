@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@WebServlet(name = "ServletAdminCanchas", urlPatterns = {"/reportes/canchas"})
+@WebServlet(name = "ReporteAdminCanchas", urlPatterns = {"/reportes/canchas"})
 public class ReporteAdminCanchas extends HttpServlet {
 
     private final String NOMBRE_REPORTE = "reportes/ReporteAdminCanchas.jasper";

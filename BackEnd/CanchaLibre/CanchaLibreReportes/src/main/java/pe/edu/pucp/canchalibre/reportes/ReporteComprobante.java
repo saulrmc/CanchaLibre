@@ -20,7 +20,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 
-@WebServlet(name = "ServletComprobante", urlPatterns = {"/reportes/comprobante"})
+@WebServlet(name = "ReporteComprobante", urlPatterns = {"/comprobante"})
 public class ReporteComprobante extends HttpServlet {
 
     private final String NOMBRE_REPORTE = "reportes/ReporteComprobante.jasper";
@@ -36,8 +36,8 @@ public class ReporteComprobante extends HttpServlet {
         }
 
         Map<String, Object> parametros = new HashMap<>();
-        int idComprobante = Integer.parseInt(request.getParameter("id"));
-        parametros.put("ID_COMPROBANTE", idComprobante);
+        int idReserva = Integer.parseInt(request.getParameter("id"));
+        parametros.put("ID_RESERVA", idReserva);
 
         InputStream logoStream = getClass().getClassLoader().getResourceAsStream(NOMBRE_LOGO);
         if (logoStream != null) {
@@ -47,7 +47,7 @@ public class ReporteComprobante extends HttpServlet {
             // Si el logo no existe o falló en cargarse, se envía null para evitar que rompa el llenado
             parametros.put("LOGO_STREAM", null);
         }
-        
+
         try (Connection conn = DBFactoryProvider.getManager().getConnection()) {
             JasperPrint jp = JasperFillManager.fillReport(reporte, parametros, conn);
             JasperExportManager.exportReportToPdfStream(jp, response.getOutputStream());

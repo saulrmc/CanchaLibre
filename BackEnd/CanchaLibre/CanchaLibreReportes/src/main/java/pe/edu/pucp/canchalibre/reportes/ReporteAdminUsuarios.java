@@ -17,7 +17,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 
-@WebServlet(name = "ServletAdminUsuarios", urlPatterns = {"/reportes/usuarios"})
+@WebServlet(name = "ReporteAdminUsuarios", urlPatterns = {"/reportes/usuarios"})
 public class ReporteAdminUsuarios extends HttpServlet {
 
     private final String NOMBRE_REPORTE = "reportes/ReporteAdminUsuarios.jasper";

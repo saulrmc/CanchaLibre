@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using CanchaLibreWeb.ViewModels;
+﻿using CanchaLibreWeb.Components.Pages.CanchaView;
 using CanchaLibreWeb.Servicios.Reservas;
-using CanchaLibreWeb.Servicios.Transacciones;
 using CanchaLibreWeb.Servicios.Rest.Dtos.Reservas;
-using CanchaLibreWeb.Components.Pages.CanchaView;
+using CanchaLibreWeb.Servicios.Transacciones;
+using CanchaLibreWeb.ViewModels;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace CanchaLibreWeb.Components.Pages.Reservas;
 
@@ -15,6 +16,8 @@ public partial class ReservaConfirmadaPage : ComponentBase
     [Inject] private IReservasServiceClient ReservasService { get; set; } = default!;
     [Inject] private IComprobantesServiceClient ComprobantesService { get; set; } = default!;
     [Inject] private IPagosServiceClient PagosService { get; set; } = default!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    [Inject] private IConfiguration Configuration { get; set; } = default!;
 
     private ReservaViewModel? reserva;
     private string mensajeError = string.Empty;
@@ -168,5 +171,25 @@ public partial class ReservaConfirmadaPage : ComponentBase
     }
 
     private void VolverInicio() => NavigationManager.NavigateTo("/");
+
+    private async Task DescargarReportePDF()
+    {
+        try
+        {
+            string? urlBaseServlet = Configuration["RestResources:ReporteComprobante"];
+
+            if (string.IsNullOrEmpty(urlBaseServlet))
+            {
+                mensajeError = "Error de configuración: No se encontró la ruta del reporte en appsettings.json.";
+                return;
+            }
+            string urlCompleta = $"{urlBaseServlet}?id={Id}";
+            await JSRuntime.InvokeVoidAsync("window.open", urlCompleta, "_blank");
+        }
+        catch (Exception ex)
+        {
+            mensajeError = "No se pudo abrir el comprobante: " + ex.Message;
+        }
+    }
 
 }
