@@ -15,6 +15,7 @@
         <module>CanchaLibreDBManager</module>
         <module>CanchaLibreNegocio</module>
         <module>CanchaLibreRS</module>
+        <module>CanchaLibreReportes</module>
     </modules>
 
     <properties>
