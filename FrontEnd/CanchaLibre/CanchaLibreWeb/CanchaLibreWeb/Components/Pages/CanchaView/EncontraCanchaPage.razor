@@ -63,7 +63,7 @@
             {
                 <div class="text-center p-5 w-100">
                     <div class="spinner-border text-success" role="status"></div>
-                    <p class="mt-2 text-muted">Consultando canchas disponibles con GlassFish...</p>
+                    <p class="mt-2 text-muted">Consultando canchas disponibles...</p>
                 </div>
             }
             else if (!canchasFiltradas.Any())
@@ -81,7 +81,7 @@
 
                         <div class="card-body">
                             <h3>@cancha.nombre</h3>
-                            <p class="card-ubicacion">📍 @cancha.direccion</p>
+                            <p class="card-ubicacion"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i>@cancha.direccion</p>
 
                             <p class="card-precio">
                                 <strong>S/ @cancha.precioBase</strong> <span>precio base</span>

@@ -138,7 +138,7 @@
                         </div>
 
                         <p class="text-muted small mt-2 mb-4 bg-light p-2 rounded border-start border-success border-3">
-                            ⚽ <strong>Tip pro:</strong> Por defecto se aplica tu precio base. Puedes usar bloques individuales para ajustar tarifas especiales en horarios nocturnos (por costos de iluminación) o fines de semana.
+                            <i class="fa-solid fa-futbol me-1" aria-hidden="true"></i><strong>Tip pro:</strong> Por defecto se aplica tu precio base. Puedes usar bloques individuales para ajustar tarifas especiales en horarios nocturnos (por costos de iluminación) o fines de semana.
                         </p>
 
                         <div class="table-responsive contenedor-matriz-fina">
@@ -234,7 +234,7 @@
                             @if (string.IsNullOrWhiteSpace(VistaPreviaImagenUrl))
                             {
                                 <div class="py-3">
-                                    <span class="display-4 text-success d-block mb-2">📸</span>
+                                <span class="display-4 text-success d-block mb-2"><i class="fa-solid fa-camera" aria-hidden="true"></i></span>
                                     <h6 class="fw-bold text-dark mb-1">Sube las fotos de tus campos deportivos</h6>
                                     <p class="text-secondary small mb-0">Haz clic aquí para subir una imagen (.jpg, .png)</p>
                                 </div>
@@ -243,7 +243,7 @@
                             {
                                 <div class="py-2">
                                     <img src="@VistaPreviaImagenUrl" class="upload-preview rounded-3 img-fluid mb-2 shadow-sm" style="max-height: 200px; object-fit: cover;" alt="Vista previa de la cancha" />
-                                    <p class="text-success small fw-bold mt-2 mb-0">✓ Imagen cargada correctamente</p>
+                                <p class="text-success small fw-bold mt-2 mb-0"><i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i> Imagen cargada correctamente</p>
                                 </div>
                             }
                         </label>
@@ -294,7 +294,7 @@
                 else if (PasoActual == 5)
                 {
                     <div class="text-center py-5">
-                        <span class="display-1 text-success d-block mb-4">🎉</span>
+                        <span class="display-1 text-success d-block mb-4"><i class="fa-solid fa-trophy" aria-hidden="true"></i></span>
                         <h2 class="fw-bold text-dark">¡Tu cancha ya está al toque!</h2>
                         <p class="text-secondary px-md-5">Felicidades, la publicación se procesó con éxito. Los usuarios de CanchaLibre ya pueden verla y agendar turnos de reserva desde este momento.</p>
                         <a href="/EncuentraCancha" class="btn btn-success px-4 py-2.5 fw-bold mt-3 shadow-sm" style="background-color: #10B981; border: none; border-radius: 8px;">

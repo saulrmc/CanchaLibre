@@ -8,7 +8,9 @@ import pe.edu.pucp.canchalibre.modelo.cancha.EstadoBloque;
 import java.sql.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implements BloqueHorarioDAO {
     private PreparedStatement comandoCrearBloqueHorario(Connection conn,
@@ -236,5 +238,33 @@ public class BloqueHorarioDAOImpl extends DefaultBaseDAO<BloqueHorario> implemen
             }
         }
         return bloques;
+    }
+
+    @Override
+    public Map<Integer, List<BloqueHorario>> leerBloquesTodasCanchas(Connection conn) throws SQLException {
+        Map<Integer, List<BloqueHorario>> map = new HashMap<>();
+        try (PreparedStatement cmd = conn.prepareCall("{call listarBloquesTodasCanchas()}");
+             ResultSet rs = cmd.executeQuery()) {
+            while (rs.next()) {
+                int idCancha = rs.getInt("idCancha");
+                BloqueHorario bloque = this.mapearBloqueHorario(rs);
+                map.computeIfAbsent(idCancha, k -> new ArrayList<>()).add(bloque);
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public Map<Integer, List<BloqueHorario>> leerBloquesTodasReservas(Connection conn) throws SQLException {
+        Map<Integer, List<BloqueHorario>> map = new HashMap<>();
+        try (PreparedStatement cmd = conn.prepareCall("{call listarBloquesTodasReservas()}");
+             ResultSet rs = cmd.executeQuery()) {
+            while (rs.next()) {
+                int idReserva = rs.getInt("idReserva");
+                BloqueHorario bloque = this.mapearBloqueHorario(rs);
+                map.computeIfAbsent(idReserva, k -> new ArrayList<>()).add(bloque);
+            }
+        }
+        return map;
     }
 }

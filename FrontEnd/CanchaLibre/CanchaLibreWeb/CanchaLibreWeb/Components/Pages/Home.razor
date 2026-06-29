@@ -62,7 +62,7 @@
                     <img src="@cancha.imagenUrl" alt="@cancha.nombre" />
                     <div class="card-body-cancha">
                         <h3>@cancha.nombre</h3>
-                        <p class="ubicacion">📍 @cancha.direccion</p>
+                        <p class="ubicacion"><i class="fa-solid fa-location-dot me-1" aria-hidden="true"></i> @cancha.direccion</p>
                         <p class="precio"><strong>S/ @cancha.precioBase</strong> <span>por hora</span></p>
                         <div class="etiquetas-card">
                             @if (cancha.etiquetas != null)
@@ -81,6 +81,8 @@
     </div>
 </section>
 
+@if (mostrarPublicaCancha)
+{
 <section class="publica-cancha">
     <div>
         <h2>¿Tienes un<br>complejo deportivo?</h2>
@@ -88,6 +90,7 @@
     </div>
     <button @onclick="IrAPublicarCancha">Publicar ahora</button>
 </section>
+}
 
 @code {
     protected string filtroDistrito { get; set; } = string.Empty;
@@ -96,11 +99,27 @@
 
     private List<CanchaViewModel> _canchasMaestras = new();
     private List<CanchaViewModel> canchasFiltradas = new();
+    private bool mostrarPublicaCancha;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var usuario = authState.User;
+
+            if (!usuario.Identity?.IsAuthenticated ?? true)
+            {
+                mostrarPublicaCancha = true;
+            }
+            else
+            {
+                var rol = usuario.FindFirst("Rol")?.Value
+                       ?? usuario.FindFirst(ClaimTypes.Role)?.Value
+                       ?? string.Empty;
+                mostrarPublicaCancha = rol.Trim().Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase);
+            }
+
             _canchasMaestras = await Task.Run(() => CanchasService.Listar());
             canchasFiltradas = _canchasMaestras;
         }

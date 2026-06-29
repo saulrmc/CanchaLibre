@@ -7,6 +7,7 @@ DROP PROCEDURE IF EXISTS buscarCuentaUsuarioPorId;
 DROP PROCEDURE IF EXISTS listarCuentaUsuarios;
 DROP PROCEDURE IF EXISTS loginUsuario;
 DROP PROCEDURE IF EXISTS actualizarSeguridad;
+DROP PROCEDURE IF EXISTS buscarCuentaPorCorreo;
 
 DELIMITER //
 CREATE PROCEDURE insertarCuentaUsuario(
@@ -88,6 +89,19 @@ BEGIN
     ELSE
             SET p_valido = FALSE;
     END IF;
+END //
+
+CREATE PROCEDURE buscarCuentaPorCorreo(IN p_correo VARCHAR(50))
+BEGIN
+    SELECT cu.* FROM CUENTA_USUARIO cu
+    WHERE cu.id IN (
+        SELECT idCuentaUsuario FROM CLIENTE WHERE correo = p_correo
+        UNION
+        SELECT idCuentaUsuario FROM PROPIETARIO WHERE correo = p_correo
+        UNION
+        SELECT idCuentaUsuario FROM ADMINISTRADOR WHERE correo = p_correo
+    )
+    LIMIT 1;
 END //
 
 CREATE PROCEDURE actualizarSeguridad(

@@ -5,6 +5,6 @@ import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
 
 public interface CuentaUsuarioDAO extends Persistible<CuentaUsuario, Integer> {
     boolean login(String username, String password);
-    //CuentaUsuario buscarPorUsernameOCorreo(String valor);
+    CuentaUsuario buscarPorCorreo(String correo);
     void actualizarDatosSeguridad(CuentaUsuario cuenta);
 }

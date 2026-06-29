@@ -6,11 +6,12 @@ import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public interface BloqueHorarioDAO extends Persistible<BloqueHorario, Integer> {
     void crearBloquesPorCancha(Connection conn,
-                               Integer idCancha,
-                               List<BloqueHorario> bloques) throws SQLException;
+                                Integer idCancha,
+                                List<BloqueHorario> bloques) throws SQLException;
     List<BloqueHorario> leerBloquesPorCancha(Connection conn,
                                               Integer idCancha) throws SQLException;
     void eliminarBloquePorCancha(Connection conn,
@@ -22,4 +23,8 @@ public interface BloqueHorarioDAO extends Persistible<BloqueHorario, Integer> {
                                 List<BloqueHorario> bloques) throws SQLException;
     List<BloqueHorario> leerBloquesPorReserva(Connection conn,
                                               Integer idReserva) throws SQLException;
+
+    Map<Integer, List<BloqueHorario>> leerBloquesTodasCanchas(Connection conn) throws SQLException;
+
+    Map<Integer, List<BloqueHorario>> leerBloquesTodasReservas(Connection conn) throws SQLException;
 }

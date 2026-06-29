@@ -48,19 +48,19 @@ public class CuentaUsuarioDAOImpl extends DefaultBaseDAO<CuentaUsuario> implemen
 //        });
 //    }
 
-//    @Override
-//    public CuentaUsuario buscarPorUsernameOCorreo(String valor) {
-//        return ejecutarComando(conn -> {
-//            String sql = "{call obtenerCuentaPorUsername(?)}";
-//            try (CallableStatement cmd = conn.prepareCall(sql)) {
-//                cmd.setString("p_username", valor);
-//                try (ResultSet rs = cmd.executeQuery()) {
-//                    if (!rs.next()) return null;
-//                    return mapearModelo(rs);
-//                }
-//            }
-//        });
-//    }
+    @Override
+    public CuentaUsuario buscarPorCorreo(String correo) {
+        return ejecutarComando(conn -> {
+            String sql = "{call buscarCuentaPorCorreo(?)}";
+            try (CallableStatement cmd = conn.prepareCall(sql)) {
+                cmd.setString("p_correo", correo);
+                try (ResultSet rs = cmd.executeQuery()) {
+                    if (!rs.next()) return null;
+                    return mapearModelo(rs);
+                }
+            }
+        });
+    }
 
     @Override
     public boolean login(String username, String password) {

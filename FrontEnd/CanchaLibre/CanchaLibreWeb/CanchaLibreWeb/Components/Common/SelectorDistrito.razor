@@ -10,13 +10,16 @@
                   ValueChanged="@OnDistritoChanged"
                   MaxMenuHeight="200px"
                   Color="Color.Light"
-                  Class="w-100"
-                  Filterable>
+                  Class="w-100">
         @(distritos.FirstOrDefault(d => d.IdOficial == DistritoSeleccionado)?.NombreDisplay ?? "Selecciona un distrito...")
     </DropdownList>
 </div>
 
 <style>
+    .cancha-selector-container {
+        position: relative;
+    }
+
     /* Estilizamos el botón nativo que genera el DropdownList dentro de nuestro contenedor */
     .cancha-selector-container .dropdown-toggle,
     .cancha-selector-container .btn-light {
@@ -38,10 +41,15 @@
         position: absolute !important;
         background-color: #ffffff !important;
         border: 1px solid #E2E8F0 !important;
-        border-radius: 0.5rem !important;
+        border-top: none !important;
+        border-radius: 0 0 0.5rem 0.5rem !important;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
         width: 100% !important;
         z-index: 1050 !important;
+        max-height: 220px !important;
+        overflow-y: auto !important;
+        margin-top: -1px !important;
+        padding-top: 0 !important;
     }
 
     /* Estilo para cada fila de la lista de distritos */

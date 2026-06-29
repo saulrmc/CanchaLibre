@@ -2,13 +2,18 @@ package pe.edu.pucp.canchalibre.dao.cancha;
 
 import pe.edu.pucp.canchalibre.dao.DefaultBaseDAO;
 import pe.edu.pucp.canchalibre.dao.usuario.PropietarioDAOImpl;
+import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
 import pe.edu.pucp.canchalibre.modelo.cancha.Deporte;
 import pe.edu.pucp.canchalibre.modelo.cancha.Etiqueta;
+import pe.edu.pucp.canchalibre.modelo.usuario.CuentaUsuario;
+import pe.edu.pucp.canchalibre.modelo.usuario.Propietario;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     private final BloqueHorarioDAO bloqueDao;
@@ -74,10 +79,44 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                  ResultSet rs = cmd.executeQuery()) {
                 List<Cancha> modelos = new ArrayList<>();
                 while (rs.next()) {
-                    Cancha modelo = this.mapearModelo(rs);
-                    modelo.setBloques(this.bloqueDao.leerBloquesPorCancha(conn, modelo.getId()));
-                    modelos.add(modelo);
+                    modelos.add(this.mapearModelo(rs));
                 }
+
+                if (modelos.isEmpty()) {
+                    return modelos;
+                }
+
+                Map<Integer, List<Deporte>> deportesPorCancha = new HashMap<>();
+                try (PreparedStatement ps = conn.prepareCall("{call listarDeportesTodasCanchas()}");
+                     ResultSet rsDeportes = ps.executeQuery()) {
+                    while (rsDeportes.next()) {
+                        int idCancha = rsDeportes.getInt("idCancha");
+                        String nombreEnum = rsDeportes.getString("deporte");
+                        deportesPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                            .add(Deporte.valueOf(nombreEnum));
+                    }
+                }
+
+                Map<Integer, List<Etiqueta>> etiquetasPorCancha = new HashMap<>();
+                try (PreparedStatement ps = conn.prepareCall("{call listarEtiquetasTodasCanchas()}");
+                     ResultSet rsEtiquetas = ps.executeQuery()) {
+                    while (rsEtiquetas.next()) {
+                        int idCancha = rsEtiquetas.getInt("idCancha");
+                        String nombreEnum = rsEtiquetas.getString("etiqueta");
+                        etiquetasPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                            .add(Etiqueta.valueOf(nombreEnum));
+                    }
+                }
+
+                Map<Integer, List<BloqueHorario>> bloquesPorCancha = this.bloqueDao.leerBloquesTodasCanchas(conn);
+
+                for (Cancha cancha : modelos) {
+                    int id = cancha.getId();
+                    cancha.setDeportes(deportesPorCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setEtiquetas(etiquetasPorCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setBloques(bloquesPorCancha.getOrDefault(id, new ArrayList<>()));
+                }
+
                 return modelos;
             }
         });
@@ -206,11 +245,39 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cancha.setDescripcion(rs.getString("descripcion"));
         cancha.setDireccion(rs.getString("direccion"));
         cancha.setImagenUrl(rs.getString("imagenUrl"));
-        cancha.setPropietario(new PropietarioDAOImpl().leer(rs.getInt("idPropietario")));
+        cancha.setPropietario(leerPropietario(rs));
         cancha.setPrecioBase(rs.getDouble("precioBase"));
         cancha.setPromedioCalificacion(rs.getDouble("promedioCalificacion"));
         cancha.setActivo(rs.getBoolean("activo"));
         return cancha;
+    }
+
+    private Propietario leerPropietario(ResultSet rs) throws SQLException {
+        try {
+            Propietario p = new Propietario();
+            p.setId(rs.getInt("prop_id"));
+            p.setNombres(rs.getString("prop_nombres"));
+            p.setCorreo(rs.getString("prop_correo"));
+            p.setTelefono(rs.getString("prop_telefono"));
+            p.setCalificacion(rs.getDouble("prop_calificacion"));
+            p.setRUC(rs.getString("prop_ruc"));
+            p.setSaldo(rs.getDouble("prop_saldo"));
+            p.setActivo(rs.getBoolean("prop_activo"));
+
+            try {
+                CuentaUsuario cu = new CuentaUsuario();
+                cu.setId(rs.getInt("cuenta_id"));
+                cu.setUserName(rs.getString("cuenta_userName"));
+                p.setCuentaUsuario(cu);
+            } catch (SQLException e) {
+                // cuenta_userName column not present, skip
+            }
+
+            return p;
+        } catch (SQLException e) {
+            // JOIN columns not present in this result set, fall back to individual load
+            return new PropietarioDAOImpl().leer(rs.getInt("idPropietario"));
+        }
     }
 
     protected PreparedStatement comandoListarCanchasPorCuenta(Connection conn,
