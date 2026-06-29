@@ -11,5 +11,6 @@ public class ComprobanteViewModel
 
     //[Required(ErrorMessage = "Debe tener una fecha")] //no se genera automaticamente????
 	public DateTime FechaEmision {get; set;}
+    public double montoBloques {get; set;}
 
 }

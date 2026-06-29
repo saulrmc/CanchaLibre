@@ -1,10 +1,24 @@
-﻿@page "/ReservaConfirmada"
+﻿@page "/ReservaConfirmada/{Id:int}"
 @rendermode InteractiveServer
 @attribute [Authorize(Roles = "Cliente")]
 @using CanchaLibreWeb.ViewModels
 
 <div class="confirmada-shell">
     <div class="confirmada-card">
+
+        @if (!string.IsNullOrEmpty(mensajeError))
+        {
+            <div class="alert alert-danger">@mensajeError</div>
+        }
+        else if (reserva == null)
+        {
+            <div class="text-center p-5">
+                <div class="spinner-border text-success" role="status"></div>
+                <p class="mt-2 text-muted">Cargando información de la reserva...</p>
+            </div>
+        }
+        else
+        {
 
         <!-- ÍCONO ÉXITO -->
         <div class="icono-exito">
@@ -15,7 +29,7 @@
         </div>
 
         <h1>¡Reserva Confirmada!</h1>
-        <p class="subtitulo">Tu pago ha sido procesado exitosamente</p>
+        <p class="subtitulo">Tu reserva ha sido registrada exitosamente</p>
 
         <!-- DETALLES RESERVA -->
         <div class="seccion-detalle">
@@ -33,14 +47,14 @@
                 <span class="detalle-icono">📅</span>
                 <div>
                     <p class="detalle-principal">@FechaFormateada</p>
-                    <p class="detalle-secundario">Turno confirmado</p>
+                    <p class="detalle-secundario">Turno registrado</p>
                 </div>
             </div>
 
             <div class="detalle-fila">
                 <span class="detalle-icono">🕐</span>
                 <div>
-                    <p class="detalle-principal">@HoraRango hrs</p>
+                    <p class="detalle-principal">@HoraRango</p>
                     <p class="detalle-secundario">Duración: @Duracion</p>
                 </div>
             </div>
@@ -59,15 +73,78 @@
             }
 
             <div class="pago-fila total">
-                <strong>Total Pagado</strong>
+                <strong>Total Pendiente</strong>
                 <strong class="total-verde">S/ @Total.ToString("F2")</strong>
             </div>
 
-            <div class="metodo-pago">
-                💳 Pagado con @MetodoPago
-            </div>
+            @if (pagoExitoso)
+            {
+                <div class="pago-exitoso">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Pago realizado con @metodoPagoSeleccionado
+                </div>
+            }
+            else if (mostrarSelectorPago)
+            {
+                <div class="selector-pago">
+                    <h3>Selecciona método de pago</h3>
+                    <div class="opciones-pago">
+                        <label class="pago-opcion @(metodoPagoSeleccionado == MetodoPagoEnum.YAPE ? "activo" : "")">
+                            <input type="radio" name="metodoPago" value="YAPE"
+                                   checked="@(metodoPagoSeleccionado == MetodoPagoEnum.YAPE)"
+                                   @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.YAPE" />
+                            <span class="pago-icono">📱</span>
+                            <span>YAPE</span>
+                        </label>
+                        <label class="pago-opcion @(metodoPagoSeleccionado == MetodoPagoEnum.PLIN ? "activo" : "")">
+                            <input type="radio" name="metodoPago" value="PLIN"
+                                   checked="@(metodoPagoSeleccionado == MetodoPagoEnum.PLIN)"
+                                   @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.PLIN" />
+                            <span class="pago-icono">💳</span>
+                            <span>PLIN</span>
+                        </label>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(mensajePago))
+                    {
+                        <div class="alert alert-danger mt-2">@mensajePago</div>
+                    }
+
+                    <div class="pago-acciones">
+                        <button class="btn-confirmar-pago" @onclick="PagarReserva" disabled="@procesandoPago">
+                            @(procesandoPago ? "Procesando..." : $"Pagar S/ {Total:F2}")
+                        </button>
+                        <button class="btn-cancelar-pago" @onclick="CancelarPago" disabled="@procesandoPago">Cancelar</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="metodo-pago">
+                    @if (reserva?.pago?.idPago > 0)
+                    {
+                        <span>✅ Pagado con @reserva.pago.metodoPago — S/ @reserva.pago.monto.ToString("F2")</span>
+                    }
+                    else
+                    {
+                        <span>💳 Pendiente de pago</span>
+                    }
+                </div>
+
+                @if (reserva?.estado == EstadoReservaEnum.PENDIENTE_PAGO)
+                {
+                    <button class="btn-pagar-ahora" @onclick="MostrarPago">
+                        Pagar ahora
+                    </button>
+                }
+            }
         </div>
 
+        @if (!mostrarSelectorPago)
+        {
         <!-- CÓDIGO RESERVA -->
         <div class="codigo-reserva">
             <p class="codigo-label">Código de Reserva</p>
@@ -77,13 +154,12 @@
 
         <!-- BOTONES -->
         <div class="acciones">
-            <button class="btn-descargar" @onclick="DescargarComprobante">
-                ⬇ Descargar Comprobante
-            </button>
             <button class="btn-inicio" @onclick="VolverInicio">
-                🏠 Volver al Inicio
+                 Volver al Inicio
             </button>
         </div>
+        }
 
+        }
     </div>
 </div>

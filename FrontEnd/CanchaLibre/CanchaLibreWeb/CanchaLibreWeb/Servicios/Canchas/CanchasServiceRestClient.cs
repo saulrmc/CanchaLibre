@@ -107,6 +107,7 @@ private List<EtiquetaEnum> ParseEnumEtiquetas(List<string>? etiquetas)
         {
             bloquesView.Add(
                 new BloqueHorarioViewModel{
+                    id = bloque.id,
                     diaSemana = toDiaSemana(bloque.diaSemana),
                     estadoBloque = toEstadoBloque(bloque.estadoBloque),
                     horaFin = bloque.horaFin,

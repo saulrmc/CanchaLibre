@@ -33,9 +33,10 @@ public class ClientesServiceRestClient : BaseRestServiceClient<ClienteViewModel,
     }
     public ClienteViewModel? BuscarPorNombre(string nombre) {
         try {
-            var path = $"{ResourcePath}/nombre/{Uri.EscapeDataString(nombre)}";
-            var payload = Api.Get<ClienteRestDto>(path);
-            return ToViewModel(payload);
+            var path = $"{ResourcePath}/nombres/{Uri.EscapeDataString(nombre)}";
+            var payload = Api.Get<List<ClienteRestDto>>(path);
+            if (payload == null || payload.Count == 0) return null;
+            return ToViewModel(payload[0]);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
             return null;
         }

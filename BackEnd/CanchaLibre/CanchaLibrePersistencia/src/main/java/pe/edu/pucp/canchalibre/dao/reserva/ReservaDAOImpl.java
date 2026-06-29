@@ -10,6 +10,7 @@ import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,6 +160,7 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
             modelo.setPago(new PagoDAOImpl().leer(idPago));
         }
         modelo.setActivo(rs.getBoolean("activo"));
+        modelo.setFechaCreacion(rs.getObject("fechaCreacion", LocalDateTime.class));
         return modelo;
     }
 
@@ -180,7 +182,9 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
                 List<Reserva> modelos = new ArrayList<>();
                 while (rs.next()) {
-                    modelos.add(this.mapearModelo(rs));
+                    Reserva modelo = this.mapearModelo(rs);
+                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getId()));
+                    modelos.add(modelo);
                 }
 
                 return modelos;
@@ -206,7 +210,9 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
 
                 List<Reserva> modelos = new ArrayList<>();
                 while (rs.next()) {
-                    modelos.add(this.mapearModelo(rs));
+                    Reserva modelo = this.mapearModelo(rs);
+                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getId()));
+                    modelos.add(modelo);
                 }
 
                 return modelos;

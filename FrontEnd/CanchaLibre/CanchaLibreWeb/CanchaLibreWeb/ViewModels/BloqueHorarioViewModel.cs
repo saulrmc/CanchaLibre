@@ -4,6 +4,7 @@ namespace CanchaLibreWeb.ViewModels;
 
 public class BloqueHorarioViewModel
 {
+    public int id {get; set;}
     [Required(ErrorMessage = "Debe ingresar un día de semana")]
     public DiaSemanaEnum diaSemana {get; set;}
 

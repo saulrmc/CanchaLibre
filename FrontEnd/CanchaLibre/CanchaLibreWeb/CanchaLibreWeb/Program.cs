@@ -2,6 +2,7 @@ using CanchaLibreWeb.Components;
 using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.Servicios.Cuentas;
 using CanchaLibreWeb.Servicios.Reservas;
+using CanchaLibreWeb.Servicios.Transacciones;
 using CanchaLibreWeb.Servicios.Usuarios;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -33,6 +34,8 @@ builder.Services.AddScoped<IClientesServiceClient, ClientesServiceRestClient>();
 builder.Services.AddScoped<IReservasServiceClient, ReservasServiceRestClient>();
 builder.Services.AddScoped<ICanchasServiceClient, CanchasServiceRestClient>();
 builder.Services.AddScoped<IAuthServiceClient, AuthServiceRestClient>();
+builder.Services.AddScoped<IComprobantesServiceClient, ComprobantesServiceRestClient>();
+builder.Services.AddScoped<IPagosServiceClient, PagosServiceRestClient>();
 
 //add more RestClient
 
