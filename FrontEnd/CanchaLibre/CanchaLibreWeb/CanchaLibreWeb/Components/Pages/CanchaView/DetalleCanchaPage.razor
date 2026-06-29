@@ -84,9 +84,19 @@ else
                 <div class="seccion">
                     <h3>Reglas del Complejo</h3>
                     <ul class="reglas-lista">
+                        @if (ReglasSeparadas != null && ReglasSeparadas.Any())
+                                {
+                                    @foreach (var regla in ReglasSeparadas)
+                                    {
+                                        <li>✅ @regla</li>
+                                    }
+                                }
+                        else
+                        {
                         <li>✅ Llegue 10 minutos antes de la hora de su reserva.</li>
                         <li>✅ Se requiere vestimenta y calzado deportivo adecuados.</li>
                         <li>✅ No se permite fumar ni consumir alcohol en las instalaciones.</li>
+                        }
                     </ul>
                 </div>
 

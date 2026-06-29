@@ -336,6 +336,11 @@ public partial class PublicarCanchaPage : ComponentBase
             Modelo.propietario = propietarioReal;
             if (string.IsNullOrEmpty(Modelo.distrito)) Modelo.distrito = "Por definir";
 
+            if (!string.IsNullOrWhiteSpace(ReglasInternas))
+            {
+                Modelo.descripcion = $"{Modelo.descripcion}\n\n{ReglasInternas}";
+            }
+
             RestClient.Guardar(Modelo, Estado.Nuevo);
 
             await Task.Delay(500);
