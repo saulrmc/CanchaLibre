@@ -46,9 +46,11 @@ public partial class ReservaConfirmadaPage : ComponentBase
     {
         get
         {
-            var bloque = reserva?.bloques?.FirstOrDefault();
-            if (bloque == null) return "---";
-            return $"{bloque.horaInicio:HH:mm} - {bloque.horaFin:HH:mm} hrs";
+            var bloques = reserva?.bloques;
+            if (bloques == null || !bloques.Any()) return "---";
+            var minInicio = bloques.Min(b => b.horaInicio);
+            var maxFin = bloques.Max(b => b.horaFin);
+            return $"{minInicio:HH:mm} - {maxFin:HH:mm} hrs";
         }
     }
 
@@ -78,10 +80,10 @@ public partial class ReservaConfirmadaPage : ComponentBase
         get
         {
             var list = new List<ItemPago>();
-            var bloque = reserva?.bloques?.FirstOrDefault();
-            if (bloque != null)
+            if (reserva?.bloques != null && reserva.bloques.Any())
             {
-                list.Add(new ItemPago { Concepto = "Alquiler de cancha", Monto = bloque.precio });
+                var totalCancha = reserva.bloques.Sum(b => b.precio);
+                list.Add(new ItemPago { Concepto = "Alquiler de cancha", Monto = totalCancha });
                 list.Add(new ItemPago { Concepto = "Costo de servicio", Monto = 5.00 });
             }
             return list;

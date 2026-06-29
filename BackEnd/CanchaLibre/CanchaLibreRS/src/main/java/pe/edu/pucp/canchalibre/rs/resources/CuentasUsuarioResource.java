@@ -148,10 +148,7 @@ public class CuentasUsuarioResource {
                             ? "cliente"
                             : "propietario";
 
-                    correoResource.enviarCorreoBienvenida(
-                            correoDestino,
-                            nombreUsuario
-                    );
+
                 }
             }
         } catch (Exception e) {

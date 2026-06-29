@@ -8,6 +8,8 @@ import pe.edu.pucp.canchalibre.dao.transaccion.PagoDAOImpl;
 import pe.edu.pucp.canchalibre.dao.usuario.ClienteDAOImpl;
 import pe.edu.pucp.canchalibre.modelo.cancha.BloqueHorario;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.modelo.cancha.Deporte;
+import pe.edu.pucp.canchalibre.modelo.cancha.Etiqueta;
 import pe.edu.pucp.canchalibre.modelo.reserva.EstadoReserva;
 import pe.edu.pucp.canchalibre.modelo.reserva.Reserva;
 import pe.edu.pucp.canchalibre.modelo.transaccion.Comprobante;
@@ -333,6 +335,36 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
                 map.put(c.getId(), c);
             }
         }
+
+        if (!map.isEmpty()) {
+            Map<Integer, List<Deporte>> deportesPorCancha = new HashMap<>();
+            try (PreparedStatement ps = conn.prepareCall("{call listarDeportesTodasCanchas()}");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idCancha = rs.getInt("idCancha");
+                    String nombreEnum = rs.getString("deporte");
+                    deportesPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        .add(Deporte.valueOf(nombreEnum));
+                }
+            }
+
+            Map<Integer, List<Etiqueta>> etiquetasPorCancha = new HashMap<>();
+            try (PreparedStatement ps = conn.prepareCall("{call listarEtiquetasTodasCanchas()}");
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idCancha = rs.getInt("idCancha");
+                    String nombreEnum = rs.getString("etiqueta");
+                    etiquetasPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        .add(Etiqueta.valueOf(nombreEnum));
+                }
+            }
+
+            for (Cancha c : map.values()) {
+                c.setDeportes(deportesPorCancha.getOrDefault(c.getId(), new ArrayList<>()));
+                c.setEtiquetas(etiquetasPorCancha.getOrDefault(c.getId(), new ArrayList<>()));
+            }
+        }
+
         return map;
     }
 

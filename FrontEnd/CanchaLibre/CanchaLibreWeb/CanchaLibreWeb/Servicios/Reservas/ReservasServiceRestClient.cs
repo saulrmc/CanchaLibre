@@ -208,7 +208,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         var list = new List<EtiquetaEnum>();
         foreach (var etiqueta in etiquetas)
         {
-            list.Add(ParseEnum<EtiquetaEnum>(etiqueta, EtiquetaEnum.ILUMINACIÓN));
+            list.Add(ParseEnum<EtiquetaEnum>(etiqueta, EtiquetaEnum.ILUMINACION));
         }
         return list;
     }
