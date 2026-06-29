@@ -96,14 +96,14 @@
                             <input type="radio" name="metodoPago" value="YAPE"
                                    checked="@(metodoPagoSeleccionado == MetodoPagoEnum.YAPE)"
                                    @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.YAPE" />
-                            <span class="pago-icono">📱</span>
+                                <span class="pago-icono"><i class="fa-solid fa-mobile-retro"></i></span>
                             <span>YAPE</span>
                         </label>
                         <label class="pago-opcion @(metodoPagoSeleccionado == MetodoPagoEnum.PLIN ? "activo" : "")">
                             <input type="radio" name="metodoPago" value="PLIN"
                                    checked="@(metodoPagoSeleccionado == MetodoPagoEnum.PLIN)"
                                    @onchange="() => metodoPagoSeleccionado = MetodoPagoEnum.PLIN" />
-                            <span class="pago-icono">💳</span>
+                                <span class="pago-icono"><i class="fa-solid fa-pager"></i></span>
                             <span>PLIN</span>
                         </label>
                     </div>
@@ -126,11 +126,11 @@
                 <div class="metodo-pago">
                     @if (reserva?.pago?.idPago > 0)
                     {
-                        <span>✅ Pagado con @reserva.pago.metodoPago — S/ @reserva.pago.monto.ToString("F2")</span>
+                            <span><i class="fa-solid fa-circle-check" style="color: rgb(99, 230, 190);"></i> Pagado con @reserva.pago.metodoPago — S/ @reserva.pago.monto.ToString("F2")</span>
                     }
                     else
                     {
-                        <span>💳 Pendiente de pago</span>
+                            <span><i class="fa-solid fa-pager"></i>Pendiente de pago</span>
                     }
                 </div>
 
