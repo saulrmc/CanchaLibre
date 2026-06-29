@@ -47,46 +47,7 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
 
     @Override
     public Persona login(String username, String password) {
-        List<PersonaDAO<?>> daosDeSeguridad = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);
-        CuentaUsuario cuenta = null;
-        Persona personaEncontrada = null;
-
-        if (username != null && username.contains("@")) {
-            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
-            if (cuenta != null) validarCuentaUsuario(cuenta);
-        }
-
-        if (cuenta == null) {
-            for (PersonaDAO<?> dao : daosDeSeguridad) {
-                Persona persona = dao.buscarPorCuenta(username);
-                if (persona != null) {
-                    personaEncontrada = persona;
-                    cuenta = persona.getCuentaUsuario();
-                    validarCuentaUsuario(cuenta);
-                    break;
-                }
-            }
-        }
-
-        // Si encontramos por correo, resolvemos la Persona a partir del userName
-        if (personaEncontrada == null && cuenta != null) {
-            String userName = cuenta.getUserName();
-            for (PersonaDAO<?> dao : daosDeSeguridad) {
-                Persona p = dao.buscarPorCuenta(userName);
-                if (p != null) { personaEncontrada = p; break; }
-            }
-        }
-
-        if (cuenta == null && username != null && !username.contains("@")) {
-            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
-            if (cuenta != null) {
-                validarCuentaUsuario(cuenta);
-                for (PersonaDAO<?> dao : daosDeSeguridad) {
-                    Persona p = dao.buscarPorCuenta(cuenta.getUserName());
-                    if (p != null) { personaEncontrada = p; break; }
-                }
-            }
-        }
+        CuentaUsuario cuenta = buscarCuenta(username);
 
         if (cuenta == null) {
             System.out.println("[LOGIN FAILED] El nombre de usuario '" + username + "' no existe.");
@@ -94,7 +55,49 @@ public class CuentaUsuarioBOImpl extends BaseBO implements CuentaUsuarioBO {
         }
 
         if (estaBajoCooldown(cuenta)) {return null;}
-        return verificarCredenciales(cuenta, password) ? personaEncontrada : null;
+        return verificarCredenciales(cuenta, password) ? resolverPersona(cuenta) : null;
+    }
+
+    @Override
+    public CuentaUsuario buscarCuenta(String username) {
+        if (username == null || username.isBlank()) return null;
+
+        CuentaUsuario cuenta = null;
+
+        if (username.contains("@")) {
+            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
+            if (cuenta != null) {
+                validarCuentaUsuario(cuenta);
+                return cuenta;
+            }
+        }
+
+        List<PersonaDAO<?>> daos = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);
+        for (PersonaDAO<?> dao : daos) {
+            Persona persona = dao.buscarPorCuenta(username);
+            if (persona != null) {
+                validarCuentaUsuario(persona.getCuentaUsuario());
+                return persona.getCuentaUsuario();
+            }
+        }
+
+        if (!username.contains("@")) {
+            cuenta = this.cuentaUsuarioDao.buscarPorCorreo(username);
+            if (cuenta != null) {
+                validarCuentaUsuario(cuenta);
+            }
+        }
+
+        return cuenta;
+    }
+
+    private Persona resolverPersona(CuentaUsuario cuenta) {
+        List<PersonaDAO<?>> daos = List.of(this.clienteDao, this.propietarioDao, this.administradorDao);
+        for (PersonaDAO<?> dao : daos) {
+            Persona p = dao.buscarPorCuenta(cuenta.getUserName());
+            if (p != null) return p;
+        }
+        return null;
     }
 
     private boolean estaBajoCooldown(CuentaUsuario cuenta) {

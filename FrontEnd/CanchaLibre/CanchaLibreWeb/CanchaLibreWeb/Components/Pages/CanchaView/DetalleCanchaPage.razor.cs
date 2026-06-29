@@ -88,6 +88,7 @@ public partial class DetalleCanchaPage : ComponentBase
 
     private void SeleccionarBloque(BloqueHorarioViewModel bloque)
     {
+        if (bloque.estadoBloque != EstadoBloqueEnum.DISPONIBLE) return;
         if (bloquesSeleccionados.Contains(bloque))
             bloquesSeleccionados.Remove(bloque);
         else

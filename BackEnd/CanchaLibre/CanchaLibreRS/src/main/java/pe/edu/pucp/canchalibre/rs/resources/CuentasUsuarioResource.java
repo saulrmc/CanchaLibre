@@ -12,6 +12,8 @@ import pe.edu.pucp.canchalibre.modelo.Persona;
 import pe.edu.pucp.canchalibre.modelo.usuario.*;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.List;
 
@@ -87,6 +89,20 @@ public class CuentasUsuarioResource {
     @POST
     @Path("login")
     public Response login(CuentaUsuario cuenta) {
+        CuentaUsuario existente = this.cuentaUsuarioBO.buscarCuenta(cuenta.getUserName());
+
+        if (existente != null && existente.getFechaBloqueo() != null) {
+            LocalDateTime finBloqueo = existente.getFechaBloqueo().plusMinutes(5);
+            if (LocalDateTime.now().isBefore(finBloqueo)) {
+                long segundos = Duration.between(LocalDateTime.now(), finBloqueo).toSeconds();
+                return Response.status(423)
+                        .entity(Map.of(
+                                "error", "Cuenta bloqueada temporalmente",
+                                "segundosRestantes", segundos
+                        )).build();
+            }
+        }
+
         Persona persona = this.cuentaUsuarioBO.login(
                 cuenta.getUserName(), cuenta.getPassword());
 

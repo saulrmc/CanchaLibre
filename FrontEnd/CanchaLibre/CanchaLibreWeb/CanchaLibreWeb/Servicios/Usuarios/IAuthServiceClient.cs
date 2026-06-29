@@ -4,7 +4,7 @@ namespace CanchaLibreWeb.Servicios.Usuarios;
 
 public interface IAuthServiceClient
 {
-    (int Id, string Nombres, string Correo, string? Rol) ValidarCredenciales(string correo, string contrasena);
+    (int Id, string Nombres, string Correo, string? Rol, bool CuentaBloqueada, int SegundosBloqueo) ValidarCredenciales(string correo, string contrasena);
     bool SolicitarRecuperacion(string correo);
 }
 
@@ -20,41 +20,40 @@ public class AuthServiceRestClient : IAuthServiceClient
         _httpClient.BaseAddress = new Uri(baseUrl.EndsWith('/') ? baseUrl : baseUrl + "/");
     }
 
-    public (int Id, string Nombres, string Correo, string? Rol) ValidarCredenciales(string correo, string contrasena)
+    public (int Id, string Nombres, string Correo, string? Rol, bool CuentaBloqueada, int SegundosBloqueo) ValidarCredenciales(string correo, string contrasena)
     {
-        string[] roles = ["CLIENTE", "PROPIETARIO", "ADMINISTRADOR"];
+        var payload = new { userName = correo, password = contrasena };
+        var requestJson = JsonSerializer.Serialize(payload);
+        var content = new StringContent(requestJson, System.Text.Encoding.UTF8, "application/json");
 
-        foreach (var rol in roles)
+        var response = _httpClient.PostAsync("cuentas/login", content)
+            .GetAwaiter().GetResult();
+
+        if (response.IsSuccessStatusCode)
         {
-            var payload = new { userName = correo, password = contrasena, rol };
-            var requestJson = JsonSerializer.Serialize(payload);
-            var content = new StringContent(requestJson, System.Text.Encoding.UTF8, "application/json");
-
-            var response = _httpClient.PostAsync("cuentas/login", content)
-                .GetAwaiter().GetResult();
-
-            if (response.IsSuccessStatusCode)
+            var json = response.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            int id = json.GetProperty("id").GetInt32();
+            string nombres = json.GetProperty("nombres").GetString() ?? string.Empty;
+            string correoResp = json.GetProperty("correo").GetString() ?? string.Empty;
+            string rolResp = (json.GetProperty("rol").GetString() ?? string.Empty) switch
             {
-                var json = response.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
-                int id = json.GetProperty("id").GetInt32();
-                string nombres = json.GetProperty("nombres").GetString() ?? string.Empty;
-                string correoResp = json.GetProperty("correo").GetString() ?? string.Empty;
-                string rolResp = (json.GetProperty("rol").GetString() ?? string.Empty) switch
-                {
-                    "CLIENTE" => "Cliente",
-                    "PROPIETARIO" => "Propietario",
-                    "ADMINISTRADOR" => "Admin",
-                    _ => string.Empty
-                };
+                "CLIENTE" => "Cliente",
+                "PROPIETARIO" => "Propietario",
+                "ADMINISTRADOR" => "Admin",
+                _ => string.Empty
+            };
 
-                return (id, nombres, correoResp, rolResp);
-            }
-
-            if ((int)response.StatusCode == 401)
-                return (0, string.Empty, string.Empty, null);
+            return (id, nombres, correoResp, rolResp, false, 0);
         }
 
-        return (0, string.Empty, string.Empty, null);
+        if ((int)response.StatusCode == 423)
+        {
+            var json = response.Content.ReadFromJsonAsync<JsonElement>().GetAwaiter().GetResult();
+            int segundos = json.GetProperty("segundosRestantes").GetInt32();
+            return (0, string.Empty, string.Empty, null, true, segundos);
+        }
+
+        return (0, string.Empty, string.Empty, null, false, 0);
     }
 
     public bool SolicitarRecuperacion(string correo)
