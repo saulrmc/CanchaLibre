@@ -11,6 +11,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@WebServlet(name = "ReporteAdminCanchas", urlPatterns = {"/reportes/canchas"})
+@WebServlet(name = "ReporteAdminCanchas", urlPatterns = {"/canchas"})
 public class ReporteAdminCanchas extends HttpServlet {
 
     private final String NOMBRE_REPORTE = "reportes/ReporteAdminCanchas.jasper";
@@ -36,7 +38,14 @@ public class ReporteAdminCanchas extends HttpServlet {
         }
 
         Map<String, Object> parametros = new HashMap<>();
-        parametros.put("LOGO_STREAM", NOMBRE_LOGO);
+        InputStream logoStream = getClass().getClassLoader().getResourceAsStream(NOMBRE_LOGO);
+        if (logoStream != null) {
+            Image imagenLogo = ImageIO.read(logoStream);
+            parametros.put("LOGO_STREAM", imagenLogo);
+        } else {
+            // Si el logo no existe o falló en cargarse, se envía null para evitar que rompa el llenado
+            parametros.put("LOGO_STREAM", null);
+        }
 
         try (Connection conn = DBFactoryProvider.getManager().getConnection()) {
             JasperPrint jp = JasperFillManager.fillReport(reporte, parametros, conn);
