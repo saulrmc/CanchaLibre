@@ -63,7 +63,7 @@ public partial class LoginPage : ComponentBase
 
             if (AuthStateProvider is CustomAuthStateProvider customAuthStateProvider)
             {
-                customAuthStateProvider.MarcarComoAutenticado(id, nombres, correo, rolDetectado);
+                customAuthStateProvider.MarcarComoAutenticado(id, nombres, correo, rolDetectado, LoginModel.Correo);
                 RedirigirSegunRol(rolDetectado);
             }
         }

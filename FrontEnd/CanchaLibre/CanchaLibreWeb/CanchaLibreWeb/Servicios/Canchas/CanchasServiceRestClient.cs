@@ -29,6 +29,17 @@ public class CanchasServiceRestClient : BaseRestServiceClient<CanchaViewModel, C
         return response;
     }
 
+    public List<CanchaViewModel> ListarPorPropietario(string userName)
+    {
+        var payload = Api.Get<List<CanchaRestDto>>($"{ResourcePath}/propietario/{userName}");
+        var response = new List<CanchaViewModel>(payload.Count);
+        foreach (var item in payload)
+        {
+            response.Add(ToViewModel(item));
+        }
+        return response;
+    }
+
     public CanchaViewModel? Obtener(int id)
     {
         try

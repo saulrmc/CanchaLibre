@@ -149,4 +149,13 @@ public class ReservasResource {
     public List<Reserva> ListarPorClienteUsername(@PathParam("userName") String userName){
         return reservaBO.listarReservasPorCuenta(userName);
     }
+
+    @GET
+    @Path("cancha/{id}")
+    public List<Reserva> ListarPorCanchaId(@PathParam("id") int idCancha){
+        if(idCancha <= 0){
+            return Collections.emptyList();
+        }
+        return reservaBO.listarReservasPorCancha(idCancha);
+    }
 }

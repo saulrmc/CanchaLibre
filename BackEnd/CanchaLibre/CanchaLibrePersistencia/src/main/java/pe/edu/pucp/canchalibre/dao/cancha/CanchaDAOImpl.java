@@ -149,9 +149,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString("p_descripcion",modelo.getDescripcion());
         cmd.setString("p_direccion",modelo.getDireccion());
         if (modelo.getImagenUrl() != null) {
-            // En lugar de cmd.setString, usamos un StringReader para transferir texto masivo de forma segura
-            java.io.StringReader reader = new java.io.StringReader(modelo.getImagenUrl());
-            cmd.setCharacterStream("p_imagenUrl", reader, modelo.getImagenUrl().length());
+            cmd.setString("p_imagenUrl", modelo.getImagenUrl());
         } else {
             cmd.setNull("p_imagenUrl", java.sql.Types.LONGVARCHAR);
         }
@@ -172,9 +170,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         cmd.setString("p_descripcion",modelo.getDescripcion());
         cmd.setString("p_direccion",modelo.getDireccion());
         if (modelo.getImagenUrl() != null) {
-            // En lugar de cmd.setString, usamos un StringReader para transferir texto masivo de forma segura
-            java.io.StringReader reader = new java.io.StringReader(modelo.getImagenUrl());
-            cmd.setCharacterStream("p_imagenUrl", reader, modelo.getImagenUrl().length());
+            cmd.setString("p_imagenUrl", modelo.getImagenUrl());
         } else {
             cmd.setNull("p_imagenUrl", java.sql.Types.LONGVARCHAR);
         }
@@ -377,10 +373,39 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
                 List<Cancha> modelos = new ArrayList<>();
                 while (rs.next()) {
-                    Cancha cancha = this.mapearModelo(rs);
-                    this.llenarDeportes(conn, cancha);
-                    this.llenarEtiquetas(conn, cancha);
-                    modelos.add(cancha);
+                    modelos.add(this.mapearModelo(rs));
+                }
+
+                if (modelos.isEmpty()) {
+                    return modelos;
+                }
+
+                Map<Integer, List<Deporte>> deportesPorCancha = new HashMap<>();
+                try (PreparedStatement ps = conn.prepareCall("{call listarDeportesTodasCanchas()}");
+                     ResultSet rsDeportes = ps.executeQuery()) {
+                    while (rsDeportes.next()) {
+                        int idCancha = rsDeportes.getInt("idCancha");
+                        String nombreEnum = rsDeportes.getString("deporte");
+                        deportesPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                            .add(Deporte.valueOf(nombreEnum));
+                    }
+                }
+
+                Map<Integer, List<Etiqueta>> etiquetasPorCancha = new HashMap<>();
+                try (PreparedStatement ps = conn.prepareCall("{call listarEtiquetasTodasCanchas()}");
+                     ResultSet rsEtiquetas = ps.executeQuery()) {
+                    while (rsEtiquetas.next()) {
+                        int idCancha = rsEtiquetas.getInt("idCancha");
+                        String nombreEnum = rsEtiquetas.getString("etiqueta");
+                        etiquetasPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                            .add(Etiqueta.valueOf(nombreEnum));
+                    }
+                }
+
+                for (Cancha cancha : modelos) {
+                    int id = cancha.getId();
+                    cancha.setDeportes(deportesPorCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setEtiquetas(etiquetasPorCancha.getOrDefault(id, new ArrayList<>()));
                 }
 
                 return modelos;

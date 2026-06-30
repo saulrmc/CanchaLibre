@@ -18,13 +18,14 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         return Task.FromResult(new AuthenticationState(_usuarioActual));
     }
 
-    public void MarcarComoAutenticado(int id, string nombres, string correo, string rol)
+    public void MarcarComoAutenticado(int id, string nombres, string correo, string rol, string userName = "")
     {
         var identity = new ClaimsIdentity(new[]
         {
             new Claim(ClaimTypes.Name, nombres),
             new Claim(ClaimTypes.Email, correo),
-            new Claim("IdUsuario", id.ToString())
+            new Claim("IdUsuario", id.ToString()),
+            new Claim("Username", userName)
         }, "CustomAuthType");
 
         identity.AddClaim(new Claim(ClaimTypes.Role, rol));
