@@ -5,6 +5,8 @@ IF OBJECT_ID('dbo.insertarReserva', 'P') IS NOT NULL DROP PROCEDURE dbo.insertar
 GO
 IF OBJECT_ID('dbo.cancelarReserva', 'P') IS NOT NULL DROP PROCEDURE dbo.cancelarReserva;
 GO
+IF OBJECT_ID('dbo.listarReservasPorCancha', 'P') IS NOT NULL DROP PROCEDURE dbo.listarReservasPorCancha;
+GO
 
 -- RF03: Insertar nueva reserva
 CREATE PROCEDURE dbo.insertarReserva
@@ -40,5 +42,15 @@ BEGIN
     BEGIN
         SET @p_exito = 0;
     END
+END
+GO
+
+CREATE PROCEDURE dbo.listarReservasPorCancha
+    @p_idCancha INT
+AS
+BEGIN
+    SELECT id, estado, idCliente, idCancha, idPago, fechaCreacion, activo
+    FROM Reserva
+    WHERE idCancha = @p_idCancha AND activo = 1;
 END
 GO

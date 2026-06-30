@@ -8,6 +8,7 @@ DROP PROCEDURE IF EXISTS buscarReservaPorId;
 DROP PROCEDURE IF EXISTS listarReservas;
 DROP PROCEDURE IF EXISTS listarReservasPorCuenta;
 DROP PROCEDURE IF EXISTS listarReservasPorId;
+DROP PROCEDURE IF EXISTS listarReservasPorCancha;
 
 DROP PROCEDURE IF EXISTS listarReservasCliente; /* unused */
 DELIMITER //
@@ -194,6 +195,15 @@ BEGIN
              LEFT JOIN PAGO p ON p.idReserva = r.id
     WHERE r.idCliente = p_idCliente
     ORDER BY r.fechaCreacion DESC;
+END //
+
+CREATE PROCEDURE listarReservasPorCancha(
+    IN p_idCancha INT
+)
+BEGIN
+    SELECT id, estado, idCliente, idCancha, idPago, fechaCreacion, activo
+    FROM RESERVA
+    WHERE idCancha = p_idCancha AND activo = TRUE;
 END //
 
 DROP PROCEDURE IF EXISTS listarBloquesTodasReservas;

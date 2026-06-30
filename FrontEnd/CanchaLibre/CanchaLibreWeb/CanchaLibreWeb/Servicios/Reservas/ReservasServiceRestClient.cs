@@ -23,6 +23,17 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         return response;
     }
 
+    public List<ReservaViewModel> ListarPorCancha(int idCancha)
+    {
+        var payload = Api.Get<List<ReservaRestDto>>($"{ResourcePath}/cancha/{idCancha}");
+        var response = new List<ReservaViewModel>(payload.Count);
+        foreach (var item in payload)
+        {
+            response.Add(ToViewModel(item));
+        }
+        return response;
+    }
+
     private MetodoPagoEnum toMetodoPagoEnum(string metodoPago)
     {
         if (string.IsNullOrWhiteSpace(metodoPago))

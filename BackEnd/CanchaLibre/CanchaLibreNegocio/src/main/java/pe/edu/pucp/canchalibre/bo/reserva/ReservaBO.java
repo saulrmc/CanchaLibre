@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReservaBO extends Gestionable<Reserva> {
     List<Reserva> listarReservasPorCuenta(String cuenta);
     List<Reserva> listarReservasPorId(int idCliente);
+    List<Reserva> listarReservasPorCancha(int idCancha);
 }

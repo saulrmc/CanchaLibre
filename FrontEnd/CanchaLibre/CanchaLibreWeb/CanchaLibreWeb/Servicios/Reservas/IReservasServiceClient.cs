@@ -7,4 +7,5 @@ namespace CanchaLibreWeb.Servicios.Reservas;
 public interface IReservasServiceClient : IServiceClient<ReservaViewModel>
 {
     List<ReservaViewModel> ListarPorCliente(int idCliente);
+    List<ReservaViewModel> ListarPorCancha(int idCancha);
 }

@@ -18,6 +18,7 @@ public partial class DetalleCanchaPage : ComponentBase
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
     private CanchaViewModel? cancha;
+    private bool esSoloLectura = false;
     private List<BloqueHorarioViewModel> bloquesSeleccionados = new();
     private DateTime fechaSeleccionada = DateTime.Today;
     private string? mensajeError;
@@ -64,7 +65,7 @@ public partial class DetalleCanchaPage : ComponentBase
     protected string DescripcionCorta { get; set; } = string.Empty;
     protected List<string> ReglasSeparadas { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         cancha = CanchasService.Obtener(Id);
         if (cancha != null && !string.IsNullOrEmpty(cancha.descripcion))
@@ -84,6 +85,11 @@ public partial class DetalleCanchaPage : ComponentBase
                     DescripcionCorta = cancha.descripcion;
                 }
             }
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        esSoloLectura = user.Identity?.IsAuthenticated == true &&
+                        (user.IsInRole("Propietario") || user.IsInRole("Admin"));
     }
 
     private void SeleccionarBloque(BloqueHorarioViewModel bloque)

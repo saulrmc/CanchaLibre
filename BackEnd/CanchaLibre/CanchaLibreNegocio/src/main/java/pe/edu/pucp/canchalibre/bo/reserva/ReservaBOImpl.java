@@ -168,6 +168,12 @@ public class ReservaBOImpl extends BaseBO implements ReservaBO {
         return reservaDao.listarReservasPorId(idCliente);
     }
 
+    @Override
+    public List<Reserva> listarReservasPorCancha(int idCancha) {
+        validarIdPositivo(idCancha, "id de la cancha");
+        return reservaDao.listarReservasPorCancha(idCancha);
+    }
+
     private LocalDateTime calcularInicioPartido(Reserva modelo) {
         if (modelo.getBloquesSeleccionados() == null || modelo.getBloquesSeleccionados().isEmpty()) {
             throw new IllegalArgumentException("La reserva no contiene bloques horarios para calcular el inicio del partido.");

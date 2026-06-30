@@ -5,6 +5,21 @@
 @attribute [Authorize(Roles = "Propietario")]
 
 
+@if (cargando)
+{
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+else if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger m-4">@mensajeError</div>
+}
+else
+{
+
 <div class="dashboard-shell">
 
     <h1 class="dashboard-title">Estadísticas</h1>
@@ -24,7 +39,6 @@
                         </svg>
                     </div>
                 </div>
-                <span class="est-comparacion">+@BusquedasPorcentaje% Respecto al mes anterior</span>
             </div>
         </div>
 
@@ -33,11 +47,9 @@
                 <span class="est-label">Utilidad neta</span>
 
                 <div class="number-icon">
-                    <strong class="est-valor valor-utilidad">s/. @(UtilidadNeta / 1000) mil</strong>
+                    <strong class="est-valor valor-utilidad">@FormatearMonto(UtilidadNeta)</strong>
                     <div class="card-est-icono-text">$</div>
                 </div>
-
-                <span class="est-comparacion">+@UtilidadPorcentaje% Respecto al mes anterior</span>
 
             </div>
         </div>
@@ -50,8 +62,6 @@
                     <strong class="est-valor valor-reservas">@ReservasMes</strong>
                     <span class="fs-4"><img src="calendario.png" alt="Calendario" style="width: 80%; height: 80%; object-fit: contain;" /></span>
                 </div>
-
-                <span class="est-comparacion">+@ReservasPorcentaje% Respecto al mes anterior</span>
             </div>
         </div>
 
@@ -60,7 +70,7 @@
                 <span class="est-label">Ingresos totales</span>
 
                 <div class="number-icon">
-                    <strong class="est-valor valor-ingresos">s/. @(IngresosTotales / 1000) mil</strong>
+                    <strong class="est-valor valor-ingresos">@FormatearMonto(IngresosTotales)</strong>
                     <div class="card-est-icono">
                         <svg xmlns="http://www.w3.org/2000/svg">
                             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
@@ -68,8 +78,6 @@
                         </svg>
                     </div>
                 </div>
-
-                <span class="est-comparacion">+@IngresosPorcentaje% Respecto al mes anterior</span>
             </div>
         </div>
 
@@ -129,11 +137,11 @@
                 <div class="cobranza-filas">
                     <div class="cobranza-fila">
                         <span class="cobranza-label label-dot-cobrado">Cobrado</span>
-                        <span class="cobranza-monto">s/. @MontoCobrado</span>
+                        <span class="cobranza-monto">@FormatearMonto(MontoCobrado)</span>
                     </div>
                     <div class="cobranza-fila">
                         <span class="cobranza-label label-dot-pendiente">Pendiente</span>
-                        <span class="cobranza-monto">s/. @MontoPendiente</span>
+                        <span class="cobranza-monto">@FormatearMonto(MontoPendiente)</span>
                     </div>
                 </div>
 
@@ -142,3 +150,4 @@
 
     </div>
 </div>
+}

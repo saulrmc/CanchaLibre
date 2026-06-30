@@ -231,6 +231,26 @@ input[type="range"] {
         text-decoration: none;
     }
 
+.btn-ver {
+    display: block;
+    width: 100%;
+    background: white;
+    color: #22c55e;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid #22c55e;
+    transition: background .15s, color .15s;
+}
+
+    .btn-ver:hover {
+        background: #22c55e;
+        color: white;
+    }
+
 /* ── Footer ── */
 .footer-cancha {
     background-color: #16a34a;
