@@ -6,7 +6,7 @@
     <parent>
         <groupId>pe.edu.pucp.canchalibre</groupId>
         <artifactId>CanchaLibre</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <artifactId>CanchaLibreNegocio</artifactId>
@@ -21,13 +21,13 @@
         <dependency>
             <groupId>pe.edu.pucp.canchalibre</groupId>
             <artifactId>CanchaLibrePersistencia</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>pe.edu.pucp.canchalibre</groupId>
             <artifactId>CanchaLibreModelo</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -89,14 +89,45 @@ public class ReservaDAOImpl extends DefaultBaseDAO<Reserva> implements ReservaDA
     @Override
     public List<Reserva> leerTodos() {
         return ejecutarComando(conn -> {
-            try (PreparedStatement cmd = this.comandoLeerTodos(conn);
+            try (PreparedStatement cmd = comandoLeerTodos(conn);
                  ResultSet rs = cmd.executeQuery()) {
+
                 List<Reserva> modelos = new ArrayList<>();
+                List<Integer> clienteIds = new ArrayList<>();
+                List<Integer> canchaIds = new ArrayList<>();
+                List<Integer> pagoIds = new ArrayList<>();
+
                 while (rs.next()) {
-                    Reserva modelo = this.mapearModelo(rs);
-                    modelo.setBloquesSeleccionados(this.bloqueDao.leerBloquesPorReserva(conn, modelo.getId()));
-                    modelos.add(modelo);
+                    Reserva r = new Reserva();
+                    r.setId(rs.getInt("id"));
+                    r.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
+                    r.setActivo(rs.getBoolean("activo"));
+                    r.setFechaCreacion(rs.getObject("fechaCreacion", LocalDateTime.class));
+                    modelos.add(r);
+                    clienteIds.add(rs.getInt("idCliente"));
+                    canchaIds.add(rs.getInt("idCancha"));
+                    int idP = rs.getInt("idPago");
+                    pagoIds.add(rs.wasNull() ? null : idP);
                 }
+
+                if (modelos.isEmpty()) return modelos;
+
+                Map<Integer, Cliente> clientesMap = cargarClientesBatch(conn, clienteIds);
+                Map<Integer, Cancha> canchasMap = cargarCanchasBatch(conn);
+                Map<Integer, Pago> pagosMap = cargarPagosBatch(conn);
+                Map<Integer, List<BloqueHorario>> bloquesPorReserva = this.bloqueDao.leerBloquesTodasReservas(conn);
+
+                for (int i = 0; i < modelos.size(); i++) {
+                    Reserva r = modelos.get(i);
+                    r.setCliente(clientesMap.get(clienteIds.get(i)));
+                    r.setCancha(canchasMap.get(canchaIds.get(i)));
+                    Integer idP = pagoIds.get(i);
+                    if (idP != null) {
+                        r.setPago(pagosMap.get(idP));
+                    }
+                    r.setBloquesSeleccionados(bloquesPorReserva.getOrDefault(r.getId(), new ArrayList<>()));
+                }
+
                 return modelos;
             }
         });

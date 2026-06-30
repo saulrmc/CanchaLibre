@@ -29,6 +29,7 @@ public class AdministradorBOImpl extends PersonaBOImpl<Administrador> implements
         validarEstado(estado);
 
         if (estado == Estado.NUEVO) {
+            modelo.setActivo(true);
             int id = administradorDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");

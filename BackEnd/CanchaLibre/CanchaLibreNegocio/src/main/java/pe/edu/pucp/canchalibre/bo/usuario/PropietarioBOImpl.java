@@ -31,6 +31,7 @@ public class PropietarioBOImpl extends PersonaBOImpl<Propietario> implements Pro
         if (estado == Estado.NUEVO) {
             modelo.setCalificacion(0.0);
             modelo.setSaldo(0.0);
+            modelo.setActivo(true);
 
             int id = propietarioDao.crear(modelo);
             if (id <= 0) {
