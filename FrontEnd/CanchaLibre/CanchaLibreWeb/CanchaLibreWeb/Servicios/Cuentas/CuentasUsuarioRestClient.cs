@@ -157,9 +157,12 @@ public class  CuentasUsuarioRestClient : BaseRestServiceClient<CuentaUsuarioView
         {
             Id = source.Id,
             UserName = source.UserName.Trim(),
-            Password = password
+            Password = password,
+            Activo = source.Activo,
+            Rol = source.Rol.ToString(),
+            IntentosFallidos = source.IntentosFallidos,
+            UltimaSesion = source.UltimaSesion > DateTime.MinValue ? source.UltimaSesion : null,
+            FechaBloqueo = source.FechaBloqueo > DateTime.MinValue ? source.FechaBloqueo : null
         };
     }
-
-   
 }

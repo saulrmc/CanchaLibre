@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.ComponentModel.DataAnnotations;
 using CanchaLibreWeb.ViewModels;
+using CanchaLibreWeb.Servicios.Cuentas;
 using CanchaLibreWeb.Servicios.Usuarios;
 
 namespace CanchaLibreWeb.Components.Pages.Perfil;
@@ -12,6 +13,7 @@ public partial class PerfilPage : ComponentBase
     [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
     [Inject] private IClientesServiceClient ClientesService { get; set; } = default!;
     [Inject] private IPropietariosServiceClient PropietariosService { get; set; } = default!;
+    [Inject] private ICuentasUsuarioServiceClient CuentasService { get; set; } = default!;
     [Inject] private NavigationManager Nav { get; set; } = default!;
 
     protected class CambiarDatosModel
@@ -104,6 +106,8 @@ public partial class PerfilPage : ComponentBase
             return;
         }
 
+        var passwordChanged = !string.IsNullOrEmpty(Modelo.NuevaContrasena);
+
         try
         {
             if (_rol.Equals("CLIENTE", StringComparison.OrdinalIgnoreCase) && _clienteData != null)
@@ -112,13 +116,18 @@ public partial class PerfilPage : ComponentBase
                 _clienteData.Correo = Modelo.Correo.Trim();
                 _clienteData.Telefono = Modelo.Telefono.Trim();
 
-                if (!string.IsNullOrEmpty(Modelo.NuevaContrasena))
+                if (passwordChanged)
                 {
                     _clienteData.Cuenta ??= new CuentaUsuarioViewModel();
                     _clienteData.Cuenta.Password = Modelo.NuevaContrasena;
                 }
 
                 ClientesService.Guardar(_clienteData, Estado.Modificado);
+
+                if (passwordChanged && _clienteData.Cuenta?.Id > 0)
+                {
+                    CuentasService.Guardar(_clienteData.Cuenta, Estado.Modificado);
+                }
             }
             else if (_rol.Equals("PROPIETARIO", StringComparison.OrdinalIgnoreCase) && _propietarioData != null)
             {
@@ -126,13 +135,18 @@ public partial class PerfilPage : ComponentBase
                 _propietarioData.Correo = Modelo.Correo.Trim();
                 _propietarioData.Telefono = Modelo.Telefono.Trim();
 
-                if (!string.IsNullOrEmpty(Modelo.NuevaContrasena))
+                if (passwordChanged)
                 {
                     _propietarioData.Cuenta ??= new CuentaUsuarioViewModel();
                     _propietarioData.Cuenta.Password = Modelo.NuevaContrasena;
                 }
 
                 PropietariosService.Guardar(_propietarioData, Estado.Modificado);
+
+                if (passwordChanged && _propietarioData.Cuenta?.Id > 0)
+                {
+                    CuentasService.Guardar(_propietarioData.Cuenta, Estado.Modificado);
+                }
             }
 
             MensajeExito = "¡Perfil actualizado correctamente!";

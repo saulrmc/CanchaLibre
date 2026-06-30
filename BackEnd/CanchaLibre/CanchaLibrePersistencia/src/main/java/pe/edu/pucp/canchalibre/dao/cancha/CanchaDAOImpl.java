@@ -27,12 +27,12 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                 return null;
             }
             modelo.setId(idOrden);
-            this.bloqueDao.crearBloquesPorCancha(conn, idOrden, modelo.getBloques());
+this.bloqueDao.crearBloquesPorCancha(conn, idOrden, modelo.getBloques());
             if (modelo.getDeportes() != null && !modelo.getDeportes().isEmpty()) {
-                this.insertarDeportesPorCancha(conn, idOrden, modelo.getDeportes());
+                this.insertarDeportesCancha(conn, idOrden, modelo.getDeportes());
             }
             if (modelo.getEtiquetas() != null && !modelo.getEtiquetas().isEmpty()) {
-                this.insertarEtiquetasPorCancha(conn, idOrden, modelo.getEtiquetas());
+                this.insertarEtiquetasCancha(conn, idOrden, modelo.getEtiquetas());
             }
             return idOrden;
         });
@@ -47,14 +47,14 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
             this.bloqueDao.eliminarBloquePorCancha(conn, modelo.getId());
             this.bloqueDao.crearBloquesPorCancha(conn, modelo.getId(), modelo.getBloques());
-            this.eliminarDeportesPorCancha(conn, modelo.getId());
+            this.eliminarDeportesCancha(conn, modelo.getId());
             if (modelo.getDeportes() != null && !modelo.getDeportes().isEmpty()) {
-                this.insertarDeportesPorCancha(conn, modelo.getId(), modelo.getDeportes());
+                this.insertarDeportesCancha(conn, modelo.getId(), modelo.getDeportes());
             }
 
-            this.eliminarEtiquetasPorCancha(conn, modelo.getId());
+            this.eliminarEtiquetasCancha(conn, modelo.getId());
             if (modelo.getEtiquetas() != null && !modelo.getEtiquetas().isEmpty()) {
-                this.insertarEtiquetasPorCancha(conn, modelo.getId(), modelo.getEtiquetas());
+                this.insertarEtiquetasCancha(conn, modelo.getId(), modelo.getEtiquetas());
             }
             return true;
         });
@@ -64,8 +64,8 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     public boolean eliminar(Integer id) {
         return ejecutarComando(conn -> {
             this.bloqueDao.eliminarBloquePorCancha(conn, id);
-            this.eliminarDeportesPorCancha(conn, id);
-            this.eliminarEtiquetasPorCancha(conn, id);
+            this.eliminarDeportesCancha(conn, id);
+            this.eliminarEtiquetasCancha(conn, id);
             return this.ejecutarComandoEliminar(conn, id);
         });
     }
@@ -103,35 +103,35 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                     return modelos;
                 }
 
-                Map<Integer, List<Deporte>> deportesPorCancha = new HashMap<>();
+                Map<Integer, List<Deporte>> deportesCancha = new HashMap<>();
                 try (PreparedStatement ps = conn.prepareCall("{call listarDeportesTodasCanchas()}");
                      ResultSet rsDeportes = ps.executeQuery()) {
                     while (rsDeportes.next()) {
                         int idCancha = rsDeportes.getInt("idCancha");
                         String nombreEnum = rsDeportes.getString("deporte");
-                        deportesPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        deportesCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
                             .add(Deporte.valueOf(nombreEnum));
                     }
                 }
 
-                Map<Integer, List<Etiqueta>> etiquetasPorCancha = new HashMap<>();
+                Map<Integer, List<Etiqueta>> etiquetasCancha = new HashMap<>();
                 try (PreparedStatement ps = conn.prepareCall("{call listarEtiquetasTodasCanchas()}");
                      ResultSet rsEtiquetas = ps.executeQuery()) {
                     while (rsEtiquetas.next()) {
                         int idCancha = rsEtiquetas.getInt("idCancha");
                         String nombreEnum = rsEtiquetas.getString("etiqueta");
-                        etiquetasPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        etiquetasCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
                             .add(Etiqueta.valueOf(nombreEnum));
                     }
                 }
 
-                Map<Integer, List<BloqueHorario>> bloquesPorCancha = this.bloqueDao.leerBloquesTodasCanchas(conn);
+                Map<Integer, List<BloqueHorario>> bloquesCancha = this.bloqueDao.leerBloquesTodasCanchas(conn);
 
                 for (Cancha cancha : modelos) {
                     int id = cancha.getId();
-                    cancha.setDeportes(deportesPorCancha.getOrDefault(id, new ArrayList<>()));
-                    cancha.setEtiquetas(etiquetasPorCancha.getOrDefault(id, new ArrayList<>()));
-                    cancha.setBloques(bloquesPorCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setDeportes(deportesCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setEtiquetas(etiquetasCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setBloques(bloquesCancha.getOrDefault(id, new ArrayList<>()));
                 }
 
                 return modelos;
@@ -205,7 +205,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
     // DEPORTES ----------------------------------------------------------------------------------------------
 
-    protected PreparedStatement comandoListarDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
+    protected PreparedStatement comandoListarDeportesCancha(Connection conn, int idCancha) throws SQLException {
         String sql = "{call listarDeportesCancha(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_id", idCancha);
@@ -213,7 +213,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     }
 
     private void llenarDeportes(Connection conn, Cancha cancha) {
-        try (PreparedStatement ps = comandoListarDeportesPorCancha(conn, cancha.getId());
+        try (PreparedStatement ps = comandoListarDeportesCancha(conn, cancha.getId());
              ResultSet rs = ps.executeQuery()) {
 
             if (cancha.getDeportes() == null) {
@@ -229,30 +229,30 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }
     }
 
-    protected PreparedStatement comandoEliminarDeportesPorCancha(Connection conn, int idCancha) throws SQLException {
-        String sql = "{call eliminarDeportesPorCancha(?)}";
+    protected PreparedStatement comandoEliminarDeportesCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "{call eliminarDeportesCancha(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_idCancha", idCancha);
         return cmd;
     }
 
-    private void eliminarDeportesPorCancha(Connection conn, Integer idCancha) throws SQLException {
-        try (PreparedStatement cmd = this.comandoEliminarDeportesPorCancha(conn, idCancha)) {
+    private void eliminarDeportesCancha(Connection conn, Integer idCancha) throws SQLException {
+        try (PreparedStatement cmd = this.comandoEliminarDeportesCancha(conn, idCancha)) {
             cmd.executeUpdate();
         }
     }
 
-    protected PreparedStatement comandoInsertarDeportesPorCancha(Connection conn, int idCancha, Deporte deporte) throws SQLException {
-        String sql = "{call insertarDeportesPorCancha(?, ?)}";
+    protected PreparedStatement comandoInsertarDeportesCancha(Connection conn, int idCancha, Deporte deporte) throws SQLException {
+        String sql = "{call insertarDeportesCancha(?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_idCancha", idCancha);
         cmd.setString("p_deporte", deporte.name());
         return cmd;
     }
 
-    private void insertarDeportesPorCancha(Connection conn, Integer idCancha, List<Deporte> deportes) throws SQLException {
+    private void insertarDeportesCancha(Connection conn, Integer idCancha, List<Deporte> deportes) throws SQLException {
         for (Deporte deporte : deportes) {
-            try (PreparedStatement cmd = this.comandoInsertarDeportesPorCancha(conn, idCancha, deporte)) {
+            try (PreparedStatement cmd = this.comandoInsertarDeportesCancha(conn, idCancha, deporte)) {
                 cmd.executeUpdate();
             }
         }
@@ -260,7 +260,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
 
     // ETIQUETAS ----------------------------------------------------------------------------------------------
 
-    protected PreparedStatement comandoListarEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
+    protected PreparedStatement comandoListarEtiquetasCancha(Connection conn, int idCancha) throws SQLException {
         String sql = "{call listarEtiquetasCancha(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_id", idCancha);
@@ -268,7 +268,7 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
     }
 
     private void llenarEtiquetas(Connection conn, Cancha cancha) {
-        try (PreparedStatement ps = comandoListarEtiquetasPorCancha(conn, cancha.getId());
+        try (PreparedStatement ps = comandoListarEtiquetasCancha(conn, cancha.getId());
              ResultSet rs = ps.executeQuery()) {
 
             if (cancha.getEtiquetas() == null) {
@@ -284,30 +284,30 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
         }
     }
 
-    protected PreparedStatement comandoEliminarEtiquetasPorCancha(Connection conn, int idCancha) throws SQLException {
-        String sql = "{call eliminarEtiquetasPorCancha(?)}";
+    protected PreparedStatement comandoEliminarEtiquetasCancha(Connection conn, int idCancha) throws SQLException {
+        String sql = "{call eliminarEtiquetasCancha(?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_idCancha", idCancha);
         return cmd;
     }
 
-    private void eliminarEtiquetasPorCancha(Connection conn, Integer idCancha) throws SQLException {
-        try (PreparedStatement cmd = this.comandoEliminarEtiquetasPorCancha(conn, idCancha)) {
+    private void eliminarEtiquetasCancha(Connection conn, Integer idCancha) throws SQLException {
+        try (PreparedStatement cmd = this.comandoEliminarEtiquetasCancha(conn, idCancha)) {
             cmd.executeUpdate();
         }
     }
 
-    protected PreparedStatement comandoInsertarEtiquetasPorCancha(Connection conn, int idCancha, Etiqueta etiqueta) throws SQLException {
-        String sql = "{call insertarEtiquetasPorCancha(?, ?)}";
+    protected PreparedStatement comandoInsertarEtiquetasCancha(Connection conn, int idCancha, Etiqueta etiqueta) throws SQLException {
+        String sql = "{call insertarEtiquetasCancha(?, ?)}";
         CallableStatement cmd = conn.prepareCall(sql);
         cmd.setInt("p_idCancha", idCancha);
         cmd.setString("p_etiqueta", etiqueta.name());
         return cmd;
     }
 
-    private void insertarEtiquetasPorCancha(Connection conn, Integer idCancha, List<Etiqueta> etiquetas) throws SQLException {
+    private void insertarEtiquetasCancha(Connection conn, Integer idCancha, List<Etiqueta> etiquetas) throws SQLException {
         for (Etiqueta etiqueta : etiquetas) {
-            try (PreparedStatement cmd = this.comandoInsertarEtiquetasPorCancha(conn, idCancha, etiqueta)) {
+            try (PreparedStatement cmd = this.comandoInsertarEtiquetasCancha(conn, idCancha, etiqueta)) {
                 cmd.executeUpdate();
             }
         }
@@ -380,32 +380,32 @@ public class CanchaDAOImpl extends DefaultBaseDAO<Cancha> implements CanchaDAO {
                     return modelos;
                 }
 
-                Map<Integer, List<Deporte>> deportesPorCancha = new HashMap<>();
+                Map<Integer, List<Deporte>> deportesCancha = new HashMap<>();
                 try (PreparedStatement ps = conn.prepareCall("{call listarDeportesTodasCanchas()}");
                      ResultSet rsDeportes = ps.executeQuery()) {
                     while (rsDeportes.next()) {
                         int idCancha = rsDeportes.getInt("idCancha");
                         String nombreEnum = rsDeportes.getString("deporte");
-                        deportesPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        deportesCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
                             .add(Deporte.valueOf(nombreEnum));
                     }
                 }
 
-                Map<Integer, List<Etiqueta>> etiquetasPorCancha = new HashMap<>();
+                Map<Integer, List<Etiqueta>> etiquetasCancha = new HashMap<>();
                 try (PreparedStatement ps = conn.prepareCall("{call listarEtiquetasTodasCanchas()}");
                      ResultSet rsEtiquetas = ps.executeQuery()) {
                     while (rsEtiquetas.next()) {
                         int idCancha = rsEtiquetas.getInt("idCancha");
                         String nombreEnum = rsEtiquetas.getString("etiqueta");
-                        etiquetasPorCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
+                        etiquetasCancha.computeIfAbsent(idCancha, k -> new ArrayList<>())
                             .add(Etiqueta.valueOf(nombreEnum));
                     }
                 }
 
                 for (Cancha cancha : modelos) {
                     int id = cancha.getId();
-                    cancha.setDeportes(deportesPorCancha.getOrDefault(id, new ArrayList<>()));
-                    cancha.setEtiquetas(etiquetasPorCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setDeportes(deportesCancha.getOrDefault(id, new ArrayList<>()));
+                    cancha.setEtiquetas(etiquetasCancha.getOrDefault(id, new ArrayList<>()));
                 }
 
                 return modelos;
