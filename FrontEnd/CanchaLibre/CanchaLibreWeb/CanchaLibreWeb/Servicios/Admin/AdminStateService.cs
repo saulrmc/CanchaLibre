@@ -45,8 +45,7 @@ public sealed class AdminStateService : IAdminStateService
         if (DatosCargados) return;
         if (string.IsNullOrEmpty(ReportesPdfBaseUrl))
         {
-            var apiUrl = _configuration.GetValue<string>("RestApiBaseUrl") ?? "http://localhost:8080/canchalibre/api/v1/";
-            ReportesPdfBaseUrl = apiUrl.Replace("/api/v1/", "/reportes/");
+            ReportesPdfBaseUrl = _configuration.GetValue<string>("RestResources:ReportesPdfBaseUrl") ?? "http://localhost:8080/reportes/";
         }
 
         try
