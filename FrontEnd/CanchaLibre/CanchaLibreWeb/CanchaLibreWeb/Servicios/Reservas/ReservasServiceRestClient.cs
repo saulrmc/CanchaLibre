@@ -110,15 +110,15 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         };
     }
 
-    private PagoViewModel ParsePago(PagoRestDto? pago)
+    private PagoViewModel? ParsePago(PagoRestDto? pago)
     {
         if (pago is null) {
-            return new PagoViewModel();
+            return null;
         }
         return new PagoViewModel
         {
             comprobante = ParseComprobante(pago.comprobante),
-            fechaPago = pago.fechaPago,
+            fechaPago = pago.fechaPago ?? DateTime.MinValue,
             idPago = pago.idPago,
             metodoPago = ParseEnum<MetodoPagoEnum>(pago.metodoPago, MetodoPagoEnum.YAPE),
             monto = pago.monto
@@ -132,7 +132,7 @@ public class ReservasServiceRestClient : BaseRestServiceClient<ReservaViewModel,
         }
         return new ComprobanteViewModel
         {
-            FechaEmision = comprobante.FechaEmision,
+            FechaEmision = comprobante.FechaEmision ?? DateTime.MinValue,
             idComprobante = comprobante.idComprobante,
             numero = comprobante.numero,
             serie = comprobante.serie

@@ -9,6 +9,7 @@ public sealed class ReservaRestDto {
     public String estado {get; set;} = String.Empty;
     public ClienteRestDto? cliente {get; set;}
     public CanchaRestDto? cancha {get; set;}
+    [JsonPropertyName("pago")]
     public PagoRestDto? pago {get; set;}
     [JsonPropertyName("bloquesSeleccionados")]
     public List<BloqueHorarioRestDto>? bloques {get; set;}

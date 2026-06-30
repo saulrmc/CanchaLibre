@@ -30,6 +30,7 @@ public class ClienteBOImpl extends PersonaBOImpl<Cliente> implements ClienteBO {
 
         if (estado == Estado.NUEVO) {
             modelo.setCalificacion(0.0);
+            modelo.setActivo(true);
             int id = clienteDao.crear(modelo);
             if (id <= 0) {
                 throw new IllegalStateException("No se pudo crear el usuario");

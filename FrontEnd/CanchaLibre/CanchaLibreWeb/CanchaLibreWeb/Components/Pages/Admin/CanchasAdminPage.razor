@@ -1,0 +1,392 @@
+@page "/Admin/Canchas"
+@layout Layout.AdminLayout  
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+@using CanchaLibreWeb.ViewModels
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold h2 text-dark mb-0">Canchas</h1>
+    <a class="btn btn-success px-4 py-2 fw-bold" style="background-color: #48BE74; border: none;" target="_blank" href="@UrlReporteCanchas">
+        Descargar Reporte
+    </a>
+</div>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger py-2 small mb-4">@mensajeError</div>
+}
+
+@if (!datosCargados)
+{
+    <div class="d-flex justify-content-center align-items-center py-5">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+
+@if (datosCargados)
+{
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+            <p class="text-secondary small fw-bold mb-1">Utilidad neta</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-2 fw-bold text-success">@utilidadNeta.ToString("C0")</span>
+                <span class="fs-2 text-success fw-bold"><img src="dinero.png" alt="Dólares" style="width: 80%; height: 80%; object-fit: contain;" /></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+            <p class="text-secondary small fw-bold mb-1">Ocupación promedio</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-2 fw-bold text-success">@FormatHoras(ocupacionPromedioHoras)</span>
+                <span class="fs-2 text-success"><img src="calendario.png" alt="Calendario" style="width: 90%; height: 90%; object-fit: contain;"/></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+            <p class="text-secondary small fw-bold mb-1">Con actividad reciente</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-1 fw-bold text-success">@actividadReciente</span>
+                <span class="fs-2 text-success"><img src="historial.png" alt="Reloj" style="width: 90%; height: 90%; object-fit: contain;"/></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+            <p class="text-secondary small fw-bold mb-1">Bloqueados</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-1 fw-bold text-success">@bloqueados</span>
+                <span class="fs-2 text-success"><img src="Bloqueado.png" alt="Bloqueado" style="width: 90%; height: 90%; object-fit: contain;"/></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm p-4 bg-white rounded-4 mb-4">
+    <div class="row g-4 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label small fw-bold text-secondary mb-2">Periodo:</label>
+            <select class="form-select bg-light py-2" @bind="PeriodoSeleccionado">
+                <option value="Último mes">Último mes</option>
+                <option value="Último trimestre">Último trimestre</option>
+                <option value="Año actual">Año actual</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small fw-bold text-secondary mb-2">Filtrar por:</label>
+            <select class="form-select bg-light py-2" @bind="FiltrarPorSeleccionado">
+                <option value="Mayores reservas">Mayores reservas</option>
+                <option value="Mayores ingresos">Mayores ingresos</option>
+                <option value="Más horas ocupadas">Más horas ocupadas</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-center" style="border-collapse: collapse;">
+            <thead class="table-light text-secondary small fw-bold">
+                <tr>
+                    <th class="py-3">Id</th>
+                    <th class="py-3 text-start ps-5">Sede</th>
+                    <th class="py-3">Reservas</th>
+                    <th class="py-3">Ingresos</th>
+                    <th class="py-3">Horas de ocupación</th>
+                    <th class="py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!ReportesFiltrados.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="py-5 text-muted">No se encontraron sedes con los filtros seleccionados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var fila in ReportesFiltrados)
+                    {
+                        <tr style="border-bottom: 1px solid #EDF2F7;">
+                            <td class="py-3 fw-semibold text-secondary">@fila.Id</td>
+                            <td class="py-3 text-start ps-5">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width: 42px; height: 42px;">
+                                        <span class="fs-5"><img src="usuario.png" alt="Usuario" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+                                    </div>
+                                    <div class="fw-bold text-dark" style="font-size: 14px;">@fila.Sede</div>
+                                </div>
+                            </td>
+                            <td class="py-3 text-secondary fw-semibold" style="font-size: 14px;">@fila.Reservas</td>
+                            <td class="py-3 text-secondary fw-semibold" style="font-size: 14px;">@fila.Ingresos.ToString("N0")</td>
+                            <td class="py-3 text-secondary fw-semibold" style="font-size: 14px;">@fila.HorasOcupacion h</td>
+                            <td class="py-3 text-center position-relative">
+                                <button class="btn btn-link text-dark p-0 border-0 fs-4 text-decoration-none fw-bold"
+                                        @onclick='() => ToggleDropdown(fila.Id)'>
+                                    ⋮
+                                </button>
+                                @if (_dropdownOpenId == fila.Id)
+                                {
+                                    <div class="dropdown-overlay" @onclick='() => _dropdownOpenId = 0'></div>
+                                    <div class="dropdown-menu-custom">
+                                        <button class="dropdown-item-custom" @onclick='() => { _dropdownOpenId = 0; VerDetalle(fila); }'>
+                                            <span class="me-2">👁</span> Ver detalle
+                                        </button>
+                                        <button class="dropdown-item-custom" @onclick='() => { _dropdownOpenId = 0; VerReservas(fila); }'>
+                                            <span class="me-2">📋</span> Ver reservas
+                                        </button>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+}
+
+@if (_showDetalle && _canchaSeleccionada is not null)
+{
+    <div class="modal-overlay" @onclick="CerrarModal">
+        <div class="modal-dialog-custom" @onclick:stopPropagation>
+            <div class="modal-header-custom d-flex justify-content-between align-items-center p-4 border-bottom">
+                <h5 class="fw-bold mb-0">Detalle de cancha</h5>
+                <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+            </div>
+            <div class="p-4" style="max-height: 75vh; overflow-y: auto;">
+                <div class="mb-3">
+                    <h4 class="fw-bold text-dark mb-1">@_canchaSeleccionada.nombre</h4>
+                    <span class="badge px-3 py-2 rounded-pill small @(_canchaSeleccionada.activo ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger")">
+                        @(_canchaSeleccionada.activo ? "Activo" : "Bloqueado")
+                    </span>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="small text-secondary fw-bold mb-1">Distrito</label>
+                        <p class="fw-semibold text-dark mb-0">@_canchaSeleccionada.distrito</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-secondary fw-bold mb-1">Dirección</label>
+                        <p class="fw-semibold text-dark mb-0">@_canchaSeleccionada.direccion</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-secondary fw-bold mb-1">Precio base</label>
+                        <p class="fw-semibold text-dark mb-0">S/ @_canchaSeleccionada.precioBase.ToString("F2")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-secondary fw-bold mb-1">Calificación</label>
+                        <p class="fw-semibold text-dark mb-0">⭐ @_canchaSeleccionada.promedioCalificacion.ToString("F1")</p>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(_canchaSeleccionada.descripcion))
+                {
+                    <div class="mb-3">
+                        <label class="small text-secondary fw-bold mb-1">Descripción</label>
+                        <p class="text-dark mb-0">@_canchaSeleccionada.descripcion</p>
+                    </div>
+                }
+
+                @if (_canchaSeleccionada.deportes?.Count > 0)
+                {
+                    <div class="mb-3">
+                        <label class="small text-secondary fw-bold mb-1">Deportes</label>
+                        <div>
+                            @foreach (var d in _canchaSeleccionada.deportes)
+                            {
+                                <span class="badge bg-light text-dark me-1 px-3 py-2">@d</span>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (_canchaSeleccionada.etiquetas?.Count > 0)
+                {
+                    <div class="mb-3">
+                        <label class="small text-secondary fw-bold mb-1">Servicios</label>
+                        <div>
+                            @foreach (var e in _canchaSeleccionada.etiquetas)
+                            {
+                                <span class="badge bg-success-subtle text-success me-1 px-3 py-2">@e</span>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (_canchaSeleccionada.propietario is not null)
+                {
+                    <div class="mb-3">
+                        <label class="small text-secondary fw-bold mb-1">Propietario</label>
+                        <p class="fw-semibold text-dark mb-0">@_canchaSeleccionada.propietario.Nombres</p>
+                    </div>
+                }
+
+                @if (_canchaSeleccionada.bloques?.Count > 0)
+                {
+                    var bloquesPorDia = _canchaSeleccionada.bloques
+                        .GroupBy(b => b.diaSemana)
+                        .ToDictionary(g => g.Key, g => g.OrderBy(b => b.horaInicio).ToList());
+                    var diasSemana = new[] {
+                        DiaSemanaEnum.LUNES, DiaSemanaEnum.MARTES, DiaSemanaEnum.MIERCOLES,
+                        DiaSemanaEnum.JUEVES, DiaSemanaEnum.VIERNES, DiaSemanaEnum.SABADO, DiaSemanaEnum.DOMINGO
+                    };
+                    var etiquetasDia = new Dictionary<DiaSemanaEnum, string> {
+                        { DiaSemanaEnum.LUNES, "LUN" }, { DiaSemanaEnum.MARTES, "MAR" },
+                        { DiaSemanaEnum.MIERCOLES, "MIE" }, { DiaSemanaEnum.JUEVES, "JUE" },
+                        { DiaSemanaEnum.VIERNES, "VIE" }, { DiaSemanaEnum.SABADO, "SAB" },
+                        { DiaSemanaEnum.DOMINGO, "DOM" }
+                    };
+                    <div class="mb-3">
+                        <label class="small text-secondary fw-bold mb-1">Horarios de la semana</label>
+                        <div class="calendario-semanal">
+                            @foreach (var dia in diasSemana)
+                            {
+                                <div class="dia-columna">
+                                    <div class="dia-header">@etiquetasDia[dia]</div>
+                                    @if (bloquesPorDia.TryGetValue(dia, out var bloques))
+                                    {
+                                        @foreach (var b in bloques)
+                                        {
+                                            <div class="bloque-horario">
+                                                <span class="bloque-hora">@b.horaInicio.ToString("HH:mm")-@b.horaFin.ToString("HH:mm")</span>
+                                                <span class="bloque-precio">S/ @b.precio.ToString("F0")</span>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="bloque-vacio">-</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="p-3 border-top text-end">
+                <button class="btn btn-secondary px-4" @onclick="CerrarModal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showReservas && _canchaSeleccionada is not null)
+{
+    <div class="modal-overlay" @onclick="CerrarModal">
+        <div class="modal-dialog-custom modal-lg" @onclick:stopPropagation>
+            <div class="modal-header-custom d-flex justify-content-between align-items-center p-4 border-bottom">
+                <h5 class="fw-bold mb-0">Reservas - @_canchaSeleccionada.nombre</h5>
+                <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+            </div>
+            <div class="p-4" style="max-height: 75vh; overflow-y: auto;">
+                @if (_reservasDeCancha.Count == 0)
+                {
+                    <p class="text-muted text-center py-4">No hay reservas para esta cancha.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-center">
+                            <thead class="table-light text-secondary small fw-bold">
+                                <tr>
+                                    <th class="py-2">Id</th>
+                                    <th class="py-2 text-start">Cliente</th>
+                                    <th class="py-2">Fecha</th>
+                                    <th class="py-2">Estado</th>
+                                    <th class="py-2">Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in _reservasDeCancha)
+                                {
+                                    <tr style="border-bottom: 1px solid #EDF2F7;">
+                                        <td class="py-2 fw-semibold text-secondary">@r.idReserva</td>
+                                        <td class="py-2 text-start">
+                                            <span class="fw-semibold text-dark">@r.cliente?.Nombres</span>
+                                        </td>
+                                        <td class="py-2 text-secondary small">@FormatFecha(r.fecha)</td>
+                                        <td class="py-2">
+                                            <span class="badge px-3 py-2 rounded-pill small @FormatoEstadoBadge(r.estado)">
+                                                @FormatoEstadoTexto(r.estado)
+                                            </span>
+                                        </td>
+                                        <td class="py-2 fw-semibold text-secondary">
+                                            @(r.pago?.monto > 0 ? $"S/ {r.pago.monto:F2}" : r.cancha?.precioBase > 0 ? $"S/ {r.cancha.precioBase:F2}" : "-")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+            <div class="p-3 border-top text-end">
+                <button class="btn btn-secondary px-4" @onclick="CerrarModal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .dropdown-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 1049; background: transparent;
+    }
+    .dropdown-menu-custom {
+        position: absolute; right: 0; top: 100%; z-index: 1050;
+        background: white; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        min-width: 170px; padding: 6px 0; border: none;
+    }
+    .dropdown-item-custom {
+        display: block; width: 100%; padding: 8px 16px; border: none;
+        background: none; text-align: left; font-size: 14px; color: #212529;
+        text-decoration: none; cursor: pointer;
+    }
+    .dropdown-item-custom:hover { background-color: #F0F0F0; }
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.4); display: flex; align-items: center;
+        justify-content: center; z-index: 1050;
+    }
+    .modal-dialog-custom {
+        background: white; border-radius: 12px; width: 100%;
+        max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        max-height: 85vh; display: flex; flex-direction: column;
+    }
+    .modal-dialog-custom.modal-lg { max-width: 720px; }
+    .modal-header-custom { flex-shrink: 0; }
+    .bg-success-subtle { background-color: #E6F4EA !important; color: #137333 !important; }
+    .bg-danger-subtle { background-color: #FCE8E6 !important; color: #C5221F !important; }
+    .calendario-semanal {
+        display: flex; gap: 4px; width: 100%;
+    }
+    .dia-columna {
+        flex: 1; min-width: 0;
+        display: flex; flex-direction: column; gap: 3px;
+    }
+    .dia-header {
+        text-align: center; font-weight: bold; font-size: 11px;
+        padding: 6px 2px; background: #F0F0F0; border-radius: 6px;
+        color: #555; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .bloque-horario {
+        background: #E6F4EA; border-radius: 6px; padding: 4px 3px;
+        text-align: center; font-size: 10px; line-height: 1.3;
+    }
+    .bloque-hora { display: block; font-weight: bold; color: #137333; }
+    .bloque-precio { display: block; color: #1A5F2E; font-size: 9px; }
+    .bloque-vacio {
+        text-align: center; color: #ccc; font-size: 11px;
+        padding: 4px 0;
+    }
+</style>
+

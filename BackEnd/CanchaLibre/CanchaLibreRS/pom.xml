@@ -6,7 +6,7 @@
     <parent>
         <groupId>pe.edu.pucp.canchalibre</groupId>
         <artifactId>CanchaLibre</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
   <artifactId>CanchaLibreRS</artifactId>
 
@@ -21,6 +21,11 @@
   </properties>
 
   <dependencies>
+      <dependency>
+          <groupId>pe.edu.pucp.canchalibre</groupId>
+          <artifactId>CanchaLibreReportes</artifactId>
+          <version>1.0</version>
+      </dependency>
       <dependency>
               <groupId>jakarta.enterprise</groupId>
               <artifactId>jakarta.enterprise.cdi-api</artifactId>
@@ -63,8 +68,9 @@
       <dependency>
           <groupId>pe.edu.pucp.canchalibre</groupId>
           <artifactId>CanchaLibreNegocio</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>1.0</version>
       </dependency>
+
   </dependencies>
 
     <build>

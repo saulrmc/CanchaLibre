@@ -6,10 +6,17 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import pe.edu.pucp.canchalibre.bo.cancha.CanchaBO;
 import pe.edu.pucp.canchalibre.bo.cancha.CanchaBOImpl;
+import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 import pe.edu.pucp.canchalibre.modelo.Estado;
 import pe.edu.pucp.canchalibre.modelo.cancha.Cancha;
+import pe.edu.pucp.canchalibre.rs.dto.IngresoCanchaDTO;
 
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +25,20 @@ import java.util.Map;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CanchasResource {
     private final CanchaBO canchaBO;
+
+    private static final String SQL_INGRESOS = ""
+            + "SELECT c.id, c.nombre, "
+            + "  COUNT(DISTINCT r.id) AS reservas, "
+            + "  IFNULL(SUM(CASE WHEN p.monto > 0 THEN p.monto ELSE 0 END), 0) AS ingresos, "
+            + "  IFNULL(SUM(TIMESTAMPDIFF(HOUR, bh.horaInicio, bh.horaFin)), 0) AS horasOcupacion "
+            + "FROM CANCHA c "
+            + "LEFT JOIN RESERVA r ON c.id = r.idCancha AND r.estado = 'CONFIRMADA' "
+            + "LEFT JOIN PAGO p ON r.id = p.idReserva "
+            + "LEFT JOIN DETALLE_RESERVA dr ON r.id = dr.idReserva "
+            + "LEFT JOIN BLOQUE_HORARIO bh ON dr.idBloqueHorario = bh.id "
+            + "WHERE c.activo = TRUE "
+            + "GROUP BY c.id, c.nombre "
+            + "ORDER BY reservas DESC";
 
     @Context
     private UriInfo uriInfo;
@@ -29,6 +50,27 @@ public class CanchasResource {
     @GET
     public List<Cancha> listaCanchas() {
         return canchaBO.listar();
+    }
+
+    @GET @Path("/con-ingresos")
+    public List<IngresoCanchaDTO> listarCanchasConIngresos() {
+        List<IngresoCanchaDTO> resultado = new ArrayList<>();
+        try (Connection conn = DBFactoryProvider.getManager().getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(SQL_INGRESOS)) {
+            while (rs.next()) {
+                IngresoCanchaDTO dto = new IngresoCanchaDTO();
+                dto.setId(rs.getInt("id"));
+                dto.setNombre(rs.getString("nombre"));
+                dto.setReservas(rs.getInt("reservas"));
+                dto.setIngresos(rs.getDouble("ingresos"));
+                dto.setHorasOcupacion(rs.getInt("horasOcupacion"));
+                resultado.add(dto);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException("Error al obtener ingresos por cancha", e);
+        }
+        return resultado;
     }
 
     @GET

@@ -1,6 +1,7 @@
 using Blazorise;
 using Blazorise.Bootstrap5;
 using CanchaLibreWeb.Components;
+using CanchaLibreWeb.Servicios.Admin;
 using CanchaLibreWeb.Servicios.Canchas;
 using CanchaLibreWeb.Servicios.Cuentas;
 using CanchaLibreWeb.Servicios.Reservas;
@@ -44,6 +45,8 @@ builder.Services.AddSingleton<CanchaLibreWeb.Servicios.Notificaciones.Notificaci
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<CanchaLibreWeb.Components.Common.DistritoData>();
+builder.Services.AddScoped<IAdminStateService, AdminStateService>();
+builder.Services.AddScoped<ReportesIngresosService>();
 
 builder.Services
     .AddBlazorise(options =>

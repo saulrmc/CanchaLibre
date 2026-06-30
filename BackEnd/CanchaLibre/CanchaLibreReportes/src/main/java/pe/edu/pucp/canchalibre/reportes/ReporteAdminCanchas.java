@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import pe.edu.pucp.canchalibre.db.DBFactoryProvider;
 
 import javax.imageio.ImageIO;
@@ -16,9 +17,14 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,6 +33,19 @@ public class ReporteAdminCanchas extends HttpServlet {
 
     private final String NOMBRE_REPORTE = "reportes/ReporteAdminCanchas.jasper";
     private final String NOMBRE_LOGO = "imagenes/Logo.png";
+    private static final String SQL = ""
+            + "SELECT c.nombre AS Sede, c.direccion AS Direccion, "
+            + "  COUNT(DISTINCT r.id) AS Reservas, "
+            + "  IFNULL(SUM(CASE WHEN p.monto > 0 THEN p.monto ELSE 0 END), 0) AS Ingresos, "
+            + "  IFNULL(SUM(TIMESTAMPDIFF(HOUR, bh.horaInicio, bh.horaFin)), 0) AS `Horas de ocupación` "
+            + "FROM CANCHA c "
+            + "LEFT JOIN RESERVA r ON c.id = r.idCancha AND r.estado = 'CONFIRMADA' "
+            + "LEFT JOIN PAGO p ON r.id = p.idReserva "
+            + "LEFT JOIN DETALLE_RESERVA dr ON r.id = dr.idReserva "
+            + "LEFT JOIN BLOQUE_HORARIO bh ON dr.idBloqueHorario = bh.id "
+            + "WHERE c.activo = TRUE "
+            + "GROUP BY c.id, c.nombre, c.direccion "
+            + "ORDER BY Reservas DESC";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -47,12 +66,28 @@ public class ReporteAdminCanchas extends HttpServlet {
             parametros.put("LOGO_STREAM", null);
         }
 
-        try (Connection conn = DBFactoryProvider.getManager().getConnection()) {
-            JasperPrint jp = JasperFillManager.fillReport(reporte, parametros, conn);
+        try (Connection conn = DBFactoryProvider.getManager().getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(SQL)) {
+
+            List<Map<String, Object>> data = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("Sede", rs.getString("Sede"));
+                row.put("Direccion", rs.getString("Direccion"));
+                row.put("Reservas", rs.getLong("Reservas"));
+                row.put("Ingresos", rs.getBigDecimal("Ingresos"));
+                row.put("Horas de ocupación", rs.getBigDecimal("Horas de ocupación"));
+                data.add(row);
+            }
+
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(data);
+            JasperPrint jp = JasperFillManager.fillReport(reporte, parametros, ds);
             JasperExportManager.exportReportToPdfStream(jp, response.getOutputStream());
+
         } catch (SQLException | ClassNotFoundException | JRException ex) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Error al generar el reporte de usuarios: " + ex.getMessage());
+                    "Error al generar el reporte de canchas: " + ex.getMessage());
         }
     }
 

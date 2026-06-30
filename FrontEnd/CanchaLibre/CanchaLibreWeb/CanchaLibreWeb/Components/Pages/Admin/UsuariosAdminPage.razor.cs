@@ -1,73 +1,129 @@
-using CanchaLibreWeb.Servicios.Usuarios;
+using CanchaLibreWeb.Servicios.Admin;
+using CanchaLibreWeb.ViewModels;
 using Microsoft.AspNetCore.Components;
 
 namespace CanchaLibreWeb.Components.Pages.Admin;
 
 public partial class UsuariosAdminPage : ComponentBase
 {
-    
-    [Inject] private IClientesServiceClient ClientesServiceClient { get; set; } = default!;
-    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private IAdminStateService AdminState { get; set; } = default!;
+
+    protected string UrlReporteUsuarios =>
+        $"{AdminState.ReportesPdfBaseUrl}usuarios";
+
     protected class UsuarioRow
     {
         public int Id { get; set; }
         public string Nombre { get; set; } = string.Empty;
-        public string Identificador { get; set; } = string.Empty; // Correo o RUC
-        public string Tipo { get; set; } = string.Empty; // "Cliente" o "Propietario"
+        public string Identificador { get; set; } = string.Empty;
+        public string Tipo { get; set; } = string.Empty;
         public string UltimaActividad { get; set; } = string.Empty;
-        public string Estado { get; set; } = string.Empty; // "Activo" o "Bloqueado"
+        public string Estado { get; set; } = string.Empty;
     }
 
-    // Listas para administrar el estado
     private List<UsuarioRow> _usuariosMaster = new();
     protected List<UsuarioRow> UsuariosFiltrados { get; set; } = new();
 
-    // Propiedades vinculadas a los filtros de la interfaz
     protected string TextoBusqueda { get; set; } = string.Empty;
     protected string FiltroTipo { get; set; } = "Todos";
     protected string FiltroEstado { get; set; } = "Todos";
 
-    protected override void OnInitialized()
-    {
-        // Rellenamos con la data de muestra de tu diseño
-        _usuariosMaster = new List<UsuarioRow>
-        {
-            new() { Id = 1, Nombre = "Carlos Mendoza", Identificador = "carlos.mendoza@email.com", Tipo = "Cliente", UltimaActividad = "10 mayo 2026", Estado = "Activo" },
-            new() { Id = 2, Nombre = "Carlos Mendoza", Identificador = "carlos.mendoza@email.com", Tipo = "Cliente", UltimaActividad = "10 mayo 2026", Estado = "Activo" },
-            new() { Id = 3, Nombre = "Juan Pérez", Identificador = "2020202020", Tipo = "Propietario", UltimaActividad = "10 mayo 2026", Estado = "Activo" },
-            new() { Id = 4, Nombre = "Carlos Mendoza", Identificador = "carlos.mendoza@email.com", Tipo = "Cliente", UltimaActividad = "10 mayo 2026", Estado = "Activo" },
-            new() { Id = 5, Nombre = "Carlos Mendoza", Identificador = "carlos.mendoza@email.com", Tipo = "Cliente", UltimaActividad = "10 mayo 2026", Estado = "Activo" },
-            new() { Id = 6, Nombre = "Carlos Mendoza", Identificador = "carlos.mendoza@email.com", Tipo = "Cliente", UltimaActividad = "10 mayo 2026", Estado = "Activo" }
-        };
+    private bool datosCargados;
+    private int totalClientes;
+    private int totalPropietarios;
+    private int actividadReciente;
+    private int bloqueados;
+    private string mensajeError = string.Empty;
 
-        // Al inicio mostramos todos
-        UsuariosFiltrados = new List<UsuarioRow>(_usuariosMaster);
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await AdminState.InicializarAsync();
+
+            if (!string.IsNullOrEmpty(AdminState.MensajeError))
+            {
+                mensajeError = AdminState.MensajeError;
+                return;
+            }
+
+            var clientes = AdminState.Clientes;
+            var propietarios = AdminState.Propietarios;
+
+            totalClientes = clientes.Count;
+            totalPropietarios = propietarios.Count;
+
+            var ahora = DateTime.Now;
+            var hace30Dias = ahora.AddDays(-30);
+
+            var todosLosUsuarios = new List<UsuarioRow>();
+
+            foreach (var c in clientes)
+            {
+                if (c is null) continue;
+                var esBloqueado = c.Cuenta?.FechaBloqueo > DateTime.MinValue || (c.Cuenta?.IntentosFallidos ?? 0) >= 3;
+                if (esBloqueado) bloqueados++;
+                if (c.Cuenta?.UltimaSesion >= hace30Dias) actividadReciente++;
+
+                todosLosUsuarios.Add(new UsuarioRow
+                {
+                    Id = c.Id,
+                    Nombre = c.Nombres,
+                    Identificador = c.Correo,
+                    Tipo = "Cliente",
+                    UltimaActividad = c.Cuenta?.UltimaSesion > DateTime.MinValue
+                        ? c.Cuenta.UltimaSesion.ToString("dd MMM yyyy")
+                        : "Nunca",
+                    Estado = esBloqueado ? "Bloqueado" : "Activo"
+                });
+            }
+
+            foreach (var p in propietarios)
+            {
+                if (p is null) continue;
+                var esBloqueado = p.Cuenta?.FechaBloqueo > DateTime.MinValue || (p.Cuenta?.IntentosFallidos ?? 0) >= 3;
+                if (esBloqueado) bloqueados++;
+                if (p.Cuenta?.UltimaSesion >= hace30Dias) actividadReciente++;
+
+                todosLosUsuarios.Add(new UsuarioRow
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombres,
+                    Identificador = string.IsNullOrEmpty(p.Ruc) ? p.Correo : p.Ruc,
+                    Tipo = "Propietario",
+                    UltimaActividad = p.Cuenta?.UltimaSesion > DateTime.MinValue
+                        ? p.Cuenta.UltimaSesion.ToString("dd MMM yyyy")
+                        : "Nunca",
+                    Estado = esBloqueado ? "Bloqueado" : "Activo"
+                });
+            }
+
+            _usuariosMaster = todosLosUsuarios;
+            UsuariosFiltrados = new List<UsuarioRow>(_usuariosMaster);
+            datosCargados = true;
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar usuarios: {ex.Message}";
+        }
     }
 
-    // Ejecutado al hacer clic en el botón "Buscar"
     protected void FiltrarUsuarios()
     {
         var consulta = _usuariosMaster.AsEnumerable();
 
-        // 1. Filtrar por caja de texto (Nombre, Correo o RUC)
         if (!string.IsNullOrWhiteSpace(TextoBusqueda))
         {
-            consulta = consulta.Where(u => 
-                u.Nombre.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase) || 
+            consulta = consulta.Where(u =>
+                u.Nombre.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase) ||
                 u.Identificador.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase));
         }
 
-        // 2. Filtrar por Tipo de Usuario
         if (FiltroTipo != "Todos")
-        {
             consulta = consulta.Where(u => u.Tipo.Equals(FiltroTipo, StringComparison.OrdinalIgnoreCase));
-        }
 
-        // 3. Filtrar por Estado
         if (FiltroEstado != "Todos")
-        {
             consulta = consulta.Where(u => u.Estado.Equals(FiltroEstado, StringComparison.OrdinalIgnoreCase));
-        }
 
         UsuariosFiltrados = consulta.ToList();
     }

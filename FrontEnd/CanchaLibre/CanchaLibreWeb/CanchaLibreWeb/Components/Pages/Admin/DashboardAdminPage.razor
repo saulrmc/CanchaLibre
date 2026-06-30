@@ -2,81 +2,113 @@
 @page "/Admin"
 @layout Layout.AdminLayout  
 @rendermode InteractiveServer
-@* @attribute [AllowAnonymous] *@
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="fw-bold h2 text-dark">Dashboard</h1>
 </div>
+
 <ToastReservaExitosa Mostrar="mostrarToastReserva"
                      Titulo="Nueva reserva"
                      Mensaje="@mensajeToastReserva" />
-<div class="row g-4 mb-5">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
-            <p class="text-secondary small fw-bold mb-1">Usuarios totales</p>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fs-1 fw-bold text-success">1024</span>
-                <span class="fs-2"><img src="usuarios.png" alt="Usuarios" style="width: 100%; height: 100%; object-fit: contain;" /></span>
-            </div>
-            <p class="text-success small mt-2 mb-0 fw-semibold">+ 18% Respecto al mes anterior</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
-            <p class="text-secondary small fw-bold mb-1">Canchas registradas</p>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fs-1 fw-bold text-success">1024</span>
-                <span class="fs-2"><img src="ubicacion.png" alt="Ubicacion" style="width: 100%; height: 100%; object-fit: contain;" /></span>
-            </div>
-            <p class="text-success small mt-2 mb-0 fw-semibold">+ 5% Respecto al mes anterior</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
-            <p class="text-secondary small fw-bold mb-1">Reservas del mes</p>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fs-1 fw-bold text-success">2048</span>
-                <span class="fs-2"><img src="calendario.png" alt="Calendario" style="width: 100%; height: 100%; object-fit: contain;" /></span>
-            </div>
-            <p class="text-success small mt-2 mb-0 fw-semibold">+ 32% Respecto al mes anterior</p>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
-            <p class="text-secondary small fw-bold mb-1">Ingresos totales</p>
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="fs-2 fw-bold text-success">s/.20 mil</span>
-                <span class="fs-2"><img src="ingresos.png" alt="Ingresos" style="width: 100%; height: 100%; object-fit: contain;" /></span>
-            </div>
-            <p class="text-success small mt-2 mb-0 fw-semibold">+ 18% Respecto al mes anterior</p>
-        </div>
-    </div>
-</div>
 
-<div class="card border-0 shadow-sm p-4 bg-white rounded-4">
-    <h5 class="fw-bold text-dark mb-4">Ocupación por horario</h5>
-    
-    <div class="d-flex align-items-end justify-content-between pt-4 px-2" style="height: 300px; border-bottom: 2px solid #E2E8F0; border-left: 2px solid #E2E8F0;">
-        @foreach (var punto in DatosGrafico)
-        {
-            <div class="d-flex flex-column align-items-center flex-grow-1 mx-2" style="max-width: 60px;">
-                <div class="w-100 rounded-top-2 translate-bar-animation" 
-                     style="height: @(punto.Porcentaje)px; background-color: #48BE74;" 
-                     title="Ocupación: @punto.Porcentaje">
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger py-2 small mb-4">@mensajeError</div>
+}
+
+@if (datosCargados)
+{
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+                <p class="text-secondary small fw-bold mb-1">Usuarios totales</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-1 fw-bold text-success">@totalUsuarios</span>
+                    <span class="fs-2"><img src="usuarios.png" alt="Usuarios" style="width: 100%; height: 100%; object-fit: contain;" /></span>
                 </div>
-                <span class="text-secondary mt-2 small fw-semibold" style="font-size: 11px;">@punto.Hora</span>
             </div>
-        }
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+                <p class="text-secondary small fw-bold mb-1">Canchas registradas</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-1 fw-bold text-success">@totalCanchas</span>
+                    <span class="fs-2"><img src="ubicacion.png" alt="Ubicacion" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+                <p class="text-secondary small fw-bold mb-1">Reservas del mes</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-1 fw-bold text-success">@reservasDelMes</span>
+                    <span class="fs-2"><img src="calendario.png" alt="Calendario" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 bg-white rounded-4 h-100">
+                <p class="text-secondary small fw-bold mb-1">Ingresos totales</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-2 fw-bold text-success">@ingresosTotales.ToString("C0")</span>
+                    <span class="fs-2"><img src="ingresos.png" alt="Ingresos" style="width: 100%; height: 100%; object-fit: contain;" /></span>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div class="card border-0 shadow-sm p-4 bg-white rounded-4 mb-4">
+        <h5 class="fw-bold text-dark mb-4">Reservas por estado</h5>
+        <div class="d-flex align-items-end justify-content-around pt-4 px-2" style="height: 260px; border-bottom: 2px solid #E2E8F0; border-left: 2px solid #E2E8F0;">
+            @foreach (var item in DatosReservasPorEstado)
+            {
+                <div class="d-flex flex-column align-items-center flex-grow-1 mx-2" style="max-width: 80px;">
+                    <span class="fw-bold mb-1 small">@item.Cantidad</span>
+                    <div class="w-100 rounded-top-2 translate-bar-animation"
+                         style="height: @(item.Altura)px; background-color: @item.Color;"
+                         title="@item.Label: @item.Cantidad">
+                    </div>
+                    <span class="text-secondary mt-2 small fw-semibold text-center" style="font-size: 11px;">@item.Label</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 bg-white rounded-4">
+        <h5 class="fw-bold text-dark mb-4">Reservas mensuales (últimos 6 meses)</h5>
+        <div class="d-flex align-items-end justify-content-around pt-4 px-2" style="height: 260px; border-bottom: 2px solid #E2E8F0; border-left: 2px solid #E2E8F0;">
+            @foreach (var item in DatosReservasMensuales)
+            {
+                <div class="d-flex flex-column align-items-center flex-grow-1 mx-2" style="max-width: 70px;">
+                    <span class="fw-bold mb-1 small">@item.Cantidad</span>
+                    <div class="w-100 rounded-top-2 translate-bar-animation"
+                         style="height: @(item.Altura)px; background-color: #48BE74;"
+                         title="@item.Label: @item.Cantidad">
+                    </div>
+                    <span class="text-secondary mt-2 small fw-semibold text-center" style="font-size: 10px; white-space: pre-line;">@item.Label</span>
+                </div>
+            }
+        </div>
+    </div>
+}
+else if (!datosCargados && string.IsNullOrEmpty(mensajeError))
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2 text-muted">Cargando datos del dashboard...</p>
+    </div>
+}
 
 <style>
     .translate-bar-animation {
         transition: height 0.5s ease-in-out;
+        min-width: 30px;
     }
     .translate-bar-animation:hover {
-        background-color: #059669 !important;
+        opacity: 0.8;
         cursor: pointer;
     }
 </style>
