@@ -157,10 +157,12 @@
                     <button class="btn-inicio" @onclick="VolverInicio">
                         Volver al Inicio
                     </button>
-            
+                    @if (pagoExitoso)
+                    {
                     <button class="btn-descargar" @onclick="DescargarReportePDF" style="background-color: #16a34a; color: white; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-file-pdf"></i> Descargar Comprobante
                     </button>
+                    }
                 </div>
             }
 
